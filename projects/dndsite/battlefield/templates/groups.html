@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <h2>Select a Group</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="select"> 
+            
+            <label for="group">Choose a group:</label>
+            <select id="group" name="group_id">  
+                {% for group in groups %}
+                    <option value="{{ group.id }}">{{ group.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Select Group</button>
+        </form>
+    </div>
+    <hr>
+    <div>
+        <h2>Create group</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create"> 
+            
+            <label for="group_name">Group Name:</label>
+            <input type="text" id="group_name" name="group_name" required>
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+{% endblock %}

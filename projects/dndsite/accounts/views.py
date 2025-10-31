@@ -21,6 +21,7 @@ def register(request):
         else:
             #stay on the same page
             messages.info(request, 'Password not matching or username/email taken')
+            redirect('register')
     else:
         return render(request, 'register.html')
     
