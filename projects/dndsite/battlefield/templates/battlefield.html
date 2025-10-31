@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>This is the Battlefield Page</h2>
+    <p>Prepare for battle!</p>
+    <p>Here is a battle table</p>
+    
+    <table class="battle-table" style="border: 1px solid black; border-radius: 10px; table-layout: fixed;">
+        {% for y in cols_range %}
+        <tr>
+            {% for x in rows_range %}
+            <td style="border: 1px solid black; padding: 10px; text-align: center; border-radius: 10px;">
+                {% for character in characters %}
+                    {% if character.position_x == x and character.position_y == y %}
+                        <p>{{ character.name }}</p>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
