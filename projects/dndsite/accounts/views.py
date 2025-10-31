@@ -16,12 +16,11 @@ def register(request):
         if password1 == password2 and not User.objects.filter(username=username).exists() and not User.objects.filter(email=email).exists():
             user = User.objects.create_user(username=username, password=password1, email=email, first_name=first_name, last_name=last_name)
             user.save()
-            return redirect('battle')
-            #return redirect('login')
+            return redirect('login')
         else:
             #stay on the same page
             messages.info(request, 'Password not matching or username/email taken')
-            redirect('register')
+            return redirect('register')
     else:
         return render(request, 'register.html')
     
@@ -34,7 +33,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('main')
+            return redirect('main_page')
         else:
             messages.info(request, 'Invalid credentials')
             return redirect('login')
