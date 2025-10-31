@@ -60,6 +60,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'battlefield', 'templates'),
+            os.path.join(BASE_DIR, 'accounts', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
