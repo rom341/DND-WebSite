@@ -47,5 +47,9 @@ def groups(request):
     data = {
         'groups': groups,
     }
-    
+
     return render(request, 'groups.html', data)
+
+def main(request):
+
+    return render(request, 'main.html')

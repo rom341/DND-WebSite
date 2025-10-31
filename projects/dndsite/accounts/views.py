@@ -34,7 +34,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('battle')
+            return redirect('main')
         else:
             messages.info(request, 'Invalid credentials')
             return redirect('login')

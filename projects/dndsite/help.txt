@@ -1,0 +1,4 @@
+python3 manage.py makemigrations  - создать миграцию (шаблон обновления базы даных)
+python3 manage.py migrate    - обновить базу даных согласно шаблону
+python3 manage.py createsuperuser - создать админа
+python3 manage.py runserver — запустить сервер
