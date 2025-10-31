@@ -8,7 +8,23 @@
 </head>
 <body bgcolor="cyan">
     <header>
-        <h1>Welcome to the DnD Site!!! {{extra_text}}</h1>
+        {% if user.is_authenticated %}
+        <h1>Hello, {{ user.username }}! Welcome to the DnD Site!!!</h1>
+        {% else %}
+        <h1>Hello. You are not logged in</h1>
+        {% endif %}
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/battle/">Battle</a></li>
+
+                {% if user.is_authenticated %}
+                <li><a href="/logout">Logout</a></li>
+                {% else %}
+                <li><a href="/register">Register</a></li>
+                <li><a href="/login">Login</a></li>
+                {% endif %}
+            </ul>
     </header>
     {% block content %}
 

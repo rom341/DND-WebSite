@@ -20,5 +20,13 @@
         </tr>
         {% endfor %}
     </table>
+    <div>
+        <h3>Move Character</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Move</button>
+        </form>
+    </div>
 
 {% endblock %}
