@@ -7,7 +7,17 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+class CharacterMoney(models.Model):
+    copper_coins = models.IntegerField(default=0)
+    silver_coins = models.IntegerField(default=0)
+    electrum_coins = models.IntegerField(default=0)
+    gold_coins = models.IntegerField(default=0)
+    platinum_coins = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"ID{self.id}: {self.copper_coins} Ccoins, {self.silver_coins} Scoins, {self.electrum_coins} Ecoins, {self.gold_coins} Gcoins, {self.platinum_coins} Pcoins"
+
 class CharacterStats(models.Model):
     strength = models.IntegerField(default=0)
     """Main character stat СИЛА"""
@@ -45,11 +55,7 @@ class Character(models.Model):
     armor_class = models.IntegerField(default=0)
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)
-    copper_coins = models.IntegerField(default=0)
-    silver_coins = models.IntegerField(default=0)
-    electrum_coins = models.IntegerField(default=0)
-    gold_coins = models.IntegerField(default=0)
-    platinum_coins = models.IntegerField(default=0)
+    money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     
 
 
