@@ -29,6 +29,15 @@ class Character(models.Model):
     name = models.CharField(max_length=100)
     group = models.ForeignKey(Group, related_name='characters', on_delete=models.CASCADE, null=True, blank=True)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    level = models.IntegerField(default=1)
+    experience = models.IntegerField(default=0)
+    race = models.CharField(max_length=50, null=True, blank=True)
+    alignment = models.CharField(max_length=50, null=True, blank=True)
+    size = models.CharField(max_length=20, null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    height = models.CharField(max_length=20, null=True, blank=True)
+    weight = models.CharField(max_length=20, null=True, blank=True)
+    movement_speed = models.IntegerField(default=0)
     max_hit_points = models.IntegerField(default=0)
     current_hit_points = models.IntegerField(default=0)
     character_class = models.CharField(max_length=15, null=True, blank=True)
@@ -36,7 +45,13 @@ class Character(models.Model):
     armor_class = models.IntegerField(default=0)
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)
-    movement_speed = models.IntegerField(default=0)
+    copper_coins = models.IntegerField(default=0)
+    silver_coins = models.IntegerField(default=0)
+    electrum_coins = models.IntegerField(default=0)
+    gold_coins = models.IntegerField(default=0)
+    platinum_coins = models.IntegerField(default=0)
+    
+
 
     class Meta:
         constraints = [
