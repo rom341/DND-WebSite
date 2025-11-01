@@ -21,7 +21,8 @@ class CharacterStats(models.Model):
     """Main character stat МУДРОСТЬ"""
     charisma = models.IntegerField(default=0)
     """Main character stat ХАРИЗМА"""
-    temp = models.IntegerField(default=0)
+    def __str__(self):
+        return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
 class Character(models.Model):
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
@@ -30,6 +31,8 @@ class Character(models.Model):
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     max_hit_points = models.IntegerField(default=0)
     current_hit_points = models.IntegerField(default=0)
+    character_class = models.CharField(max_length=15, null=True, blank=True)
+    character_sub_class = models.CharField(max_length=15, null=True, blank=True)
     armor_class = models.IntegerField(default=0)
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)

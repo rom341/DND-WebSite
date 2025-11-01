@@ -6,5 +6,7 @@ urlpatterns = [
     path('move_character/', views.move_character, name='move_character'),
     path('groups/', views.groups, name='groups'),
     path('main_page/',views.main_page, name='main_page'),
+    path('create_character/',views.create_character, name='create_character'),
     path('', views.main_page, name='main_page'),  # Default to group selector
+    
 ]

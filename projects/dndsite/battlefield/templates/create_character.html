@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body bgcolor="cyan">
+    <form method="post">
+        {% csrf_token %}
+        <h2>Create Character</h2>
+
+        <label for="character_name">Character Name:</label>
+        <input type="text" id="character_name" name="character_name" required><br><br>
+
+        <label for="class">Class:</label>
+        <input type="text" id="class" name="class"><br><br>
+
+        <label for="subclass">Subclass:</label>
+        <input type="text" id="subclass" name="subclass"><br><br>
+
+        <label for="strength">Strength:</label>
+        <input type="number" id="strength" name="strength" value="10"><br><br>
+
+        <label for="dexterity">Dexterity:</label>
+        <input type="number" id="dexterity" name="dexterity" value="10"><br><br>
+
+        <label for="constitution">Constitution:</label>
+        <input type="number" id="constitution" name="constitution" value="10"><br><br>
+
+        <label for="intelligence">Intelligence:</label>
+        <input type="number" id="intelligence" name="intelligence" value="10"><br><br>
+
+        <label for="wisdom">Wisdom:</label>
+        <input type="number" id="wisdom" name="wisdom" value="10"><br><br>
+
+        <label for="charisma">Charisma:</label>
+        <input type="number" id="charisma" name="charisma" value="10"><br><br>
+
+        <button type="submit">Create Character</button>
+    </form>
+    
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from battlefield.models import Character, Group
+from battlefield.models import Character, Group, CharacterStats
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 
@@ -92,3 +92,36 @@ def groups(request):
 
 def main_page(request):
     return render(request, 'main_page.html')
+
+def create_character(request):
+    if request.method == 'POST':
+        name = request.POST.get('character_name')
+        character_class = request.POST.get('class')
+        character_sub_class = request.POST.get('subclass')
+        strength = request.POST.get('strength')
+        dexterity = request.POST.get('dexterity')
+        constitution = request.POST.get('constitution')
+        intelligence = request.POST.get('intelligence')
+        wisdom = request.POST.get('wisdom')
+        charisma = request.POST.get('charisma')
+
+        new_stats =CharacterStats.objects.create(
+            strength=strength, 
+            dexterity=dexterity, 
+            constitution=constitution, 
+            intelligence=intelligence, 
+            wisdom=wisdom, 
+            charisma=charisma
+        )
+
+        new_character = Character.objects.create(
+            user = request.user,
+            stats = new_stats,
+            name=name,
+            character_class=character_class, 
+            character_sub_class=character_sub_class
+        )
+        
+        redirect('main_page')
+
+    return render(request, 'create_character.html')
