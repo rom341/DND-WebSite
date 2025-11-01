@@ -5,39 +5,20 @@
     <p>Prepare for battle!</p>
     <p>Here is a battle table</p>
     
-    <table class="battle-table" style="border: 1px solid black; border-radius: 10px; table-layout: fixed;">
-        {% for y in cols_range %}
-        <tr>
-            {% for x in rows_range %}
-            <td style="border: 1px solid black; padding: 10px; text-align: center; border-radius: 10px;">
-                {% for character in characters %}
-                    {% if character.position_x == x and character.position_y == y %}
-                        <p>{{ character.name }}</p>
-                    {% endif %}
-                {% endfor %}
-            </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-   <div>
+    {% include 'partials/battle_map.html' %}
+        
+    <div>
         <h3>Move Character</h3>
-        <form method="post">
-            {% csrf_token %}
-            
-            <label for="char-select">Character to Move:</label>
-            <select name="character_to_move" id="char-select" required>
-                <option value="">-- Select a character --</option>
-                {% for char in characters %}
-                    <option value="{{ char.id }}">{{ char.name }}</option>
-                {% endfor %}
-            </select>
-            <br><br>
+        <form id="move-character-request"
+      hx-post="{% url 'move_character' %}"
+      hx-target="#battle-map"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    {{ form }}
+    <input type="hidden" name="group_id" value="{{ group_id }}">
+    <button type="submit">Move</button>
+</form>
 
-            {{ form.as_p }}
-            
-            <button type="submit">Move</button>
-        </form>
     </div>
 
 {% endblock %}

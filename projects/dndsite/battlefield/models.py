@@ -27,4 +27,4 @@ class Character(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.name} (HP: {self.hit_points}, AC: {self.armor_class}, Init: {self.initiative}, Pos: ({self.position_x}, {self.position_y}))"
+        return f"ID{self.id}: {self.name} (HP: {self.hit_points}, AC: {self.armor_class}, Init: {self.initiative}, Pos: ({self.position_x}, {self.position_y}))"
