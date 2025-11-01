@@ -19,6 +19,16 @@ def battle(request):
         
         form = MoveCharacterForm(request.POST, instance=character_to_update)
         
+        """
+        if character_new_position == isEmpty():
+            form.save()
+            
+            print(f"Character {character_to_update.name} moved")
+            return redirect(f"{request.path}?group_id={group_id}")
+        else:
+            #вывод ошибки через логику JS
+        """
+
         if form.is_valid():
             form.save()
             

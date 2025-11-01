@@ -9,4 +9,4 @@ class MoveCharacterForm(ModelForm):
         widgets = {
             'position_x': forms.NumberInput(attrs={'min': 0, 'max': 9}),
             'position_y': forms.NumberInput(attrs={'min': 0, 'max': 4}),
-        }
+        }     

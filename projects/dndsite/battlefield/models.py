@@ -23,5 +23,13 @@ class Character(models.Model):
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['group', 'position_x', 'position_y'], 
+                name='unique_position_in_group'
+            )
+        ]
+
     def __str__(self):
         return f"{self.name} (HP: {self.hit_points}, AC: {self.armor_class}, Init: {self.initiative}, Pos: ({self.position_x}, {self.position_y}))"
