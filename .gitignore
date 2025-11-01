@@ -1,7 +1,8 @@
 venv
+.venv
 *.pyc
 *.sqlite3
-__pycache__/
-
+__pycache__
+migrations/*
 .vs
 .DS_Store
