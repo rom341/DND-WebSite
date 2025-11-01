@@ -27,7 +27,7 @@ def move_character(request):
                 position_y=new_pos_y
             ).exclude(id=character_to_update.id)
             if not characters_on_position.exists():
-                form.save()
+                character_to_update.move_to(new_pos_x, new_pos_y)
                 print(f"Character {character_to_update.name} moved")
                 return render(request, 'partials/battle_map.html', {
                     'rows_range': range(10),

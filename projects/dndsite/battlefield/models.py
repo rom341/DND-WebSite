@@ -21,6 +21,7 @@ class CharacterStats(models.Model):
     """Main character stat МУДРОСТЬ"""
     charisma = models.IntegerField(default=0)
     """Main character stat ХАРИЗМА"""
+    temp = models.IntegerField(default=0)
 
 class Character(models.Model):
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
@@ -45,3 +46,7 @@ class Character(models.Model):
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"
     
+    def move_to(self, new_x, new_y):
+        self.position_x = new_x
+        self.position_y = new_y
+        self.save()

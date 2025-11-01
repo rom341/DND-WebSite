@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'battlefield',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,12 @@ TEMPLATES = [
 
 #WSGI_APPLICATION = 'dndsite.wsgi.application'
 ASGI_APPLICATION = 'dndsite.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database

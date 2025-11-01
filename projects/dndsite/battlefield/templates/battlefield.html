@@ -10,9 +10,13 @@
     <div>
         <h3>Move Character</h3>
         <form id="move-character-request"
-      hx-post="{% url 'move_character' %}"
-      hx-target="#battle-map"
-      hx-swap="outerHTML">
+            hx-ext="ws"
+            ws-connect="/ws/battle/{{ group_id }}/"
+            ws-send>
+
+            <!-- hx-post="{% url 'move_character' %}"
+            hx-target="#battle-map"
+            hx-swap="outerHTML"> -->
     {% csrf_token %}
     {{ form }}
     <input type="hidden" name="group_id" value="{{ group_id }}">

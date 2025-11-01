@@ -1,6 +1,6 @@
 from django.urls import path
-from .consumers import BattlefieldConsumer
+from .consumers import MoveCharacterConsumer
 
 websocket_urlpatterns = [
-    path("ws/battlefield/<group_name>", BattlefieldConsumer.as_asgi()),
+    path("ws/battle/<int:group_id>/", MoveCharacterConsumer.as_asgi()),
 ]
