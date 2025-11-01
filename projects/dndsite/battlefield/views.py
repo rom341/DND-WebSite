@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from battlefield.models import Character, Group, CharacterStats
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
+from battlefield.utils.ruler import ruler
 
 # Create your views here.
 @login_required
@@ -27,6 +28,10 @@ def move_character(request):
                 position_y=new_pos_y
             ).exclude(id=character_to_update.id)
             if not characters_on_position.exists():
+                if character_to_update.movement_speed/5 < ruler(character_to_update.position_x, character_to_update.position_y, new_pos_x, new_pos_y):
+                    print("Not enough movement speed.")
+                    return render(request, 'errors.html', {'message': 'Not enough movement speed.'})
+                    
                 character_to_update.move_to(new_pos_x, new_pos_y)
                 print(f"Character {character_to_update.name} moved")
                 return render(request, 'partials/battle_map.html', {

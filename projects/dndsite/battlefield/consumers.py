@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
 from battlefield.models import Group
+from battlefield.utils.ruler import ruler
 
 class MoveCharacterConsumer(WebsocketConsumer):
     def connect(self):
@@ -44,18 +45,24 @@ class MoveCharacterConsumer(WebsocketConsumer):
         character = get_object_or_404(self.group.characters, id=character_id)
 
         # Move the character
-        character.move_to(new_pos_x, new_pos_y)
-        print(f"Character {character.name} moved to ({new_pos_x}, {new_pos_y})")
+        requested_distance = ruler(character.position_x, character.position_y, new_pos_x, new_pos_y)
+        allowed_distance = character.movement_speed / 5
 
-        event = {
-            'type': 'message_handler',
-            #'character': character
-        }
+        if allowed_distance >= requested_distance:
+            character.move_to(new_pos_x, new_pos_y)
+            print(f"Character {character.name} moved to ({new_pos_x}, {new_pos_y})")
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.chatroom_name,
-            event
-        )
+            event = {
+                'type': 'message_handler',
+                #'character': character
+            }
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.chatroom_name,
+                event
+            )
+
+        
         
     def message_handler(self, event):
         context = {
