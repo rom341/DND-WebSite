@@ -1,25 +1,30 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from battlefield.models import Group
+from battlefield.models import Character, Group
 from battlefield.forms.move_character_form import MoveCharacterForm
 
 # Create your views here.
 def battle(request):    
     group_id = request.GET.get('group_id')
-    group = Group.objects.get(id=group_id)
+    group = get_object_or_404(Group, id=group_id)
     characters = group.characters.all()
     
     form = MoveCharacterForm()
     if request.method == 'POST':
-        form = MoveCharacterForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.user = request.user
-            message.group = group
-            
-            message.save()
-            print(f"Character moved to ({message.position_x}, {message.position_y})")
-            return redirect('battle')
+        character_id = request.POST.get('character_to_move')
         
+        try:
+            character_to_update = Character.objects.get(id=character_id, group=group)
+        except:
+            return redirect(f"{request.path}?group_id={group_id}")
+        
+        form = MoveCharacterForm(request.POST, instance=character_to_update)
+        
+        if form.is_valid():
+            form.save()
+            
+            print(f"Character {character_to_update.name} moved")
+            return redirect(f"{request.path}?group_id={group_id}")
+
     data = {
         'rows_range': range(10),
         'cols_range': range(5),

@@ -20,11 +20,22 @@
         </tr>
         {% endfor %}
     </table>
-    <div>
+   <div>
         <h3>Move Character</h3>
         <form method="post">
             {% csrf_token %}
-            {{ form }}
+            
+            <label for="char-select">Character to Move:</label>
+            <select name="character_to_move" id="char-select" required>
+                <option value="">-- Select a character --</option>
+                {% for char in characters %}
+                    <option value="{{ char.id }}">{{ char.name }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            {{ form.as_p }}
+            
             <button type="submit">Move</button>
         </form>
     </div>
