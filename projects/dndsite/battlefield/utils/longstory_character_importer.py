@@ -1,4 +1,3 @@
-import json
 from battlefield.models import Character, CharacterStats
 
 def longstory_charcter_importer(realdata):
