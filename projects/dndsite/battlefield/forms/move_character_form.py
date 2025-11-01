@@ -17,3 +17,4 @@ class MoveCharacterForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         characters = group.characters.all() if group else Character.objects.none()
         self.fields['name'].choices = [(c.id, c.name) for c in characters]
+        

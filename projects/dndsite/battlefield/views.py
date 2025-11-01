@@ -16,19 +16,33 @@ def move_character(request):
             character_to_update = request.user.characters.get(id=character_id, group=group)
         except Character.DoesNotExist:
             print("Character does not exist in this group.")
-            return render(request, 'partials/error.html', {'message': 'Character does not exist in this group.'})
+            return render(request, 'errors.html', {'message': 'Character does not exist in this group.'})
         
-        form = MoveCharacterForm(request.POST, instance=character_to_update, group=group)        
+        form = MoveCharacterForm(request.POST, instance=character_to_update, group=group)
         if form.is_valid():
-            form.save()
-            print(f"Character {character_to_update.name} moved")
-            return render(request, 'partials/battle_map.html', {
-                'rows_range': range(10),
-                'cols_range': range(5),
-                'characters': group.characters.all(),
-            })
-    
-    return redirect('battle')
+            new_pos_x = form.cleaned_data['position_x']
+            new_pos_y = form.cleaned_data['position_y']
+            characters_on_position = group.characters.filter(
+                position_x=new_pos_x,
+                position_y=new_pos_y
+            ).exclude(id=character_to_update.id)
+            if not characters_on_position.exists():
+                form.save()
+                print(f"Character {character_to_update.name} moved")
+                return render(request, 'partials/battle_map.html', {
+                    'rows_range': range(10),
+                    'cols_range': range(5),
+                    'characters': group.characters.all(),
+                })
+            else:
+                print("Position is occupied.")
+                return render(request, 'errors.html', {'message': f'Invalid data: {form.errors.as_text()}'})
+        else:
+            print("Form is invalid:", form.errors)
+           
+            return render(request, 'errors.html', {'message': f'Invalid data: {form.errors.as_text()}'})
+        
+    return render(request, 'errors.html', {'message': f'Invalid data: {form.errors.as_text()}'})
     
 
 @login_required

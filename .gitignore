@@ -3,6 +3,6 @@ venv
 *.pyc
 *.sqlite3
 __pycache__
-migrations/*
+migrations
 .vs
 .DS_Store
