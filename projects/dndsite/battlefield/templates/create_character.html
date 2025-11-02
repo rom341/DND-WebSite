@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Character</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body bgcolor="cyan">
+{% extends "base.html" %}
+
+{% block content %}
     <form method="post">
         {% csrf_token %}
         <h2>Create Character</h2>
@@ -103,5 +97,4 @@
             {% endfor %}
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

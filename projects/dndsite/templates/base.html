@@ -21,6 +21,9 @@
                 <li><a href="/groups/">Groups</a></li>
 
                 {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                    <li><a href="/admin/">Admin Panel</a></li>
+                    {% endif %}
                 <li><a href="/logout">Logout</a></li>
                 <li><a href="/create_character">Create Character</a></li>
                 {% else %}

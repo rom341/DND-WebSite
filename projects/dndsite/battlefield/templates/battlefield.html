@@ -13,15 +13,23 @@
             hx-ext="ws"
             ws-connect="/ws/battle/{{ group_id }}/"
             ws-send>
-
-            <!-- hx-post="{% url 'move_character' %}"
+            {% csrf_token %}
+            {{ move_character_form }}
+            <input type="hidden" name="group_id" value="{{ group_id }}">
+            <button type="submit">Move</button>
+        </form>
+    </div>
+    <div>
+        <h3>Add Character to Group</h3>
+        <form id="add-character-to-group-form"
+            hx-post="{% url 'add_character_to_group' %}"
             hx-target="#battle-map"
-            hx-swap="outerHTML"> -->
-    {% csrf_token %}
-    {{ form }}
-    <input type="hidden" name="group_id" value="{{ group_id }}">
-    <button type="submit">Move</button>
-</form>
+            hx-swap="outerHTML">
+            {% csrf_token %}
+            {{ add_character_form }}
+            <input type="hidden" name="group_id" value="{{ group_id }}">
+            <button type="submit">Add</button>
+        </form>
 
     </div>
 

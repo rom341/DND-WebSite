@@ -9,6 +9,32 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
+class GroupMembershipUser(models.Model):
+    ROLE_CHOICES = [
+        ('player', 'Player'),
+        ('gm', 'Game Master'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_memberships')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='user_memberships')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
+    
+    class Meta:
+        unique_together = ('user', 'group')
+        
+    def __str__(self):
+        return f"{self.user.username} ({self.role}) in {self.group.name}"
+
+class GroupMembershipCharacter(models.Model):
+    character = models.ForeignKey('Character', on_delete=models.CASCADE, related_name='group_memberships')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='character_memberships')
+
+    class Meta:
+        unique_together = ('character', 'group')
+
+    def __str__(self):
+        return f"{self.character.name} in {self.group.name}"
+
 class CharacterMoney(models.Model):
     def create_from_template(self, template:CharacterMoneyTemplate):
         self.copper_coins = template.copper_coins
@@ -25,7 +51,7 @@ class CharacterMoney(models.Model):
     platinum_coins = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"ID{self.id}: {self.copper_coins} Ccoins, {self.silver_coins} Scoins, {self.electrum_coins} Ecoins, {self.gold_coins} Gcoins, {self.platinum_coins} Pcoins"
+        return f"ID{self.id}: {self.copper_coins} CC, {self.silver_coins} SC, {self.electrum_coins} EC, {self.gold_coins} GC, {self.platinum_coins} PC"
 
 class CharacterStats(models.Model):
     def create_from_template(self, template:CharacterStatsTemplate):
@@ -49,6 +75,7 @@ class CharacterStats(models.Model):
     """Main character stat МУДРОСТЬ"""
     charisma = models.IntegerField(default=0)
     """Main character stat ХАРИЗМА"""
+    
     def __str__(self):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
@@ -81,7 +108,6 @@ class Character(models.Model):
         return self
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    group = models.ForeignKey(Group, related_name='characters', on_delete=models.CASCADE, null=True, blank=True)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
@@ -101,16 +127,6 @@ class Character(models.Model):
     position_y = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     
-
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['group', 'position_x', 'position_y'], 
-                name='unique_position_in_group'
-            )
-        ]
-
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"
     
