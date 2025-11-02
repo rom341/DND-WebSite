@@ -1,10 +1,13 @@
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
+from battlefield.forms.uploading_json_files_form import JsonUploadForm
 from battlefield.models import Character, Group, CharacterStats, CharacterMoney
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 from battlefield.utils.group_manager import GroupManager
-from battlefield.utils.ruler import ruler
+from battlefield.utils.longstory_character_importer import longstory_character_importer
+import json
+
 
 # Create your views here.
 def add_character_to_group(request):
@@ -37,6 +40,28 @@ def add_character_to_group(request):
                     'characters': GroupManager.get_characters_in_group(group) if group else [],
                     'add_character_form': form
                 })
+
+@login_required
+def upload_longstory_character_json(request):
+    print("Entered upload_longstory_character_json view")
+    if request.method == 'POST':
+        form = JsonUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            json_file = form.cleaned_data['json_file']
+
+            file_content = json_file.read().decode('utf-8')
+            data = json.loads(json.loads(file_content).get('data'))
+            new_character_template = longstory_character_importer(data)
+            new_character = Character()
+            new_character.user = request.user
+            new_character = new_character.create_form_template(new_character_template)
+            new_character.save()
+            return redirect('groups')
+        else:
+            pass
+    else:
+        form = JsonUploadForm()
+    return render(request, 'create_character.html', {'upload_json_files_form': form})
 
 @login_required
 def battle(request):    
@@ -95,7 +120,6 @@ def create_character(request):
     if request.method == 'POST':
 
         name = request.POST.get('character_name')
-        player_name = request.POST.get('player_name')
         character_class = request.POST.get('class')
         character_sub_class = request.POST.get('subclass')
         level = request.POST.get('level')
@@ -127,6 +151,8 @@ def create_character(request):
         wisdom = request.POST.get('wisdom')
         charisma = request.POST.get('charisma')
 
+        print('============================')
+        print(copper_coins, silver_coins, electrum_coins, gold_coins, platinum_coins)
         new_money_bag = CharacterMoney.objects.create(
             copper_coins=copper_coins,
             silver_coins=silver_coins,
@@ -170,6 +196,13 @@ def create_character(request):
 
         )
         
-        redirect('main_page')
+        
+        return redirect('main_page')
+        
+    uploadform = JsonUploadForm()
+    print(uploadform)
+    data = {
+        'upload_json_files_form': uploadform
+    }
 
-    return render(request, 'create_character.html')
+    return render(request, 'create_character.html', data)

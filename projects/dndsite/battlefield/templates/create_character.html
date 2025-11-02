@@ -89,6 +89,15 @@
         </div>
         <button type="submit">Create Character</button>
     </form>
+
+    <div>
+        <h3>Upload Character JSON</h3>
+        <form method="post" action="{% url 'upload_json' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ upload_json_files_form.as_p }}
+            <button type="submit">Upload JSON</button>
+        </form> 
+    </div>
     
     <div>
         {% if messages %}
