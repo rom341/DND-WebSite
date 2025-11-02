@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from battlefield.utils.character_template import CharacterMoneyTemplate, CharacterStatsTemplate, CharacterTemplate
 
 # Create your models here.    
 class Group(models.Model):
@@ -9,6 +10,14 @@ class Group(models.Model):
         return self.name
 
 class CharacterMoney(models.Model):
+    def create_from_template(self, template:CharacterMoneyTemplate):
+        self.copper_coins = template.copper_coins
+        self.silver_coins = template.silver_coins
+        self.electrum_coins = template.electrum_coins
+        self.gold_coins = template.gold_coins
+        self.platinum_coins = template.platinum_coins
+        self.save()
+        return self
     copper_coins = models.IntegerField(default=0)
     silver_coins = models.IntegerField(default=0)
     electrum_coins = models.IntegerField(default=0)
@@ -19,6 +28,15 @@ class CharacterMoney(models.Model):
         return f"ID{self.id}: {self.copper_coins} Ccoins, {self.silver_coins} Scoins, {self.electrum_coins} Ecoins, {self.gold_coins} Gcoins, {self.platinum_coins} Pcoins"
 
 class CharacterStats(models.Model):
+    def create_from_template(self, template:CharacterStatsTemplate):
+        self.strength = template.strength
+        self.dexterity = template.dexterity
+        self.constitution = template.constitution
+        self.intelligence = template.intelligence
+        self.wisdom = template.wisdom
+        self.charisma = template.charisma
+        self.save()
+        return self
     strength = models.IntegerField(default=0)
     """Main character stat СИЛА"""
     dexterity = models.IntegerField(default=0)
@@ -35,6 +53,32 @@ class CharacterStats(models.Model):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
 class Character(models.Model):
+    def create_form_template(self, template:CharacterTemplate):
+        self.name = template.character_name
+        self.character_class = template.character_class
+        self.character_sub_class = template.character_sub_class
+        self.level = template.level
+        self.experience = template.experience
+        self.race = template.race
+        self.alignment = template.alignment
+        self.size = template.size
+        self.age = template.age
+        self.height = template.height
+        self.weight = template.weight
+        self.max_hit_points = template.max_hit_points
+        self.current_hit_points = template.current_hit_points
+        self.armor_class = template.armor_class
+        self.movement_speed = template.movement_speed
+        if template.character_stats_template:
+            new_stats = CharacterStats()
+            stats = new_stats.create_from_template(template.character_stats_template)
+            self.stats = stats
+        if template.character_money_template:
+            new_money_bag = CharacterMoney()
+            money = new_money_bag.create_from_template(template.character_money_template)
+            self.money = money
+        self.save()
+        return self
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     group = models.ForeignKey(Group, related_name='characters', on_delete=models.CASCADE, null=True, blank=True)
