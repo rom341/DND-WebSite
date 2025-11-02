@@ -5,33 +5,91 @@
         {% csrf_token %}
         <h2>Create Character</h2>
 
-        <label for="character_name">Character Name:</label>
-        <input type="text" id="character_name" name="character_name" required><br><br>
+        <div>
+            <label for="character_name">Character Name:</label>
+            <input type="text" id="character_name" name="character_name" required><br><br>
 
-        <label for="class">Class:</label>
-        <input type="text" id="class" name="class"><br><br>
+            <label for="player_name">Player Name</label>
+            <input type="text" id="player_name" name="player_name"><br><br>
 
-        <label for="subclass">Subclass:</label>
-        <input type="text" id="subclass" name="subclass"><br><br>
+            <label for="class">Class:</label>
+            <input type="text" id="class" name="class"><br><br>
 
-        <label for="strength">Strength:</label>
-        <input type="number" id="strength" name="strength" value="10"><br><br>
+            <label for="subclass">Subclass:</label>
+            <input type="text" id="subclass" name="subclass"><br><br>
 
-        <label for="dexterity">Dexterity:</label>
-        <input type="number" id="dexterity" name="dexterity" value="10"><br><br>
+            <label for="level">Level</label>
+            <input type="number" id="level" name="level" value="1"><br><br>
 
-        <label for="constitution">Constitution:</label>
-        <input type="number" id="constitution" name="constitution" value="10"><br><br>
+            <label for="experience_points">Experience Points:</label>
+            <input type="number" id="experience_points" name="experience_points" value="0"><br><br>
 
-        <label for="intelligence">Intelligence:</label>
-        <input type="number" id="intelligence" name="intelligence" value="10"><br><br>
+        </div>
+        <div>
+            <label for="race">Race</label>
+            <input type="text" id="race" name="race"><br><br>
 
-        <label for="wisdom">Wisdom:</label>
-        <input type="number" id="wisdom" name="wisdom" value="10"><br><br>
+            <label for="aligment">Aligment</label>
+            <input type="text" id="aligment" name="aligment"><br><br>
+        </div>
+        <div>
+           <label for="size">Size</label>
+            <input type="text" id="size" name="size"><br><br>
 
-        <label for="charisma">Charisma:</label>
-        <input type="number" id="charisma" name="charisma" value="10"><br><br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" value="0"><br><br>
 
+            <label for="height">Height:</label>
+            <input type="text" id="height" name="height"><br><br>
+
+            <label for="weight">Weight:</label>
+            <input type="text" id="weight" name="weight"><br><br>
+        </div>
+        <div>
+            <label for="hit_points">Hit Points:</label>
+            <input type="number" id="hit_points" name="hit_points" value="0"><br><br>
+
+            <label for="armor_class">Armor Class:</label>
+            <input type="number" id="armor_class" name="armor_class" value="10"><br><br>
+
+            <label for ="movement_speed">Movement Speed:</label>
+            <input type="number" id="movement_speed" name="movement_speed" value="30"><br><br>
+        </div>
+        <div>
+            <label for="copper_coins">Copper Coins:</label>
+            <input type="number" id="copper_coins" name="copper_coins" value="0"><br><br>
+
+            <label for="silver_coins">Silver Coins:</label>
+            <input type="number" id="silver_coins" name="silver_coins" value="0"><br><br>
+
+            <label for="electrum_coins">Electrum Coins:</label>
+            <input type="number" id="electrum_coins" name="electrum_coins" value="0"><br><br>
+
+            <label for="gold_coins">Gold Coins:</label>
+            <input type="number" id="gold_coins" name="gold_coins" value="0"><br><br>
+
+            <label for="platinum_coins">Platinum Coins:</label>
+            <input type="number" id="platinum_coins" name="platinum_coins" value="0"><br><br>
+        </div>
+        <div>
+            <label for="strength">Strength:</label>
+            <input type="number" id="strength" name="strength" value="10"><br><br>
+
+            <label for="dexterity">Dexterity:</label>
+            <input type="number" id="dexterity" name="dexterity" value="10"><br><br>
+
+            <label for="constitution">Constitution:</label>
+            <input type="number" id="constitution" name="constitution" value="10"><br><br>
+
+            <label for="intelligence">Intelligence:</label>
+            <input type="number" id="intelligence" name="intelligence" value="10"><br><br>
+
+            <label for="wisdom">Wisdom:</label>
+            <input type="number" id="wisdom" name="wisdom" value="10"><br><br>
+
+            <label for="charisma">Charisma:</label>
+            <input type="number" id="charisma" name="charisma" value="10"><br><br>
+        </div>
         <button type="submit">Create Character</button>
     </form>
     
