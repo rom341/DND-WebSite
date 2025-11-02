@@ -1,5 +1,6 @@
 from django import forms
 from battlefield.models import Character
+from battlefield.utils.group_manager import GroupManager
 
 class MoveCharacterForm(forms.ModelForm):
     name = forms.ChoiceField(label="Character")
@@ -15,6 +16,6 @@ class MoveCharacterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         group = kwargs.pop('group', None)
         super().__init__(*args, **kwargs)
-        characters = group.characters.all() if group else Character.objects.none()
+        characters = GroupManager.get_characters_in_group(group) if group else Character.objects.none()
         self.fields['name'].choices = [(c.id, c.name) for c in characters]
         
