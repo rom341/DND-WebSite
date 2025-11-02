@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from battlefield.models import Character, Group, CharacterStats
+from battlefield.models import Character, Group, CharacterStats, CharacterMoney
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 from battlefield.utils.ruler import ruler
@@ -100,15 +100,47 @@ def main_page(request):
 
 def create_character(request):
     if request.method == 'POST':
+
         name = request.POST.get('character_name')
+        player_name = request.POST.get('player_name')
         character_class = request.POST.get('class')
         character_sub_class = request.POST.get('subclass')
+        level = request.POST.get('level')
+        experience_points = request.POST.get('experience_points')
+
+        race = request.POST.get('race')
+        alignment = request.POST.get('aligment')
+
+        size = request.POST.get('size')
+        age = request.POST.get('age')
+        height = request.POST.get('height')
+        weight = request.POST.get('weight')
+
+        max_hit_points = request.POST.get('hit_points')
+        current_hit_points = request.POST.get('hit_points')
+        armor_class = request.POST.get('armor_class')
+        movement_speed = request.POST.get('movement_speed')
+
+        copper_coins = request.POST.get('copper_coins')
+        silver_coins = request.POST.get('silver_coins')
+        electrum_coins = request.POST.get('electrum_coins')
+        gold_coins = request.POST.get('gold_coins')
+        platinum_coins = request.POST.get('platinum_coins')
+
         strength = request.POST.get('strength')
         dexterity = request.POST.get('dexterity')
         constitution = request.POST.get('constitution')
         intelligence = request.POST.get('intelligence')
         wisdom = request.POST.get('wisdom')
         charisma = request.POST.get('charisma')
+
+        new_money_bag = CharacterMoney.objects.create(
+            copper_coins=copper_coins,
+            silver_coins=silver_coins,
+            electrum_coins=electrum_coins,
+            gold_coins=gold_coins,
+            platinum_coins=platinum_coins
+        )
 
         new_stats =CharacterStats.objects.create(
             strength=strength, 
@@ -121,10 +153,28 @@ def create_character(request):
 
         new_character = Character.objects.create(
             user = request.user,
-            stats = new_stats,
             name=name,
             character_class=character_class, 
-            character_sub_class=character_sub_class
+            character_sub_class=character_sub_class,
+            level=level,
+            experience=experience_points,
+
+            race=race,
+            alignment=alignment,
+
+            size=size,
+            age=age,
+            height=height,
+            weight=weight,
+
+            max_hit_points=max_hit_points,
+            current_hit_points=max_hit_points,
+            armor_class=armor_class, 
+            movement_speed=movement_speed,
+
+            money=new_money_bag,
+            stats=new_stats
+
         )
         
         redirect('main_page')
