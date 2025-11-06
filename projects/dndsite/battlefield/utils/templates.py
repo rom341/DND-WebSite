@@ -1,3 +1,16 @@
+class CharacterSpellCirclesSlotsTemplate:
+    """Шаблон кругов заклинаний персонажа с новыми полями."""
+
+    circle_1: int
+    circle_2: int
+    circle_3: int
+    circle_4: int
+    circle_5: int
+    circle_6: int
+    circle_7: int
+    circle_8: int
+    circle_9: int
+
 class CharacterStatsTemplate:
     """Шаблон характеристик персонажа с новыми полями."""
 
@@ -19,7 +32,8 @@ class CharacterMoneyTemplate:
 
 class CharacterTemplate:
     """Шаблон персонажа с новыми полями."""
-
+    def __str__(self):
+        return f"{self.character_name}, Level {self.level} {self.character_class}/{self.character_sub_class}/{self.age}"
     character_name: str
     character_class: str 
     character_sub_class:  str
@@ -41,3 +55,4 @@ class CharacterTemplate:
 
     character_money_template: CharacterMoneyTemplate
     character_stats_template: CharacterStatsTemplate
+    character_spell_circle_slots_template: CharacterSpellCirclesSlotsTemplate
