@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from battlefield.utils.character_template import CharacterMoneyTemplate, CharacterStatsTemplate, CharacterTemplate
+from battlefield.utils.templates import CharacterMoneyTemplate, CharacterStatsTemplate, CharacterTemplate, CharacterSpellCirclesSlotsTemplate
 
 # Create your models here.    
 class Group(models.Model):
@@ -36,16 +36,31 @@ class GroupMembershipCharacter(models.Model):
         return f"{self.character.name} in {self.group.name}"
     
 
-#class CharacterSpellCircles(models.Model):
-    #spell_slot_c1 = models.IntegerField(default=0)
-    #spell_slot_c2 = models.IntegerField(default=0)
-    #spell_slot_c3 = models.IntegerField(default=0)
-    #spell_slot_c4 = models.IntegerField(default=0)
-    #spell_slot_c5 = models.IntegerField(default=0)
-    #spell_slot_c6 = models.IntegerField(default=0)
-    #spell_slot_c7 = models.IntegerField(default=0)
-    #spell_slot_c8 = models.IntegerField(default=0)
-    #spell_slot_c9 = models.IntegerField(default=0)
+class CharacterSpellCircleSlots(models.Model):
+    def create_from_template(self, template:CharacterSpellCirclesSlotsTemplate):
+        self.circle_1 = template.circle_1
+        self.circle_2 = template.circle_2
+        self.circle_3 = template.circle_3
+        self.circle_4 = template.circle_4
+        self.circle_5 = template.circle_5
+        self.circle_6 = template.circle_6
+        self.circle_7 = template.circle_7
+        self.circle_8 = template.circle_8
+        self.circle_9 = template.circle_9
+        self.save()
+        return self
+    circle_1 = models.IntegerField(default=0)
+    circle_2 = models.IntegerField(default=0)
+    circle_3 = models.IntegerField(default=0)
+    circle_4 = models.IntegerField(default=0)
+    circle_5 = models.IntegerField(default=0)
+    circle_6 = models.IntegerField(default=0)
+    circle_7 = models.IntegerField(default=0)
+    circle_8 = models.IntegerField(default=0)
+    circle_9 = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"ID{self.id}: Circles Slots - 1:{self.circle_1}, 2:{self.circle_2}, 3:{self.circle_3}, 4:{self.circle_4}, 5:{self.circle_5}, 6:{self.circle_6}, 7:{self.circle_7}, 8:{self.circle_8}, 9:{self.circle_9}"
     
 class CharacterMoney(models.Model):
     def create_from_template(self, template:CharacterMoneyTemplate):
@@ -116,6 +131,10 @@ class Character(models.Model):
             new_money_bag = CharacterMoney()
             money = new_money_bag.create_from_template(template.character_money_template)
             self.money = money
+        if template.character_spell_circle_slots_template:
+            new_spell_slots = CharacterSpellCircleSlots()
+            spell_circle_slots = new_spell_slots.create_from_template(template.character_spell_circle_slots_template)
+            self.spell_circle_slots = spell_circle_slots   
         self.save()
         return self
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
@@ -138,8 +157,8 @@ class Character(models.Model):
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
-    #spell_circles = models.ForeignKey(CharacterSpellCircles, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
-    #inventory = models.TextField(null=True, blank=True) ?????????????
+    spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"

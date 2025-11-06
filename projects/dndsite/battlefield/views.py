@@ -54,6 +54,8 @@ def upload_longstory_character_json(request):
             new_character_template = longstory_character_importer(data)
             new_character = Character()
             new_character.user = request.user
+            print('==============================')
+            print(new_character_template)
             new_character = new_character.create_form_template(new_character_template)
             new_character.save()
             return redirect('groups')
