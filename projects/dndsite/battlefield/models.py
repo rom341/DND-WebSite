@@ -34,7 +34,19 @@ class GroupMembershipCharacter(models.Model):
 
     def __str__(self):
         return f"{self.character.name} in {self.group.name}"
+    
 
+#class CharacterSpellCircles(models.Model):
+    #spell_slot_c1 = models.IntegerField(default=0)
+    #spell_slot_c2 = models.IntegerField(default=0)
+    #spell_slot_c3 = models.IntegerField(default=0)
+    #spell_slot_c4 = models.IntegerField(default=0)
+    #spell_slot_c5 = models.IntegerField(default=0)
+    #spell_slot_c6 = models.IntegerField(default=0)
+    #spell_slot_c7 = models.IntegerField(default=0)
+    #spell_slot_c8 = models.IntegerField(default=0)
+    #spell_slot_c9 = models.IntegerField(default=0)
+    
 class CharacterMoney(models.Model):
     def create_from_template(self, template:CharacterMoneyTemplate):
         self.copper_coins = template.copper_coins
@@ -126,6 +138,7 @@ class Character(models.Model):
     position_x = models.IntegerField(default=0)
     position_y = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    #spell_circles = models.ForeignKey(CharacterSpellCircles, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"
