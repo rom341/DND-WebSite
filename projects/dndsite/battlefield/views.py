@@ -147,6 +147,8 @@ def groups(request):
             new_group_name = request.POST.get('group_name')
             new_group = Group(name=new_group_name)
             new_group.save()
+            user = request.user
+            GroupManager.add_user_to_group(user, new_group, role='gm')
             return redirect(f'/battle/?group_id={new_group.id}')
     
     groups = Group.objects.all()    
