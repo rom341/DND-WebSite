@@ -133,7 +133,8 @@ def battle(request):
     return render(request, 'battlefield.html', data)
 
 @login_required
-def groups(request):    
+def groups(request):
+    user = request.user    
     if request.method == 'POST':
         action = request.POST.get('action')
         
@@ -147,11 +148,10 @@ def groups(request):
             new_group_name = request.POST.get('group_name')
             new_group = Group(name=new_group_name)
             new_group.save()
-            user = request.user
             GroupManager.add_user_to_group(user, new_group, role='gm')
             return redirect(f'/battle/?group_id={new_group.id}')
     
-    groups = Group.objects.all()    
+    groups = GroupManager.get_groups_with_user(user)   
     data = {
         'groups': groups,
     }

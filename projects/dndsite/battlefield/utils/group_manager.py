@@ -21,6 +21,12 @@ class GroupManager:
         )
     
     @staticmethod
+    def get_groups_with_user(user):
+        return Group.objects.filter(
+            user_memberships__user=user
+        )
+
+    @staticmethod
     def get_users_in_group(group):
         return User.objects.filter(
             group_memberships__group=group
