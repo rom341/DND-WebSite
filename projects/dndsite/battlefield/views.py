@@ -1,12 +1,15 @@
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
+from battlefield.forms.add_user_to_group_form import AddUserToGroupForm
 from battlefield.forms.uploading_json_files_form import JsonUploadForm
-from battlefield.models import Character, Group, CharacterStats, CharacterMoney
+from battlefield.models import Character, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 from battlefield.utils.group_manager import GroupManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
+
 
 
 # Create your views here.
@@ -39,6 +42,42 @@ def add_character_to_group(request):
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group) if group else [],
                     'add_character_form': form
+                })
+
+def add_user_to_group(request):
+    if request.method == 'POST':
+        print("Processing AddUserToGroupForm submission")
+        group_id = request.POST.get('group_id')
+        group = GroupManager.get_group_by_id(group_id)
+        host_user = request.user
+        host_user_membership = GroupMembershipUser.objects.get(user=host_user, group=group)  
+        if host_user_membership.role != 'gm':
+            print(f"User {host_user.username} is not a GM in group {group.name}, cannot add users.")
+            return redirect('groups')
+        user_id = request.POST.get('user_id')
+        user = User.objects.get(id=user_id)
+        print(f"Retrieved group: {group} and user: {user.username}")
+        form = AddUserToGroupForm(request.POST, group=group)
+        if form.is_valid():
+            print("Form is valid")
+            if group:
+                print(f"Adding user {user.username} to group {group.name}")
+                GroupManager.add_user_to_group(user, group)
+                context = {
+                    'rows_range': range(10),
+                    'cols_range': range(5),
+                    'characters': GroupManager.get_characters_in_group(group),
+                    'add_user_form': form
+                }
+                return render(request, 'partials/battle_map.html', context)
+    else:
+        form = AddUserToGroupForm()
+
+    return render(request, 'partials/battle_map.html', {
+                    'rows_range': range(10),
+                    'cols_range': range(5),
+                    'characters': GroupManager.get_characters_in_group(group) if group else [],
+                    'add_user_form': form
                 })
 
 @login_required
@@ -80,12 +119,14 @@ def battle(request):
     print(f"Group {group.name} has characters: {', '.join(c.name for c in characters)}")
     move_character_form = MoveCharacterForm(group=group)    
     add_character_form = AddCharacterToGroupForm(group=group)
+    add_user_form = AddUserToGroupForm(group=group)
     data = {
         'rows_range': range(10),
         'cols_range': range(5),
         'characters': characters,
         'move_character_form': move_character_form,
         'add_character_form': add_character_form,
+        'add_user_form':add_user_form,
         'group_id': group_id,
     }
     
