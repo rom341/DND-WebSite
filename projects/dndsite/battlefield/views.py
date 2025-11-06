@@ -10,8 +10,6 @@ from battlefield.utils.group_manager import GroupManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
 
-
-
 # Create your views here.
 def add_character_to_group(request):
     if request.method == 'POST':

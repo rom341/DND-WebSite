@@ -49,6 +49,7 @@ class CharacterSpellCircleSlots(models.Model):
         self.circle_9 = template.circle_9
         self.save()
         return self
+    
     circle_1 = models.IntegerField(default=0)
     circle_2 = models.IntegerField(default=0)
     circle_3 = models.IntegerField(default=0)
@@ -71,6 +72,7 @@ class CharacterMoney(models.Model):
         self.platinum_coins = template.platinum_coins
         self.save()
         return self
+    
     copper_coins = models.IntegerField(default=0)
     silver_coins = models.IntegerField(default=0)
     electrum_coins = models.IntegerField(default=0)
@@ -90,6 +92,7 @@ class CharacterStats(models.Model):
         self.charisma = template.charisma
         self.save()
         return self
+    
     strength = models.IntegerField(default=0)
     """Main character stat СИЛА"""
     dexterity = models.IntegerField(default=0)
@@ -137,6 +140,7 @@ class Character(models.Model):
             self.spell_circle_slots = spell_circle_slots   
         self.save()
         return self
+    
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
