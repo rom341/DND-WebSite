@@ -139,7 +139,8 @@ class Character(models.Model):
     position_y = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     #spell_circles = models.ForeignKey(CharacterSpellCircles, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
-    
+    #inventory = models.TextField(null=True, blank=True) ?????????????
+
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"
     
