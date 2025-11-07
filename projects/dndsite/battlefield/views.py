@@ -3,14 +3,14 @@ from django.shortcuts import redirect, render
 from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
 from battlefield.forms.add_user_to_group_form import AddUserToGroupForm
 from battlefield.forms.uploading_json_files_form import JsonUploadForm
-from battlefield.models import Character, CharacterSkills, Group, CharacterStats, CharacterMoney, GroupMembershipUser
+from battlefield.models import Character, CharacterSkills, CharacterSpells, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 from battlefield.utils.group_manager import GroupManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
 
-from battlefield.utils.templates import CharacterSkillsTemplate
+from battlefield.utils.templates import CharacterSkillsTemplate, CharacterSpellsTemplate
 
 # Create your views here.
 def add_character_to_group(request):
@@ -267,11 +267,19 @@ def create_skill(request):
     
     return render(request,'create_skill.html' )
 
-
-
-
-
-
-
-def create_spell():
-    pass
+def create_spell(request):
+    if request.method == 'POST':
+        spell = CharacterSpellsTemplate()
+        spell.spell_name =  request.POST.get('spell_name')
+        spell.atack_roll = request.POST.get('atack_roll')
+        spell.damage_dice = request.POST.get('damage_dice')
+        spell.damage_dice_count = request.POST.get('damage_dice_count')
+        spell.damage_modificator = request.POST.get('damage_modificator')
+        spell.saving_throw = request.POST.get('saving_throw')
+        spell.is_using_spell_circle = True
+        spell.required_spell_circle =request.POST.get('required_spell_circle')
+        new_spell= CharacterSpells()
+        new_spell.create_from_template(spell)
+        return redirect('main_page')
+     
+    return render(request,'create_spell.html')

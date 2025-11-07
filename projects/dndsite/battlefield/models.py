@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from battlefield.utils.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterStatsTemplate, CharacterTemplate, CharacterSpellCirclesSlotsTemplate
+from battlefield.utils.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, CharacterSpellCirclesSlotsTemplate
 
 # Create your models here.    
 class Group(models.Model):
@@ -35,6 +35,32 @@ class GroupMembershipCharacter(models.Model):
     def __str__(self):
         return f"{self.character.name} in {self.group.name}"
     
+
+
+class CharacterSpells(models.Model):
+    def create_from_template(self, template:CharacterSpellsTemplate):
+        self.spell_name = template.spell_name
+        self.atack_roll = template.atack_roll
+        self.damage_dice = template.damage_dice
+        self.damage_dice_count = template.damage_dice_count
+        self.damage_modificator = template.damage_modificator
+        self.saving_throw = template.saving_throw
+        self.is_using_spell_circle = template.is_using_spell_circle
+        self.required_spell_circle = template.required_spell_circle
+        self.save()
+        return self
+    
+    spell_name = models.CharField(max_length=50)
+    atack_roll = models.CharField(max_length=10)
+    damage_dice = models.CharField(max_length=10)
+    damage_dice_count = models.IntegerField(default=1)
+    damage_modificator = models.IntegerField(default=0)
+    saving_throw = models.CharField(max_length=5)
+    is_using_spell_circle = models.BooleanField(default=True)
+    required_spell_circle = models.IntegerField(default=1)
+
+    def __str__(self):
+         return f"ID{self.id}: {self.spell_name}"
 
 
 class CharacterSkills(models.Model):
