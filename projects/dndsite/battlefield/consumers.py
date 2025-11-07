@@ -51,6 +51,8 @@ class MoveCharacterConsumer(WebsocketConsumer):
         # Проверка на допустимое расстояние перемещения
         requested_distance = ruler(character.position_x, character.position_y, new_pos_x, new_pos_y)
         allowed_distance = character.movement_speed / 5
+        print('++++++++++++++++++++++++++')
+        print(requested_distance,allowed_distance)
         if allowed_distance >= requested_distance:
             # Проверка свободна ли позиция            
             if not GroupManager.is_position_occupied(self.group, new_pos_x, new_pos_y):

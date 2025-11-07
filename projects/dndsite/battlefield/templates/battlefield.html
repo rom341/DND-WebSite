@@ -44,4 +44,48 @@
             <button type="submit">Add</button>
         </form>
     </div>
+
+    <script>
+    // Вешаем ОДИН слушатель на ВЕСЬ документ
+    document.addEventListener('click', function(event) {
+        
+        // 1. Ищем, был ли клик по ячейке <td>
+        // event.target — это то, на что мы нажали
+        const clickedCell = event.target.closest('td');
+
+        // 2. Если клик был не по <td>, ИЛИ
+        //    эта <td> НЕ находится внутри нашей таблицы '.battle-table',
+        //    то просто выходим и ничего не делаем.
+        if (!clickedCell || !clickedCell.closest('.battle-table')) {
+            return;
+        }
+
+        // 3. Если мы дошли сюда, значит, мы кликнули по нужной ячейке!
+        //    Теперь мы можем прочитать ее data-атрибуты
+        const x = clickedCell.dataset.x;
+        const y = clickedCell.dataset.y;
+
+        // Убедимся, что у ячейки есть эти данные
+        if (x !== undefined && y !== undefined) {
+            
+            // Вуаля! У нас есть координаты.
+            console.log(`Клик по ячейке с координатами X: ${x}, Y: ${y}`);
+
+            // 
+            // ⭐ БОНУС: Давай сделаем это еще полезнее! ⭐
+            // Найдем поля X и Y в твоей форме "Move Character"
+            //
+            const inputX = document.getElementById('id_position_x');
+            const inputY = document.getElementById('id_position_y');
+
+            // И автоматически вставим в них координаты кликнутой ячейки!
+            if (inputX && inputY) {
+                inputX.value = x;
+                inputY.value = y;
+                console.log('Поля "Position x" и "Position y" обновлены.');
+            }
+        }
+    });
+</script>
+
 {% endblock %}
