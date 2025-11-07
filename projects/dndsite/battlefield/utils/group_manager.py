@@ -2,6 +2,15 @@ from battlefield.models import Character, GroupMembershipCharacter, Group, Group
 from django.contrib.auth.models import User
 
 
+
+class UserManager:
+    @staticmethod
+    def get_user_characters(user):
+        return Character.objects.filter(
+            user=user
+        )
+
+
 class GroupManager:
     @staticmethod
     def get_group_by_id(group_id):

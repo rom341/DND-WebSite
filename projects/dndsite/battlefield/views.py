@@ -6,7 +6,7 @@ from battlefield.forms.uploading_json_files_form import JsonUploadForm
 from battlefield.models import Character, CharacterSkills, CharacterSpells, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
-from battlefield.utils.group_manager import GroupManager
+from battlefield.utils.group_manager import GroupManager, UserManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
 
@@ -283,3 +283,13 @@ def create_spell(request):
         return redirect('main_page')
      
     return render(request,'create_spell.html')
+
+
+def my_characters_list(request):
+    user = request.user
+    all_user_characters = UserManager.get_user_characters(user)
+    data = {
+        'all_user_characters': all_user_characters
+    }
+    return render(request,'my_characters_list.html',data)
+    

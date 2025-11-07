@@ -2,7 +2,7 @@ class CharacterSpellsTemplate:
     """ Шаблон заклинаний персонажа """
 
     spell_name: str
-    """ Название скила """
+    """ Название заклинания """
     atack_roll: str
     """ Бросок атаки """
     damage_dice: str
@@ -16,14 +16,14 @@ class CharacterSpellsTemplate:
     is_using_spell_circle: bool=True
     """Нужна ли скилу ячейка заклинаний"""
     required_spell_circle: int
-    """Минимальная ячейка необходимая для скила"""
+    """Минимальная ячейка необходимая для заклинания"""
 
 
 class CharacterSkillsTemplate:
     """ Шаблон скилов персонажа """
 
     skill_name: str
-    """Название заклинания"""
+    """Название навыка"""
     atack_roll: str
     """ Бросок атаки """
     damage_dice: str
@@ -37,7 +37,7 @@ class CharacterSkillsTemplate:
     is_using_spell_circle: bool=False
     """Нужна ли ячейка заклинаний"""
     required_spell_circle: int
-    """Минимальная ячейка необходимая для заклинания"""
+    """Минимальная ячейка необходимая для навыка"""
 
 
 class CharacterSpellCirclesSlotsTemplate:

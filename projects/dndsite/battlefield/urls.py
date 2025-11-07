@@ -11,6 +11,7 @@ urlpatterns = [
     path('upload_json/', views.upload_longstory_character_json, name='upload_json'),
     path('create_skill/',views.create_skill, name='create_skill'),
     path('create_spell/',views.create_spell, name='create_spell'),
+    path('my_characters_list/', views.my_characters_list, name='my_characters_list'),
     path('', views.main_page, name='main_page'),  # Default to group selector
     
 ]
