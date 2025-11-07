@@ -9,6 +9,7 @@ urlpatterns = [
     path('add_character_to_group/', views.add_character_to_group, name='add_character_to_group'),
     path('add_user_to_group/', views.add_user_to_group, name='add_user_to_group'),
     path('upload_json/', views.upload_longstory_character_json, name='upload_json'),
+    path('create_skill/',views.create_skill, name='create_skill'),
     path('', views.main_page, name='main_page'),  # Default to group selector
     
 ]

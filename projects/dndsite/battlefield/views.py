@@ -3,12 +3,14 @@ from django.shortcuts import redirect, render
 from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
 from battlefield.forms.add_user_to_group_form import AddUserToGroupForm
 from battlefield.forms.uploading_json_files_form import JsonUploadForm
-from battlefield.models import Character, Group, CharacterStats, CharacterMoney, GroupMembershipUser
+from battlefield.models import Character, CharacterSkills, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
 from battlefield.utils.group_manager import GroupManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
+
+from battlefield.utils.templates import CharacterSkillsTemplate
 
 # Create your views here.
 def add_character_to_group(request):
@@ -194,8 +196,6 @@ def create_character(request):
         wisdom = request.POST.get('wisdom')
         charisma = request.POST.get('charisma')
 
-        print('============================')
-        print(copper_coins, silver_coins, electrum_coins, gold_coins, platinum_coins)
         new_money_bag = CharacterMoney.objects.create(
             copper_coins=copper_coins,
             silver_coins=silver_coins,
@@ -249,3 +249,29 @@ def create_character(request):
     }
 
     return render(request, 'create_character.html', data)
+
+def create_skill(request):
+    if request.method == 'POST':
+        skill = CharacterSkillsTemplate()
+        skill.skill_name =  request.POST.get('skill_name')
+        skill.atack_roll = request.POST.get('atack_roll')
+        skill.damage_dice = request.POST.get('damage_dice')
+        skill.damage_dice_count = request.POST.get('damage_dice_count')
+        skill.damage_modificator = request.POST.get('damage_modificator')
+        skill.saving_throw = request.POST.get('saving_throw')
+        skill.is_using_spell_circle = 'is_using_spell_circle' in request.POST
+        skill.required_spell_circle =request.POST.get('required_spell_circle')
+        new_skill = CharacterSkills()
+        new_skill.create_from_template(skill)
+        return redirect('main_page')
+    
+    return render(request,'create_skill.html' )
+
+
+
+
+
+
+
+def create_spell():
+    pass
