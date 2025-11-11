@@ -1,24 +1,53 @@
-<div class="container-fluid">
-    {% if user.is_authenticated %}
-        <h1>Hello, {{ user.username }}! Welcome to the DnD Site!!!</h1>
+<div class="container bg-dark text-white p-3 mb-3">
+    <div class="text-center">
+        <h1>DND WebSite</h1>
+    </div>
+    <div>
+        {% if user.is_authenticated %}
+        <h3>Hello, {{ user.username }}!</h3>
         {% else %}
-        <h1>Hello. You are not logged in</h1>
+        <h3>Hello. You are not logged in</h3>
         {% endif %}
-        <nav>
-            <ul>
-                <li><a href="/main_page/">Main page</a></li>
-                <li><a href="/groups/">Groups</a></li>
+    </div>
 
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <div class="dropdown me-2"> <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                    Create
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                    <li><a class="dropdown-item" href="/create_character">Create Character</a></li>
+                    <li><a class="dropdown-item" href="/create_skill">Create Skill</a></li>
+                    <li><a class="dropdown-item" href="/create_spell">Create Spell</a></li>
+                </ul>
+            </div>
+            
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                    Join
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                    <li><a class="dropdown-item" href="/groups/">Group</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
-                    <li><a href="/admin/">Admin Panel</a></li>
+                        <li><a class="dropdown-item" href="/admin/">Admin Panel</a></li>
                     {% endif %}
-                <li><a href="/logout">Logout</a></li>
-                <li><a href="/create_character">Create Character</a></li>
+                    <li><a class="dropdown-item" href="/my_characters_list">My characters</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
                 {% else %}
-                <li><a href="/register">Register</a></li>
-                <li><a href="/login">Login</a></li>
+                    <li><a class="dropdown-item" href="/register">Register</a></li>
+                    <li><a class="dropdown-item" href="/login">Login</a></li>
                 {% endif %}
             </ul>
-        </nav>
+        </div>
+    </div>
 </div>

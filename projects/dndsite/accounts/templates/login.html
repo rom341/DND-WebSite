@@ -1,30 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DnD Site</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body bgcolor="cyan">
-    <header>
-        <h1>Welcome to the DnD Site</h1>
+{% extends "base.html" %}
+
+{% block content %}
+    <header class="text-center">
+        <h1>Login</h1>
     </header>
-    <form action="login" method="post">
-        {% csrf_token %}
-        <h2>Login</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <button type="submit">Login</button>
-    </form>
-    <div>
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
+    <div class ="container w-25">
+        <form action="login" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary center w-50">Login</button>
+            </div>
+        </form>
     </div>
-</body>
-</html>
+{% endblock %}

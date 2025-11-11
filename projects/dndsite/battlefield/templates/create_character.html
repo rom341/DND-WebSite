@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="container">
     <form method="post">
         {% csrf_token %}
         <h2>Create Character</h2>
@@ -98,12 +99,5 @@
             <button type="submit">Upload JSON</button>
         </form> 
     </div>
-    
-    <div>
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
+</div>
 {% endblock %}
