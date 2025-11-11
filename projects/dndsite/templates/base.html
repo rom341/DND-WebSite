@@ -5,7 +5,30 @@
 </head>
 <body bgcolor="cyan">
     <header>
-    {% include 'base_body_header.html' %}
+        {% if user.is_authenticated %}
+        <h1>Hello, {{ user.username }}! Welcome to the DnD Site!!!</h1>
+        {% else %}
+        <h1>Hello. You are not logged in</h1>
+        {% endif %}
+        <nav>
+            <ul>
+                <li><a href="/main_page/">Main page</a></li>
+
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                    <li><a href="/admin/">Admin Panel</a></li>
+                    {% endif %}
+                <li><a href="/groups/">Groups</a></li>
+                <li><a href="/create_character">Create Character</a></li>
+                <li><a href="/my_characters_list">My characters</a></li>
+                <li><a href="/create_skill">Create Skill</a></li>
+                <li><a href="/create_spell">Create Spell</a></li>
+                <li><a href="/logout">Logout</a></li>
+                {% else %}
+                <li><a href="/register">Register</a></li>
+                <li><a href="/login">Login</a></li>ś
+                {% endif %}
+            </ul>
     </header>
     <div class="container-fluid">
     {% block content %}

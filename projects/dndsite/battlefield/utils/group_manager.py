@@ -1,4 +1,14 @@
 from battlefield.models import Character, GroupMembershipCharacter, Group, GroupMembershipUser
+from django.contrib.auth.models import User
+
+
+
+class UserManager:
+    @staticmethod
+    def get_user_characters(user):
+        return Character.objects.filter(
+            user=user
+        )
 
 
 class GroupManager:
@@ -16,6 +26,18 @@ class GroupManager:
         # и тогда Django сделает что то вроде 
         # "SELECT * FROM Character WHERE membership IN (SELECT id FROM GroupMembership WHERE group_id = group.id)"
         return Character.objects.filter(
+            group_memberships__group=group
+        )
+    
+    @staticmethod
+    def get_groups_with_user(user):
+        return Group.objects.filter(
+            user_memberships__user=user
+        )
+
+    @staticmethod
+    def get_users_in_group(group):
+        return User.objects.filter(
             group_memberships__group=group
         )
 

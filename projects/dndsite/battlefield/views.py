@@ -1,13 +1,16 @@
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
+from battlefield.forms.add_user_to_group_form import AddUserToGroupForm
 from battlefield.forms.uploading_json_files_form import JsonUploadForm
-from battlefield.models import Character, Group, CharacterStats, CharacterMoney
+from battlefield.models import Character, CharacterSkills, CharacterSpells, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
-from battlefield.utils.group_manager import GroupManager
+from battlefield.utils.group_manager import GroupManager, UserManager
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
 
+from battlefield.utils.templates import CharacterSkillsTemplate, CharacterSpellsTemplate
 
 # Create your views here.
 def add_character_to_group(request):
@@ -39,6 +42,42 @@ def add_character_to_group(request):
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group) if group else [],
                     'add_character_form': form
+                })
+
+def add_user_to_group(request):
+    if request.method == 'POST':
+        print("Processing AddUserToGroupForm submission")
+        group_id = request.POST.get('group_id')
+        group = GroupManager.get_group_by_id(group_id)
+        host_user = request.user
+        host_user_membership = GroupMembershipUser.objects.get(user=host_user, group=group)  
+        if host_user_membership.role != 'gm':
+            print(f"User {host_user.username} is not a GM in group {group.name}, cannot add users.")
+            return redirect('groups')
+        user_id = request.POST.get('user_id')
+        user = User.objects.get(id=user_id)
+        print(f"Retrieved group: {group} and user: {user.username}")
+        form = AddUserToGroupForm(request.POST, group=group)
+        if form.is_valid():
+            print("Form is valid")
+            if group:
+                print(f"Adding user {user.username} to group {group.name}")
+                GroupManager.add_user_to_group(user, group)
+                context = {
+                    'rows_range': range(10),
+                    'cols_range': range(5),
+                    'characters': GroupManager.get_characters_in_group(group),
+                    'add_user_form': form
+                }
+                return render(request, 'partials/battle_map.html', context)
+    else:
+        form = AddUserToGroupForm()
+
+    return render(request, 'partials/battle_map.html', {
+                    'rows_range': range(10),
+                    'cols_range': range(5),
+                    'characters': GroupManager.get_characters_in_group(group) if group else [],
+                    'add_user_form': form
                 })
 
 @login_required
@@ -80,19 +119,22 @@ def battle(request):
     print(f"Group {group.name} has characters: {', '.join(c.name for c in characters)}")
     move_character_form = MoveCharacterForm(group=group)    
     add_character_form = AddCharacterToGroupForm(group=group)
+    add_user_form = AddUserToGroupForm(group=group)
     data = {
         'rows_range': range(10),
         'cols_range': range(5),
         'characters': characters,
         'move_character_form': move_character_form,
         'add_character_form': add_character_form,
+        'add_user_form':add_user_form,
         'group_id': group_id,
     }
     
     return render(request, 'battlefield.html', data)
 
 @login_required
-def groups(request):    
+def groups(request):
+    user = request.user    
     if request.method == 'POST':
         action = request.POST.get('action')
         
@@ -106,9 +148,10 @@ def groups(request):
             new_group_name = request.POST.get('group_name')
             new_group = Group(name=new_group_name)
             new_group.save()
+            GroupManager.add_user_to_group(user, new_group, role='gm')
             return redirect(f'/battle/?group_id={new_group.id}')
     
-    groups = Group.objects.all()    
+    groups = GroupManager.get_groups_with_user(user)   
     data = {
         'groups': groups,
     }
@@ -153,8 +196,6 @@ def create_character(request):
         wisdom = request.POST.get('wisdom')
         charisma = request.POST.get('charisma')
 
-        print('============================')
-        print(copper_coins, silver_coins, electrum_coins, gold_coins, platinum_coins)
         new_money_bag = CharacterMoney.objects.create(
             copper_coins=copper_coins,
             silver_coins=silver_coins,
@@ -208,3 +249,47 @@ def create_character(request):
     }
 
     return render(request, 'create_character.html', data)
+
+def create_skill(request):
+    if request.method == 'POST':
+        skill = CharacterSkillsTemplate()
+        skill.skill_name =  request.POST.get('skill_name')
+        skill.atack_roll = request.POST.get('atack_roll')
+        skill.damage_dice = request.POST.get('damage_dice')
+        skill.damage_dice_count = request.POST.get('damage_dice_count')
+        skill.damage_modificator = request.POST.get('damage_modificator')
+        skill.saving_throw = request.POST.get('saving_throw')
+        skill.is_using_spell_circle = 'is_using_spell_circle' in request.POST
+        skill.required_spell_circle =request.POST.get('required_spell_circle')
+        new_skill = CharacterSkills()
+        new_skill.create_from_template(skill)
+        return redirect('main_page')
+    
+    return render(request,'create_skill.html' )
+
+def create_spell(request):
+    if request.method == 'POST':
+        spell = CharacterSpellsTemplate()
+        spell.spell_name =  request.POST.get('spell_name')
+        spell.atack_roll = request.POST.get('atack_roll')
+        spell.damage_dice = request.POST.get('damage_dice')
+        spell.damage_dice_count = request.POST.get('damage_dice_count')
+        spell.damage_modificator = request.POST.get('damage_modificator')
+        spell.saving_throw = request.POST.get('saving_throw')
+        spell.is_using_spell_circle = True
+        spell.required_spell_circle =request.POST.get('required_spell_circle')
+        new_spell= CharacterSpells()
+        new_spell.create_from_template(spell)
+        return redirect('main_page')
+     
+    return render(request,'create_spell.html')
+
+
+def my_characters_list(request):
+    user = request.user
+    all_user_characters = UserManager.get_user_characters(user)
+    data = {
+        'all_user_characters': all_user_characters
+    }
+    return render(request,'my_characters_list.html',data)
+    

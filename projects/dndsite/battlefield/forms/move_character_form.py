@@ -16,6 +16,7 @@ class MoveCharacterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         group = kwargs.pop('group', None)
         super().__init__(*args, **kwargs)
+        # ДОБАВИТЬ ФИЛЬТР ПРИ КОТОРОМ ИГРОК МОЖЕТ ДВИГАТЬ ТОЛЬКО СВОЕГО ПЕРСОНАЖА
         characters = GroupManager.get_characters_in_group(group) if group else Character.objects.none()
         self.fields['name'].choices = [(c.id, c.name) for c in characters]
         

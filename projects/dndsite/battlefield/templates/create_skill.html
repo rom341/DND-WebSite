@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>Create Skill</h2>
+
+        <div>
+            <label for="skill_name">Skill name:</label>
+            <input type="text" id="skill_name" name="skill_name" required><br><br>
+
+            <label for="atack_roll">Atack roll:</label>
+            <input type="text" id="atack_roll" name="atack_roll"><br><br>
+
+            <label for="damage_dice">Damage dice:</label>
+            <input type="text" id="damage_dice" name="damage_dice"><br><br>
+
+            <label for="damage_dice_count">Damage dice count</label>
+            <input type="number" id="damage_dice_count" name="damage_dice_count" value="1"><br><br>
+
+            <label for="damage_modificator">Damage modificator:</label>
+            <input type="number" id="damage_modificator" name="damage_modificator" value="0"><br><br>
+
+            <label for="saving_throw">Saving Throw:</label>
+            <input type="text" id="saving_throw" name="saving_throw" value="dex"><br><br>
+
+            <label for="is_using_spell_circle">Is using spell circle:</label>
+            <input type="checkbox" id="is_using_spell_circle" name="is_using_spell_circle">
+            <br><br>
+
+            <label for="required_spell_circle"> Required spell circle:</label>
+            <input type="number" id="required_spell_circle" name="required_spell_circle" value="1"><br><br>
+            
+        </div>
+        <button type="submit">Create Skill</button>
+    </form>  
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

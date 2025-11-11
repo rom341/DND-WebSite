@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <h2>My Characters:</h2>
+
+            <label for="all_user_characters">Choose Character:</label>
+
+                {% for character in all_user_characters %}
+                 <div>
+                    <label>Name: {{character.name}}</label><br>
+                    <label>race: {{character.rece}}</label><br>
+                    <label>Class: {{character.character_class}}</label><br>
+                    <label>level: {{character.level}}</label><br>
+                    <label>current HP: {{character.current_hit_points}}</label><br>    
+                 </div>
+                 <br>
+                {% endfor %}
+    </div>
+{% endblock %}
