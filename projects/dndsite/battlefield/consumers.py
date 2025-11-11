@@ -72,6 +72,8 @@ class MoveCharacterConsumer(WebsocketConsumer):
     def message_handler(self, event):
         characters = GroupManager.get_characters_in_group(self.group)
         context = {
+            'rows_count': 10,
+            'cols_count': 5,
             'rows_range': range(10),
             'cols_range': range(5),
             'characters': characters,

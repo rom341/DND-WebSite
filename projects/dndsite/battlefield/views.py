@@ -28,6 +28,8 @@ def add_character_to_group(request):
                 print(f"Adding character {character.name} to group {group.name}")
                 GroupManager.add_character_to_group(character, group)
                 context = {
+                    'rows_count': 10,
+                    'cols_count': 5,
                     'rows_range': range(10),
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group),
@@ -38,6 +40,8 @@ def add_character_to_group(request):
         form = AddCharacterToGroupForm()
 
     return render(request, 'partials/battle_map.html', {
+                    'rows_count': 10,
+                    'cols_count': 5,
                     'rows_range': range(10),
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group) if group else [],
@@ -64,6 +68,8 @@ def add_user_to_group(request):
                 print(f"Adding user {user.username} to group {group.name}")
                 GroupManager.add_user_to_group(user, group)
                 context = {
+                    'rows_count': 10,
+                    'cols_count': 5,
                     'rows_range': range(10),
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group),
@@ -74,6 +80,8 @@ def add_user_to_group(request):
         form = AddUserToGroupForm()
 
     return render(request, 'partials/battle_map.html', {
+                    'rows_count': 10,
+                    'cols_count': 5,
                     'rows_range': range(10),
                     'cols_range': range(5),
                     'characters': GroupManager.get_characters_in_group(group) if group else [],
@@ -121,6 +129,8 @@ def battle(request):
     add_character_form = AddCharacterToGroupForm(group=group)
     add_user_form = AddUserToGroupForm(group=group)
     data = {
+        'rows_count': 10,
+        'cols_count': 5,
         'rows_range': range(10),
         'cols_range': range(5),
         'characters': characters,

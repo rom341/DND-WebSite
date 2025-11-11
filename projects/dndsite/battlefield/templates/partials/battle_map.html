@@ -1,20 +1,46 @@
+<style>
+    .grid-cell {
+        aspect-ratio: 1 / 1; 
+        border: 1px solid #555;
+        text-align: center;
+        display: flex; 
+        justify-content: center;
+        align-items: center;
+        background-color: #3e3e3e; 
+        color: white;
+        cursor: pointer;
+    }
+    .token { /* Character token style */
+        background-color: red; 
+        color: white;
+        border-radius: 50%;
+        width: 80%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.7em;
+        padding: 2px;
+        overflow: hidden;
+    }
+    #battle-map {
+        width: 100%;
+        border: 2px solid #555; 
+        display: grid;
+        grid-template-columns: repeat({{ cols_count }}, minmax(25px, 1fr));
+    }
+</style>
 
-<div id="battle-map">
-    <table class="battle-table" id="battle-table" style="border: 1px solid black; border-radius: 10px; table-layout: fixed;">
-        {% for y in cols_range %}
-        <tr>
-            {% for x in rows_range %}
-            <td style="border: 1px solid black; padding: 10px; text-align: center; border-radius: 10px;"
-                data-x="{{ x }}" 
-                data-y="{{ y }}">
-                {% for character in characters %}
-                    {% if character.position_x == x and character.position_y == y %}
-                        <p>{{ character.name }}</p>
-                    {% endif %}
-                {% endfor %}
-            </td>
+<div id="battle-map"> 
+    {% for y in rows_range %}    
+        {% for x in cols_range %}         
+        <div class="grid-cell" data-x="{{ x }}" data-y="{{ y }}">
+            {% for character in characters %}
+                {% if character.position_x == x and character.position_y == y %}
+                    <div class="token">{{ character.name }}</div>
+                {% endif %}
             {% endfor %}
-        </tr>
+        </div>
         {% endfor %}
-    </table>
+    {% endfor %}
 </div>
