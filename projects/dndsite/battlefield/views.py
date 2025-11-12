@@ -56,15 +56,11 @@ def add_character_to_group(request):
 
 @game_master_required
 def add_user_to_group(request):
+    print("Entered add_user_to_group view")
     if request.method == 'POST':
         print("Processing AddUserToGroupForm submission")
         group_id = request.POST.get('group_id')
         group = GroupManager.get_group_by_id(group_id)
-        host_user = request.user
-        host_user_membership = GroupMembershipUser.objects.get(user=host_user, group=group)  
-        if host_user_membership.role != 'gm':
-            print(f"User {host_user.username} is not a GM in group {group.name}, cannot add users.")
-            return redirect('groups')
         user_id = request.POST.get('user_id')
         user = User.objects.get(id=user_id)
         print(f"Retrieved group: {group} and user: {user.username}")
@@ -124,10 +120,12 @@ def battle(request):
     group_id = request.GET.get('group_id')
     # If no group_id provided, redirect to groups page
     if not group_id:
+        print("No group_id provided in request.")
         return redirect('groups')
 
     group = GroupManager.get_group_by_id(group_id)
     if not group:
+        print(f"Group with ID {group_id} not found.")
         return redirect('groups')
     
     characters = GroupManager.get_characters_in_group(group) 
@@ -150,25 +148,28 @@ def battle(request):
     return render(request, 'battlefield.html', data)
 
 @login_required
-@transaction.atomic # Ensure that the whole function is atomic (all-or-nothing)
 def groups(request):
     user = request.user    
     if request.method == 'POST':
         action = request.POST.get('action')
         
-        if action == 'select': # group selected
-            group_id = request.POST.get('group_id')
-            group = GroupManager.get_group_by_id(group_id)
-            characters = GroupManager.get_characters_in_group(group)
-            return redirect(f'/battle/?group_id={group_id}')
+        try:
+            with transaction.atomic(): # Ensure that the whole function is atomic (all-or-nothing)
+                if action == 'select': # group selected
+                    group_id = request.POST.get('group_id')
+                    group = GroupManager.get_group_by_id(group_id)
+                    characters = GroupManager.get_characters_in_group(group)
+                    return redirect(f'/battle/?group_id={group_id}')
+                
+                elif action == 'create': # new group created
+                    new_group_name = request.POST.get('group_name')
+                    new_group = Group(name=new_group_name)
+                    new_group.save()
+                    GroupManager.add_user_to_group(user, new_group, role_name=DefaultRoles.GAME_MASTER.value)
+                    return redirect(f'/battle/?group_id={new_group.id}')
+        except Exception as e:
+            print(f"Error processing group action '{action}': {e}")
         
-        elif action == 'create': # new group created
-            new_group_name = request.POST.get('group_name')
-            new_group = Group(name=new_group_name)
-            new_group.save()
-            GroupManager.add_user_to_group(user, new_group, role_name=DefaultRoles.GAME_MASTER.value)
-            return redirect(f'/battle/?group_id={new_group.id}')
-    
     groups = GroupManager.get_groups_with_user(user)   
     data = {
         'groups': groups,

@@ -16,7 +16,7 @@ def game_master_required(view_func):
     def wrapper(request, *args, **kwargs):
         group_id = request.GET.get('group_id')
         if not group_id or not request.user.is_authenticated:
-            return redirect('groups') 
+            return HttpResponseForbidden("You must be logged in and specify a D&D room to access this page.")
         try:
             membership = GroupMembershipUser.objects.get(
                 user=request.user, 
