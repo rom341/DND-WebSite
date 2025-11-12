@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>This is the Battlefield Page</h2>
-    <p>Prepare for battle!</p>
-    <p>Here is a battle table</p>
-    
+    <div class="text-center">
+        <h2>Battlefield for Group: {{ group_id }}</h2>
+    </div>
     {% include 'partials/battle_map.html' %}
         
     <div>

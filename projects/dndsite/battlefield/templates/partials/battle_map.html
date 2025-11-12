@@ -24,23 +24,32 @@
         overflow: hidden;
     }
     #battle-map {
+        width: fit-content;
+        margin: auto;
+        padding: 10px;
+        background-color: #2b2b2b; 
+        border: 2px solid #444; 
+    }
+    #grid-map {
         width: 100%;
         border: 2px solid #555; 
         display: grid;
-        grid-template-columns: repeat({{ cols_count }}, minmax(25px, 1fr));
+        grid-template-columns: repeat({{ cols_count }}, 50px);
     }
 </style>
 
 <div id="battle-map"> 
-    {% for y in rows_range %}    
-        {% for x in cols_range %}         
-        <div class="grid-cell" data-x="{{ x }}" data-y="{{ y }}">
-            {% for character in characters %}
-                {% if character.position_x == x and character.position_y == y %}
-                    <div class="token">{{ character.name }}</div>
-                {% endif %}
+    <div id="grid-map">
+        {% for y in rows_range %}    
+            {% for x in cols_range %}         
+            <div class="grid-cell" data-x="{{ x }}" data-y="{{ y }}">
+                {% for character in characters %}
+                    {% if character.position_x == x and character.position_y == y %}
+                        <div class="token">{{ character.name }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
             {% endfor %}
-        </div>
         {% endfor %}
-    {% endfor %}
+    </div>
 </div>
