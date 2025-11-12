@@ -43,4 +43,7 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('login') # stay on the same page
+
+def main_page(request):
+    return render(request, 'main_page.html')
     

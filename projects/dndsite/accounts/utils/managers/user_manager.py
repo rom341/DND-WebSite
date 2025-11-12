@@ -1,5 +1,4 @@
-
-from battlefield.models import Character
+from characters.models import Character
 
 
 class UserManager:

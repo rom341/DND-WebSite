@@ -2,8 +2,7 @@ from functools import wraps
 
 from django.http import HttpResponseForbidden
 
-from battlefield.models import GroupMembershipUser
-from battlefield.utils.model_managers.role_manager import DefaultRoles
+from groups.models import DefaultRoles, GroupMembershipUser
 
 
 def game_master_required(view_func):

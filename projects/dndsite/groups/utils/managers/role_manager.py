@@ -1,9 +1,5 @@
-from enum import Enum
-from battlefield.models import GroupMembershipUser, GroupRole
+from groups.models import GroupMembershipUser, GroupRole
 
-class DefaultRoles(Enum):
-    GAME_MASTER = 'GM'
-    PLAYER = 'Player'
 
 class RoleManager:
     @staticmethod

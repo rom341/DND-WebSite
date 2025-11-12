@@ -1,7 +1,7 @@
-from battlefield.models import Character, GroupMembershipCharacter, Group, GroupMembershipUser, GroupRole
 from django.contrib.auth.models import User
 
-from battlefield.utils.model_managers.role_manager import DefaultRoles
+from characters.models import Character
+from groups.models import DefaultRoles, Group, GroupMembershipCharacter, GroupMembershipUser, GroupRole
 
 class GroupManager:
     @staticmethod
@@ -50,7 +50,6 @@ class GroupManager:
             group=group,
             character=character
         )
-        print(f"Adding character {character.name} to group {group.name}, created new membership: {membership}, {created}")
         # If the membership already existed, update the character and role
         if not created:
             membership.character = character
@@ -69,7 +68,6 @@ class GroupManager:
             user=user,
             defaults={'role': role}
         )
-        print(f"Adding user {user.username} to group {group.name}, as {role.name}")
         # If the membership already existed, update the user and role
         if not role_created:
             membership.role = role

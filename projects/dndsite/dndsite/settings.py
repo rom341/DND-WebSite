@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'battlefield',
     'accounts',
+    'characters',
+    'groups',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +64,8 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'battlefield', 'templates'),
             os.path.join(BASE_DIR, 'accounts', 'templates'),
+            os.path.join(BASE_DIR, 'characters', 'templates'),
+            os.path.join(BASE_DIR, 'groups', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
