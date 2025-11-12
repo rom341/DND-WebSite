@@ -6,7 +6,8 @@ from battlefield.forms.uploading_json_files_form import JsonUploadForm
 from battlefield.models import Character, CharacterSkills, CharacterSpells, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
-from battlefield.utils.decorators import game_master_required
+from battlefield.utils.contexts.battle_context import BattlefieldContextContainer
+from battlefield.utils.decorators import game_master_required, group_id_in_get_required, group_membership_required
 from battlefield.utils.model_managers.group_manager import GroupManager
 from battlefield.utils.model_managers.user_manager import UserManager
 from django.db import transaction
@@ -116,36 +117,27 @@ def upload_longstory_character_json(request):
     return render(request, 'create_character.html', {'upload_json_files_form': form})
 
 @login_required
+@group_id_in_get_required
+@group_membership_required
 def battle(request):    
     group_id = request.GET.get('group_id')
-    # If no group_id provided, redirect to groups page
-    if not group_id:
-        print("No group_id provided in request.")
-        return redirect('groups')
-
     group = GroupManager.get_group_by_id(group_id)
-    if not group:
-        print(f"Group with ID {group_id} not found.")
-        return redirect('groups')
     
     characters = GroupManager.get_characters_in_group(group) 
-    print(f"Group {group.name} has characters: {', '.join(c.name for c in characters)}")
     move_character_form = MoveCharacterForm(group=group)    
     add_character_form = AddCharacterToGroupForm(group=group)
     add_user_form = AddUserToGroupForm(group=group)
-    data = {
-        'rows_count': 10,
-        'cols_count': 5,
-        'rows_range': range(10),
-        'cols_range': range(5),
-        'characters': characters,
-        'move_character_form': move_character_form,
-        'add_character_form': add_character_form,
-        'add_user_form':add_user_form,
-        'group_id': group_id,
-    }
-    
-    return render(request, 'battlefield.html', data)
+    contextContainer = BattlefieldContextContainer(
+        group_id=group_id,
+        rows_count=10,
+        cols_count=5,
+        characters=characters,
+        move_character_form=move_character_form,
+        add_character_form=add_character_form,
+        add_user_form=add_user_form
+    )
+    context = contextContainer.get_context()
+    return render(request, 'battlefield.html', context)
 
 @login_required
 def groups(request):

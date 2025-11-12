@@ -1,49 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="text-center">
-        <h2>Battlefield for Group: {{ group_id }}</h2>
-    </div>
-    {% include 'partials/battle_map.html' %}
+    <div class="container my-4">
         
-    <div>
-        <h3>Move Character</h3>
-        <form id="move-character-request"
-            hx-ext="ws"
-            ws-connect="/ws/battle/{{ group_id }}/"
-            ws-send>
-            {% csrf_token %}
-            {{ move_character_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Move</button>
-        </form>
-    </div>
-    <div>
-        <h3>Add Character to Group</h3>
-        <form id="add-character-to-group-form"
-            hx-post="{% url 'add_character_to_group' %}"
-            hx-target="#battle-map"
-            hx-swap="outerHTML">
-            {% csrf_token %}
-            {{ add_character_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Add</button>
-        </form>
+        <div class="text-center mb-4">
+            <h2>Battlefield for Group: {{ group_id }}</h2>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                 {% include 'partials/battle_map.html' %}
+            </div>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8 col-md-10">
+                
+                <ul class="nav nav-tabs" id="managementTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="move-tab" data-bs-toggle="tab" data-bs-target="#move-pane" type="button" role="tab" aria-controls="move-pane" aria-selected="true">
+                            Move Character
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-char-tab" data-bs-toggle="tab" data-bs-target="#add-char-pane" type="button" role="tab" aria-controls="add-char-pane" aria-selected="false">
+                            Add Character
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-user-tab" data-bs-toggle="tab" data-bs-target="#add-user-pane" type="button" role="tab" aria-controls="add-user-pane" aria-selected="false">
+                            Add User
+                        </button>
+                    </li>
+                </ul>
 
-    </div>
-    <div>
-        <h3>Add User to Group</h3>
-        <form id="add-user-to-group-form"
-            hx-post="{% url 'add_user_to_group' %}"
-            hx-target="#battle-map"
-            hx-swap="outerHTML">
-            {% csrf_token %}
-            {{ add_user_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Add</button>
-        </form>
-    </div>
+                <div class="tab-content border border-top-0 p-3 bg-dark" id="managementTabsContent">
+                    
+                    <div class="tab-pane fade show active" id="move-pane" role="tabpanel" aria-labelledby="move-tab" tabindex="0">
+                        <h4>Move Character</h4>
+                        {% include 'partials/move_character_form.html' %}
+                    </div>
 
+                    <div class="tab-pane fade" id="add-char-pane" role="tabpanel" aria-labelledby="add-char-tab" tabindex="0">
+                        <h4>Add Character to Group</h4>
+                        {% include 'partials/add_character_to_group_form.html' %}
+                    </div>
+
+                    <div class="tab-pane fade" id="add-user-pane" role="tabpanel" aria-labelledby="add-user-tab" tabindex="0">
+                        <h4>Add User to Group</h4>
+                        {% include 'partials/add_user_to_group_form.html' %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
     document.addEventListener('click', function(event) {
         const clickedCell = event.target.closest('.grid-cell');
@@ -53,9 +64,7 @@
         const x = clickedCell.dataset.x;
         const y = clickedCell.dataset.y;
         if (x !== undefined && y !== undefined) {
-            
-            console.log(`Clicked cell X: ${x}, Y: ${y}`);
-            
+            // Заполнение полей x и y в активной форме 'Move Character'
             const inputX = document.getElementById('id_position_x');
             const inputY = document.getElementById('id_position_y');
 
