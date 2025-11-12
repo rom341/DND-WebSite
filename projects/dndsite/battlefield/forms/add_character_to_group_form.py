@@ -1,6 +1,6 @@
 from django import forms
 from battlefield.models import Character
-from battlefield.utils.group_manager import GroupManager
+from battlefield.utils.model_managers.group_manager import GroupManager
 
 class AddCharacterToGroupForm(forms.Form):
     character_id = forms.ModelChoiceField(queryset=Character.objects.all(), label="Character")

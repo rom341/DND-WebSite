@@ -9,21 +9,22 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
-class GroupMembershipUser(models.Model):
-    ROLE_CHOICES = [
-        ('player', 'Player'),
-        ('gm', 'Game Master'),
-    ]
-    
+class GroupRole(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class GroupMembershipUser(models.Model):    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_memberships')
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='user_memberships')
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
-    
+    role = models.ForeignKey(GroupRole, on_delete=models.CASCADE, related_name='memberships')
+
     class Meta:
         unique_together = ('user', 'group')
         
     def __str__(self):
-        return f"{self.user.username} ({self.role}) in {self.group.name}"
+        return f"{self.user.username} ({self.role}) in {self.group.name} as {self.role.name}"
 
 class GroupMembershipCharacter(models.Model):
     character = models.ForeignKey('Character', on_delete=models.CASCADE, related_name='group_memberships')

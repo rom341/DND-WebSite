@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from battlefield.utils.group_manager import GroupManager
+from battlefield.utils.model_managers.group_manager import GroupManager
 
 class AddUserToGroupForm(forms.Form):
     user_id = forms.ModelChoiceField(queryset=User.objects.all(), label="User")

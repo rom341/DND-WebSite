@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
 from battlefield.models import Group
-from battlefield.utils.group_manager import GroupManager
+from battlefield.utils.model_managers.group_manager import GroupManager
 from battlefield.utils.ruler import ruler
 
 class MoveCharacterConsumer(WebsocketConsumer):

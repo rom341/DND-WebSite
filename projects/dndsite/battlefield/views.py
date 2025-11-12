@@ -6,13 +6,19 @@ from battlefield.forms.uploading_json_files_form import JsonUploadForm
 from battlefield.models import Character, CharacterSkills, CharacterSpells, Group, CharacterStats, CharacterMoney, GroupMembershipUser
 from battlefield.forms.move_character_form import MoveCharacterForm
 from django.contrib.auth.decorators import login_required
-from battlefield.utils.group_manager import GroupManager, UserManager
+from battlefield.utils.decorators import game_master_required
+from battlefield.utils.model_managers.group_manager import GroupManager
+from battlefield.utils.model_managers.user_manager import UserManager
+from django.db import transaction
+
 from battlefield.utils.longstory_character_importer import longstory_character_importer
 import json
 
+from battlefield.utils.model_managers.role_manager import DefaultRoles
 from battlefield.utils.templates import CharacterSkillsTemplate, CharacterSpellsTemplate
 
 # Create your views here.
+@game_master_required
 def add_character_to_group(request):
     if request.method == 'POST':
         print("Processing AddCharacterToGroupForm submission")
@@ -48,6 +54,7 @@ def add_character_to_group(request):
                     'add_character_form': form
                 })
 
+@game_master_required
 def add_user_to_group(request):
     if request.method == 'POST':
         print("Processing AddUserToGroupForm submission")
@@ -143,6 +150,7 @@ def battle(request):
     return render(request, 'battlefield.html', data)
 
 @login_required
+@transaction.atomic # Ensure that the whole function is atomic (all-or-nothing)
 def groups(request):
     user = request.user    
     if request.method == 'POST':
@@ -158,7 +166,7 @@ def groups(request):
             new_group_name = request.POST.get('group_name')
             new_group = Group(name=new_group_name)
             new_group.save()
-            GroupManager.add_user_to_group(user, new_group, role='gm')
+            GroupManager.add_user_to_group(user, new_group, role_name=DefaultRoles.GAME_MASTER.value)
             return redirect(f'/battle/?group_id={new_group.id}')
     
     groups = GroupManager.get_groups_with_user(user)   
