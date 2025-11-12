@@ -1,4 +1,4 @@
-from battlefield.utils.templates import CharacterTemplate, CharacterStatsTemplate, CharacterMoneyTemplate, CharacterSpellCirclesSlotsTemplate
+from characters.templates import CharacterTemplate, CharacterStatsTemplate, CharacterMoneyTemplate, CharacterSpellCirclesSlotsTemplate
 
 def longstory_character_importer(data):
     """Достаёт необходимые данные из json (long-story) и создаёт персонажа."""
@@ -58,6 +58,5 @@ def longstory_character_importer(data):
     new_character.character_stats_template = new_stats
     new_character.character_spell_circle_slots_template = new_spell_circles_slots
 
-    print('all good, creating character...')
 
     return new_character

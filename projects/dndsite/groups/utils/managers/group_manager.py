@@ -1,15 +1,7 @@
-from battlefield.models import Character, GroupMembershipCharacter, Group, GroupMembershipUser
 from django.contrib.auth.models import User
 
-
-
-class UserManager:
-    @staticmethod
-    def get_user_characters(user):
-        return Character.objects.filter(
-            user=user
-        )
-
+from characters.models import Character
+from groups.models import DefaultRoles, Group, GroupMembershipCharacter, GroupMembershipUser, GroupRole
 
 class GroupManager:
     @staticmethod
@@ -50,7 +42,7 @@ class GroupManager:
         )
         
     @staticmethod
-    def add_character_to_group(character, group, role='player'): 
+    def add_character_to_group(character, group): 
         """Add character to existing group or create new membership if not exists""" 
         # Look for existing membership using Character.User and Group
         # If found, update it; if not, create a new one with the Character and role      
@@ -58,7 +50,6 @@ class GroupManager:
             group=group,
             character=character
         )
-        print(f"Adding character {character.name} to group {group.name}, created new membership: {membership}, {created}")
         # If the membership already existed, update the character and role
         if not created:
             membership.character = character
@@ -67,18 +58,21 @@ class GroupManager:
         return membership
         
     @staticmethod
-    def add_user_to_group(user, group, role='player'): 
+    def add_user_to_group(user, group, role_name=DefaultRoles.PLAYER.value): 
         """Add user to existing group or create new membership if not exists""" 
         # Look for existing membership using User and Group
-        # If found, update it; if not, create a new one with the User and role      
-        membership, created = GroupMembershipUser.objects.get_or_create(
+        # If found, update it; if not, create a new one with the User and role 
+        role, role_created = GroupRole.objects.get_or_create(name=role_name)     
+        membership, membership_created = GroupMembershipUser.objects.get_or_create(
             group=group,
             user=user,
             defaults={'role': role}
         )
-        print(f"Adding user {user.username} to group {group.name}, created new membership: {membership}, {created}")
         # If the membership already existed, update the user and role
-        if not created:
+        if not role_created:
+            membership.role = role
+            membership.save()
+        if not membership_created:
             membership.user = user
             membership.save()
             

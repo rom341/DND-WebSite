@@ -1,91 +1,80 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>This is the Battlefield Page</h2>
-    <p>Prepare for battle!</p>
-    <p>Here is a battle table</p>
+    <div class="container my-4">
+        
+        <div class="text-center mb-4">
+            <h2>Battlefield for Group: {{ group_id }}</h2>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                 {% include 'partials/battle_map.html' %}
+            </div>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8 col-md-10">
+                
+                <ul class="nav nav-tabs" id="managementTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="move-tab" data-bs-toggle="tab" data-bs-target="#move-pane" type="button" role="tab" aria-controls="move-pane" aria-selected="true">
+                            Move Character
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-char-tab" data-bs-toggle="tab" data-bs-target="#add-char-pane" type="button" role="tab" aria-controls="add-char-pane" aria-selected="false">
+                            Add Character
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-user-tab" data-bs-toggle="tab" data-bs-target="#add-user-pane" type="button" role="tab" aria-controls="add-user-pane" aria-selected="false">
+                            Add User
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content border border-top-0 p-3 bg-dark" id="managementTabsContent">
+                    
+                    <div class="tab-pane fade show active" id="move-pane" role="tabpanel" aria-labelledby="move-tab" tabindex="0">
+                        <h4>Move Character</h4>
+                        {% include 'partials/move_character_form.html' %}
+                    </div>
+
+                    <div class="tab-pane fade" id="add-char-pane" role="tabpanel" aria-labelledby="add-char-tab" tabindex="0">
+                        <h4>Add Character to Group</h4>
+                        {% include 'partials/add_character_to_group_form.html' %}
+                    </div>
+
+                    <div class="tab-pane fade" id="add-user-pane" role="tabpanel" aria-labelledby="add-user-tab" tabindex="0">
+                        <h4>Add User to Group</h4>
+                        {% include 'partials/add_user_to_group_form.html' %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
     
-    {% include 'partials/battle_map.html' %}
-        
-    <div>
-        <h3>Move Character</h3>
-        <form id="move-character-request"
-            hx-ext="ws"
-            ws-connect="/ws/battle/{{ group_id }}/"
-            ws-send>
-            {% csrf_token %}
-            {{ move_character_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Move</button>
-        </form>
-    </div>
-    <div>
-        <h3>Add Character to Group</h3>
-        <form id="add-character-to-group-form"
-            hx-post="{% url 'add_character_to_group' %}"
-            hx-target="#battle-map"
-            hx-swap="outerHTML">
-            {% csrf_token %}
-            {{ add_character_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Add</button>
-        </form>
-
-    </div>
-    <div>
-        <h3>Add User to Group</h3>
-        <form id="add-user-to-group-form"
-            hx-post="{% url 'add_user_to_group' %}"
-            hx-target="#battle-map"
-            hx-swap="outerHTML">
-            {% csrf_token %}
-            {{ add_user_form }}
-            <input type="hidden" name="group_id" value="{{ group_id }}">
-            <button type="submit">Add</button>
-        </form>
-    </div>
-
     <script>
-    // Вешаем ОДИН слушатель на ВЕСЬ документ
     document.addEventListener('click', function(event) {
-        
-        // 1. Ищем, был ли клик по ячейке <td>
-        // event.target — это то, на что мы нажали
-        const clickedCell = event.target.closest('td');
-
-        // 2. Если клик был не по <td>, ИЛИ
-        //    эта <td> НЕ находится внутри нашей таблицы '.battle-table',
-        //    то просто выходим и ничего не делаем.
-        if (!clickedCell || !clickedCell.closest('.battle-table')) {
+        const clickedCell = event.target.closest('.grid-cell');
+        if (!clickedCell || !clickedCell.closest('#battle-map')) {
             return;
         }
-
-        // 3. Если мы дошли сюда, значит, мы кликнули по нужной ячейке!
-        //    Теперь мы можем прочитать ее data-атрибуты
         const x = clickedCell.dataset.x;
         const y = clickedCell.dataset.y;
-
-        // Убедимся, что у ячейки есть эти данные
         if (x !== undefined && y !== undefined) {
-            
-            // Вуаля! У нас есть координаты.
-            console.log(`Клик по ячейке с координатами X: ${x}, Y: ${y}`);
-
-            // 
-            // ⭐ БОНУС: Давай сделаем это еще полезнее! ⭐
-            // Найдем поля X и Y в твоей форме "Move Character"
-            //
+            // Заполнение полей x и y в активной форме 'Move Character'
             const inputX = document.getElementById('id_position_x');
             const inputY = document.getElementById('id_position_y');
 
-            // И автоматически вставим в них координаты кликнутой ячейки!
             if (inputX && inputY) {
                 inputX.value = x;
                 inputY.value = y;
-                console.log('Поля "Position x" и "Position y" обновлены.');
+                console.log('Position x and Position y fields updated.');
             }
         }
     });
-</script>
+    </script>
 
 {% endblock %}
