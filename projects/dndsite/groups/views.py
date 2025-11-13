@@ -15,7 +15,7 @@ def groups(request):
         try:
             with transaction.atomic(): # Ensure that the whole function is atomic (all-or-nothing)
                 if action == 'select': # group selected
-                    group_id = request.session.get('current_group_id')                
+                    group_id = request.POST.get('group_id')              
                 elif action == 'create': # new group created
                     new_group_name = request.POST.get('group_name')
                     new_group = GroupManager.create_group(new_group_name)

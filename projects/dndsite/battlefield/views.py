@@ -42,8 +42,6 @@ def add_character_to_group(request):
                 context_container = BattlefieldContextContainer(
                     current_group_id=group_id,
                     current_group=group,
-                    rows_count=location.rows_count,
-                    cols_count=location.columns_count,
                     characters_list=GroupManager.get_characters_in_group(group),
                     add_character_form=form
                 )
@@ -137,6 +135,7 @@ def battlefield(request):
     
     characters_in_current_location = []
     locations_list = []
+    selected_location = None
     rows_count = 0
     cols_count = 0
     move_character_form = None
