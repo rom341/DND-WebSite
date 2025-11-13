@@ -5,6 +5,12 @@ from groups.models import DefaultRoles, Group, GroupMembershipCharacter, GroupMe
 
 class GroupManager:
     @staticmethod
+    def create_group(name):
+        group = Group(name=name)
+        group.save()
+        return group
+    
+    @staticmethod
     def get_group_by_id(group_id):
         try:
             return Group.objects.get(id=group_id)
@@ -18,7 +24,7 @@ class GroupManager:
         # и тогда Django сделает что то вроде 
         # "SELECT * FROM Character WHERE membership IN (SELECT id FROM GroupMembership WHERE group_id = group.id)"
         return Character.objects.filter(
-            group_memberships__group=group
+            positions__location__group=group
         )
     
     @staticmethod
@@ -34,11 +40,11 @@ class GroupManager:
         )
 
     @staticmethod
-    def get_characters_on_position(group, x, y):
+    def get_characters_on_position(group, column, row):
         return Character.objects.filter(
-            group_memberships__group=group,
-            position_x=x,
-            position_y=y
+            positions__location__group=group,
+            positions__column=column,
+            positions__row=row,
         )
         
     @staticmethod

@@ -12,7 +12,7 @@ def game_master_required(view_func):
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        group_id = request.GET.get('group_id')
+        group_id = request.session.get('current_group_id')
         if not group_id or not request.user.is_authenticated:
             return HttpResponseForbidden("You must be logged in and specify a D&D room to access this page.")
         try:
@@ -34,14 +34,13 @@ def game_master_required(view_func):
         
     return wrapper
 
-def group_id_in_get_required(view_func):
+def group_id_in_session_required(view_func):
     """
-    Decorator to ensure that 'group_id' is present in GET parameters.
-    Redirects to 'groups' page if not present.
+    Decorator to ensure that 'group_id' is present in the session.
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        group_id = request.GET.get('group_id')
+        group_id = request.session.get('current_group_id')
         if not group_id:
             return HttpResponseForbidden("group_id parameter is required.")
         return view_func(request, *args, **kwargs)
@@ -55,7 +54,7 @@ def group_membership_required(view_func):
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        group_id = request.GET.get('group_id')
+        group_id = request.session.get('current_group_id')
         if not group_id or not request.user.is_authenticated:
             return HttpResponseForbidden("You must be logged in and specify a D&D room to access this page.")
         try:

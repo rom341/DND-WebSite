@@ -1,0 +1,9 @@
+<form id="create-location-form"
+    hx-post="{% url 'create_location' %}"
+    hx-target="#locations_list"
+    hx-swap="outerHTML">
+    {% csrf_token %}
+    {{ create_location_form.as_p }}
+    <input type="hidden" name="group_id" value="{{ group_id }}">
+    <button type="submit" class="btn btn-primary mt-2">Create location</button>
+</form>

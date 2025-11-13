@@ -1,0 +1,29 @@
+<div id="locations_list">
+    {% for location in locations_list %}
+        
+        <form hx-post="{% url 'select_location' %}"
+              hx-target="#battle-map" 
+              hx-swap="outerHTML" 
+              class="mb-2"
+              >
+            
+            {% csrf_token %}
+            
+            <input type="hidden" name="location_id" value="{{ location.id }}">
+            
+            <button type="submit" 
+                    class="location-item w-100 p-2 border rounded text-start 
+                           {% if current_location_id|slugify == location.id|slugify %}
+                                border-primary bg-dark selected-location 
+                           {% else %}
+                                border-secondary
+                           {% endif %}"
+                    style="cursor: pointer; background: none; color: inherit; border: inherit;"
+                    >
+                <h5>{{ location.name }}</h5>
+                <p>Size: {{ location.rows_count }} rows x {{ location.columns_count }} columns</p>
+            </button>
+            
+        </form>
+    {% endfor %}
+</div>

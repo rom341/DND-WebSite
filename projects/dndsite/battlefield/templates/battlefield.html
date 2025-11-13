@@ -1,15 +1,31 @@
 {% extends "base.html" %}
 
+
+{% if current_location_id %}
+    {% with map_col_class="col-auto" locations_col_class="col-auto" %}
+{% endwith %}
+{% else %}
+    {% with map_col_class="d-none" locations_col_class="col-md-6" %}
+{% endwith %}
+{% endif %}
+
 {% block content %}
     <div class="container my-4">
         
         <div class="text-center mb-4">
-            <h2>Battlefield for Group: {{ group_id }}</h2>
+            <h4>Group: {{ current_group.name }}</h4>
         </div>
         
         <div class="row justify-content-center">
-            <div class="col-auto">
-                 {% include 'partials/battle_map.html' %}
+            <div id="map-container" class="{{ map_col_class }}"> 
+                {% include 'partials/battle_map.html' %}
+            </div>
+            
+            <div id="locations-list-container" class="{{ locations_col_class }}"> 
+                <h4>Locations</h4>
+                <div id="locations-list-wrapper">
+                    {% include 'partials/locations_list.html' %}
+                </div>
             </div>
         </div>
         <div class="row justify-content-center mt-5">
@@ -31,6 +47,11 @@
                             Add User
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="create-location-tab" data-bs-toggle="tab" data-bs-target="#create-location-pane" type="button" role="tab" aria-controls="create-location-pane" aria-selected="false">
+                            Create Location
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content border border-top-0 p-3 bg-dark" id="managementTabsContent">
@@ -50,6 +71,10 @@
                         {% include 'partials/add_user_to_group_form.html' %}
                     </div>
 
+                    <div class="tab-pane fade" id="create-location-pane" role="tabpanel" aria-labelledby="create-location-tab" tabindex="0">
+                        <h4>Create Location</h4>
+                        {% include 'partials/create_location_form.html' %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,9 +89,8 @@
         const x = clickedCell.dataset.x;
         const y = clickedCell.dataset.y;
         if (x !== undefined && y !== undefined) {
-            // Заполнение полей x и y в активной форме 'Move Character'
-            const inputX = document.getElementById('id_position_x');
-            const inputY = document.getElementById('id_position_y');
+            const inputX = document.getElementById('column');
+            const inputY = document.getElementById('row');
 
             if (inputX && inputY) {
                 inputX.value = x;

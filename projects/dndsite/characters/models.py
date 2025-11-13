@@ -177,8 +177,6 @@ class Character(models.Model):
     character_class = models.CharField(max_length=15, null=True, blank=True)
     character_sub_class = models.CharField(max_length=15, null=True, blank=True)
     armor_class = models.IntegerField(default=0)
-    position_x = models.IntegerField(default=0)
-    position_y = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     mastery = models.IntegerField(default=2)
@@ -186,9 +184,5 @@ class Character(models.Model):
 
 
     def __str__(self):
-        return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class}, Pos: ({self.position_x}, {self.position_y}))"
+        return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class})"
     
-    def move_to(self, new_x, new_y):
-        self.position_x = new_x
-        self.position_y = new_y
-        self.save()

@@ -1,10 +1,11 @@
 <form id="move-character-request"
     hx-ext="ws"
-    ws-connect="/ws/battle/{{ group_id }}/"
+    ws-connect="/ws/battlefield/{{ current_group_id }}/"
     ws-send>
     {% csrf_token %}
     {{ move_character_form.as_p }} 
-    <input type="hidden" name="group_id" value="{{ group_id }}">
+    <input type="hidden" name="current_group_id" value="{{ current_group_id }}">
+    <input type="hidden" name="current_location_id" value="{{ current_location_id }}">
     <button type="submit" class="btn btn-primary mt-2">Move</button>
     <p class="text-muted mt-2 small">Click a cell on the map to set coordinates.</p>
 </form>
