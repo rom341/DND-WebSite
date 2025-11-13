@@ -1,0 +1,10 @@
+<div id="users-list">
+    <h3>Users in Group</h3>
+    <ul>
+        {% for user in users_list %}
+            <li>{{ user.username }}</li>
+        {% empty %}
+            <li>No users in this group.</li>
+        {% endfor %}
+    </ul>
+</div>

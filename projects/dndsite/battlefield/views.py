@@ -58,19 +58,16 @@ def add_user_to_group(request):
         group = GroupManager.get_group_by_id(group_id)
         user_id = request.POST.get('user_id')
         user = User.objects.get(id=user_id)
+        current_location_id = request.session.get('current_location_id')
+        location = LocationManager.get_location_by_id(current_location_id)
         form = AddUserToGroupForm(request.POST, group=group)
         if form.is_valid():
             if group:
                 GroupManager.add_user_to_group(user, group)
                 context = {
-                    'rows_count': 10,
-                    'cols_count': 5,
-                    'rows_range': range(10),
-                    'cols_range': range(5),
-                    'characters': GroupManager.get_characters_in_group(group),
-                    'add_user_form': form
+                    'users_list': GroupManager.get_users_in_group(group),
                 }
-                return render(request, 'partials/battle_map.html', context)
+                return render(request, 'partials/users_list.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
 
@@ -174,6 +171,7 @@ def battlefield(request):
         current_group_id=current_group_id,
         current_group=group,
         locations_list=locations_list,
+        users_list=GroupManager.get_users_in_group(group),
         move_character_form=move_character_form,
         add_character_form=add_character_form,
         add_user_form=add_user_form,
