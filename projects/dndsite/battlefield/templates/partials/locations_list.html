@@ -1,29 +1,30 @@
-<div id="locations_list">
-    {% for location in locations_list %}
+<div id="locations-list-wrapper">
+    <form hx-post="{% url 'select_location' %}"
+          hx-target="#map-container" 
+          hx-swap="outerHTML" 
+          class="d-flex align-items-center"
+          >
         
-        <form hx-post="{% url 'select_location' %}"
-              hx-target="#battle-map" 
-              hx-swap="outerHTML" 
-              class="mb-2"
-              >
+        {% csrf_token %}
+        
+        <label for="location-select" class="me-2 text-white-50">Location:</label>
+        
+        <select name="location_id" 
+                id="location-select" 
+                class="form-select bg-dark text-white border-primary" 
+                hx-trigger="change" 
+                hx-target="#battle-map" 
+                hx-post="{% url 'select_location' %}"
+                hx-swap="outerHTML"
+                >
             
-            {% csrf_token %}
-            
-            <input type="hidden" name="location_id" value="{{ location.id }}">
-            
-            <button type="submit" 
-                    class="location-item w-100 p-2 border rounded text-start 
-                           {% if current_location_id|slugify == location.id|slugify %}
-                                border-primary bg-dark selected-location 
-                           {% else %}
-                                border-secondary
-                           {% endif %}"
-                    style="cursor: pointer; background: none; color: inherit; border: inherit;"
-                    >
-                <h5>{{ location.name }}</h5>
-                <p>Size: {{ location.rows_count }} rows x {{ location.columns_count }} columns</p>
-            </button>
-            
-        </form>
-    {% endfor %}
+            {% for location in locations_list %}
+                <option value="{{ location.id }}" 
+                    {% if location.id == current_location.id %}selected{% endif %}>
+                    {{ location.name }} ({{ location.rows_count }}x{{ location.columns_count }})
+                </option>
+            {% endfor %}
+        </select>
+        
+    </form>
 </div>
