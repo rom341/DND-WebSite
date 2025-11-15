@@ -14,7 +14,9 @@ from battlefield.utils.decorators import game_master_required, group_id_in_sessi
 from battlefield.utils.managers.character_position_manager import CharacterPositionManager
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.utils.managers.character_manager import CharacterManager
+from groups.models import DefaultRoles
 from groups.utils.managers.group_manager import GroupManager
+from groups.utils.managers.role_manager import RoleManager
 
 
 # Create your views here.
@@ -126,7 +128,6 @@ def battlefield(request):
     current_group_id = request.session.get('current_group_id')
     group = GroupManager.get_group_by_id(current_group_id)  
     current_location_id = request.session.get('current_location_id')
-    print(f"Selected location ID in session: {current_location_id}")
     
     characters_in_current_location = []
     locations_list = []
@@ -147,7 +148,13 @@ def battlefield(request):
         characters_in_current_location = LocationManager.get_characters_in_location(selected_location)
         locations_list = LocationManager.get_locations_for_group(group)
         
-        move_character_form = MoveCharacterForm(group=group, location=selected_location)    
+        characters_available_to_move_for_user = None
+        if RoleManager.user_has_role(request.user, group, DefaultRoles.GAME_MASTER):
+            characters_available_to_move_for_user = characters_in_current_location
+        else:        
+            characters_available_to_move_for_user = LocationManager.get_characters_in_location_for_user(selected_location, request.user)
+        
+        move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
         add_character_form = AddCharacterToGroupForm(group=group)        
     else:
         locations_list = LocationManager.get_locations_for_group(group)

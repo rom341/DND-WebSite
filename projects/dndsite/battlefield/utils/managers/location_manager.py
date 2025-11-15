@@ -25,6 +25,15 @@ class LocationManager:
         return Character.objects.filter(positions__location=location)
     
     @staticmethod
+    def get_characters_in_location_for_user(location, user):
+        if LocationManager.is_user_has_access_to_location(user, location):
+            return Character.objects.filter(
+                positions__location=location,
+                user=user
+                )
+        return Character.objects.none()
+    
+    @staticmethod
     def is_user_has_access_to_location(user, location):
         return location.group.user_memberships.filter(user=user).exists()
     

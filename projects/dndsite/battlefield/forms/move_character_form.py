@@ -15,11 +15,9 @@ class MoveCharacterForm(forms.ModelForm):
             'row': forms.NumberInput(attrs={'min': 0, 'max': 100}),
         }
 
-    def __init__(self, *args, **kwargs):
-        group = kwargs.pop('group', None)
-        location = kwargs.pop('location', None)
+    def __init__(self, available_characters=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #characters = GroupManager.get_characters_in_group(group) if group else Character.objects.none()
-        characters = LocationManager.get_characters_in_location(location) if location else Character.objects.none()
+        available_characters = available_characters
+        characters = available_characters if available_characters is not None else Character.objects.none()
         self.fields['name'].choices = [(c.id, c.name) for c in characters]
         
