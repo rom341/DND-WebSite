@@ -89,11 +89,13 @@
         if (!clickedCell || !clickedCell.closest('#battle-map')) {
             return;
         }
+        console.log('Clicked element:', clickedCell);
         const x = clickedCell.dataset.x;
         const y = clickedCell.dataset.y;
+        console.log('Clicked position - x:', x, 'y:', y);
         if (x !== undefined && y !== undefined) {
-            const inputX = document.getElementById('column');
-            const inputY = document.getElementById('row');
+            const inputX = document.getElementById('id_column');
+            const inputY = document.getElementById('id_row');
 
             if (inputX && inputY) {
                 inputX.value = x;

@@ -41,6 +41,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         new_pos_row = text_data_json.get('row')
         new_pos_column = text_data_json.get('column')
         character_id = text_data_json.get('name')
+        
         self.current_location_id = text_data_json.get('current_location_id')
         current_location = LocationManager.get_location_by_id(self.current_location_id)
 
@@ -54,6 +55,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         allowed_distance = character.movement_speed / 5
         if allowed_distance >= requested_distance:
             if not CharacterPositionManager.is_position_occupied(current_location, new_pos_row, new_pos_column):
+                
                 CharacterPositionManager.move_character(
                     character,
                     current_location,
@@ -62,7 +64,8 @@ class MoveCharacterConsumer(WebsocketConsumer):
                 )
 
                 event = {
-                    'type': 'message_handler',
+                    'type': 'send_map_update', 
+                    'location_id': self.current_location_id 
                 }
 
                 async_to_sync(self.channel_layer.group_send)(
@@ -70,8 +73,12 @@ class MoveCharacterConsumer(WebsocketConsumer):
                     event
                 )
 
-    def message_handler(self, event):
-        location = LocationManager.get_location_by_id(self.current_location_id)
+    def send_map_update(self, event):
+        current_location_id = event.get('location_id')
+        if not current_location_id:
+            return
+            
+        location = LocationManager.get_location_by_id(current_location_id)
         characters = LocationManager.get_characters_in_location(location)
         
         character_positions_context_container = CharacterPositionContextContainer(
@@ -79,7 +86,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         )
         
         context_container = LocationMapContextContainer(
-            current_location_id=self.current_location_id,
+            current_location_id=current_location_id,
             current_location=location,
             rows_count=location.rows_count,
             cols_count=location.columns_count,
@@ -89,4 +96,5 @@ class MoveCharacterConsumer(WebsocketConsumer):
         
         context = context_container.get_context()
         html = render_to_string('partials/battle_map.html', context)
+        
         self.send(text_data=html)
