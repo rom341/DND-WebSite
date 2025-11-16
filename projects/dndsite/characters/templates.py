@@ -1,140 +1,150 @@
+from attr import dataclass
+from django.contrib.auth.models import User
+
+@dataclass
 class CharacterSpellsTemplate:
     """ Шаблон заклинаний персонажа """
 
-    spell_name: str
+    spell_name: str = None
     """ Название заклинания """
-    atack_roll: str
+    atack_roll: str = None
     """ Бросок атаки """
-    damage_dice: str
+    damage_dice: str = None
     """ Кубик урона """
-    damage_dice_count: int
+    damage_dice_count: int = 0
     """ Количество кубиков урона"""
-    damage_modificator: int
+    damage_modificator: int = 0
     """Модификатор урона"""
-    saving_throw: str
+    saving_throw: str = None
     """Спасбросок"""
+    required_spell_circle: int = 0
+    """Минимальная ячейка необходимая для заклинания"""
     is_using_spell_circle: bool=True
     """Нужна ли скилу ячейка заклинаний"""
-    required_spell_circle: int
-    """Минимальная ячейка необходимая для заклинания"""
 
-
+@dataclass
 class CharacterSkillsTemplate:
     """ Шаблон скилов персонажа """
 
-    skill_name: str
+    skill_name: str = None
     """Название навыка"""
-    atack_roll: str
+    atack_roll: str = None
     """ Бросок атаки """
-    damage_dice: str
+    damage_dice: str = None
     """ Кубик урона """
-    damage_dice_count: int
+    damage_dice_count: int = 0
     """ Количество кубиков урона"""
-    damage_modificator: int
+    damage_modificator: int = 0
     """Модификатор урона"""
-    saving_throw: str
+    saving_throw: str = None
     """Спасбросок"""
+    required_spell_circle: int = 0
+    """Минимальная ячейка необходимая для навыка"""
     is_using_spell_circle: bool=False
     """Нужна ли ячейка заклинаний"""
-    required_spell_circle: int
-    """Минимальная ячейка необходимая для навыка"""
 
-
+@dataclass
 class CharacterSpellCirclesSlotsTemplate:
     """Шаблон кругов заклинаний персонажа с новыми полями."""
 
-    circle_1: int
+    circle_1: int = 0
     """Первый круг заклинаний"""
-    circle_2: int
+    circle_2: int = 0
     """Второй круг заклинаний"""
-    circle_3: int
+    circle_3: int = 0
     """Третий круг заклинаний"""
-    circle_4: int
+    circle_4: int = 0
     """Четвёртый круг заклинаний"""
-    circle_5: int
+    circle_5: int = 0
     """Пятый круг заклинаний"""
-    circle_6: int
+    circle_6: int = 0
     """Шестой круг заклинаний"""
-    circle_7: int
+    circle_7: int = 0
     """Седьмой круг заклинаний"""
-    circle_8: int
+    circle_8: int = 0
     """Восьмой круг заклинаний"""
-    circle_9: int
+    circle_9: int = 0
     """Девятый круг заклинаний"""
 
+@dataclass
 class CharacterStatsTemplate:
     """Шаблон характеристик персонажа с новыми полями."""
 
-    strength: int
+    strength: int = 0
     """СИИЛА"""
-    dexterity: int
+    dexterity: int = 0
     """ЛОВКОСТЬ"""
-    constitution: int
+    constitution: int = 0
     """ТЕЛОСЛОЖЕНИЕ"""
-    intelligence: int
+    intelligence: int = 0
     """ИНТЕЛЛЕКТ"""
-    wisdom: int
+    wisdom: int = 0
     """МУДРОСТЬ"""
-    charisma: int
+    charisma: int = 0
     """ХАРИЗМА"""
 
+@dataclass
 class CharacterMoneyTemplate:
     """Шаблон валют персонажа с новыми полями."""
 
-    copper_coins: int
+    copper_coins: int = 0
     """Медные монеты"""
-    silver_coins: int
+    silver_coins: int = 0
     """Серебряные монеты"""
-    electrum_coins: int
+    electrum_coins: int = 0
     """Электрумовые монеты"""
-    gold_coins: int
+    gold_coins: int = 0
     """Золотые монеты"""
-    platinum_coins: int
+    platinum_coins: int = 0
     """Платиновые монеты"""
 
+@dataclass
 class CharacterTemplate:
     """Шаблон персонажа с новыми полями."""
     def __str__(self):
         return f"{self.character_name}, Level {self.level} {self.character_class}/{self.character_sub_class}/{self.age}"
-    character_name: str
+    
+    user: User = None
+    """Владелец персонажа"""
+    character_name: str = None
     """Имя персонажа"""
-    character_class: str
+    character_class: str = None
     """Класс персонажа""" 
-    character_sub_class:  str
+    character_sub_class:  str = None
     """Специализация персонажа"""
-    level: int
+    level: int = 0
     """Уровень персонажа"""
-    experience : int
+    experience : int = 0
     """Количество опыта персонажа"""
 
-    race : str
+    race : str = None
     """Раса персонажа"""
-    alignment : str
+    alignment : str = None
     """Мировоззрение персонажа"""
 
-    size : str
+    size : str = None
     """Размер персонажа"""
-    age : int
+    age : int = 0
     """Возраст персонажа"""
-    height : int
+    height : int = 0
     """Рост персонажа"""
-    weight : int
+    weight : int = 0
     """Вес персонажа"""
 
-    max_hit_points : int
+    mastery: int = 0
+    """Бонус мастерства персонажа"""
+    max_hit_points : int = 0
     """Максимальные ХП персонажа"""
-    current_hit_points : int
+    current_hit_points : int = 0
     """Текущие ХП персонажа"""
-    armor_class : int
+    armor_class : int = 0
     """Класс брони персонажа"""
-    movement_speed : int
+    movement_speed : int = 0
     """Скорость передвижения персонажа"""
 
-    character_money_template: CharacterMoneyTemplate
+    character_money_template: CharacterMoneyTemplate = None
     """Кошелёк персонажа"""
-    character_stats_template: CharacterStatsTemplate
+    character_stats_template: CharacterStatsTemplate = None
     """Статы персонажа"""
-    mastery: int
-    """Бонус мастерства персонажа"""
-    character_spell_circle_slots_template: CharacterSpellCirclesSlotsTemplate
+    character_spell_circle_slots_template: CharacterSpellCirclesSlotsTemplate = None
     """Круги и кол-во ячеек заклинания данного круга персонажа"""

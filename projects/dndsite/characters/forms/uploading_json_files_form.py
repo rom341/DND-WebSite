@@ -3,47 +3,43 @@
 from django import forms
 import json
 
-class JsonUploadForm(forms.Form):
-    """Форма для загрузки JSON-файла."""
-    
-    # Поле для файла
+class JsonUploadForm(forms.Form):    
     json_file = forms.FileField(
-        label='Загрузите ваш JSON-файл',
-        help_text='Допускаются только файлы с расширением .json'
+        label='Load JSON file',
     )
 
     def clean_json_file(self):
         """
-        Пользовательская проверка (валидация) для нашего поля.
-        Мы проверим расширение и попробуем прочитать JSON.
+        Custom validation for our field.
+        We will check the extension and try to read the JSON.
         """
         file = self.cleaned_data.get('json_file')
 
         if not file:
-            # Если файл не загружен, валидация не пройдена
-            raise forms.ValidationError("Файл не был загружен.")
+            # If the file is not uploaded, validation fails
+            raise forms.ValidationError("File was not uploaded.")
 
-        # 1. Проверяем расширение файла
+        # 1. Check the file extension
         if not file.name.endswith('.json'):
-            raise forms.ValidationError("Это не .json файл.")
+            raise forms.ValidationError("This is not a .json file.")
 
-        # 2. Проверяем, что это валидный JSON
-        # Мы "перематываем" файл в начало, чтобы прочитать его
+        # 2. Check that this is valid JSON
+        # We "rewind" the file to the beginning to read it
         file.seek(0)
         try:
-            # Читаем файл и декодируем его как текст (utf-8)
+            # Read the file and decode it as text (utf-8)
             file_content = file.read().decode('utf-8')
             json.loads(file_content)
         except json.JSONDecodeError:
-            # Если json.loads() выдает ошибку, значит JSON "битый"
-            raise forms.ValidationError("Не удалось разобрать JSON. Файл поврежден или имеет неверный формат.")
+            # If json.loads() raises an error, the JSON is "broken"
+            raise forms.ValidationError("Failed to parse JSON. The file is corrupted or has an invalid format.")
         except UnicodeDecodeError:
-            # Если файл не в UTF-8
-            raise forms.ValidationError("Ошибка кодировки файла. Пожалуйста, используйте UTF-8.")
+            # If the file is not in UTF-8
+            raise forms.ValidationError("File encoding error. Please use UTF-8.")
 
-        # Не забываем перемотать файл обратно в начало,
-        # чтобы его можно было прочитать в представлении (view)
+        # Don't forget to rewind the file back to the beginning,
+        # so it can be read in the view
         file.seek(0)
         
-        # Обязательно возвращаем "очищенные" данные
+        # Be sure to return the "cleaned" data
         return file

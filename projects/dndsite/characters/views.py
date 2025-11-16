@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.utils.managers.user_manager import UserManager
 from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats
-from characters.templates import CharacterSkillsTemplate, CharacterSpellsTemplate
+from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
 
     
@@ -23,7 +23,7 @@ def upload_longstory_character_json(request):
             new_character_template = longstory_character_importer(data)
             new_character = Character()
             new_character.user = request.user
-            new_character = new_character.create_form_template(new_character_template)
+            new_character = new_character.create_from_template(new_character_template)
             new_character.save()
             return redirect('groups')
         else:
@@ -33,84 +33,50 @@ def upload_longstory_character_json(request):
     return render(request, 'create_character.html', {'upload_json_files_form': form})
 
 def create_character(request):
-    #TODO: rework this
     if request.method == 'POST':
-
-        name = request.POST.get('character_name')
-        character_class = request.POST.get('class')
-        character_sub_class = request.POST.get('subclass')
-        level = request.POST.get('level')
-        experience_points = request.POST.get('experience_points')
-
-        race = request.POST.get('race')
-        alignment = request.POST.get('aligment')
-
-        size = request.POST.get('size')
-        age = request.POST.get('age')
-        height = request.POST.get('height')
-        weight = request.POST.get('weight')
-
-        max_hit_points = request.POST.get('hit_points')
-        current_hit_points = request.POST.get('hit_points')
-        armor_class = request.POST.get('armor_class')
-        movement_speed = request.POST.get('movement_speed')
-
-        copper_coins = request.POST.get('copper_coins')
-        silver_coins = request.POST.get('silver_coins')
-        electrum_coins = request.POST.get('electrum_coins')
-        gold_coins = request.POST.get('gold_coins')
-        platinum_coins = request.POST.get('platinum_coins')
-
-        strength = request.POST.get('strength')
-        dexterity = request.POST.get('dexterity')
-        constitution = request.POST.get('constitution')
-        intelligence = request.POST.get('intelligence')
-        wisdom = request.POST.get('wisdom')
-        charisma = request.POST.get('charisma')
-
-        new_money_bag = CharacterMoney.objects.create(
-            copper_coins=copper_coins,
-            silver_coins=silver_coins,
-            electrum_coins=electrum_coins,
-            gold_coins=gold_coins,
-            platinum_coins=platinum_coins
+        money_bag_template = CharacterMoneyTemplate(
+            copper_coins=request.POST.get('copper_coins', 0),
+            silver_coins=request.POST.get('silver_coins', 0),
+            electrum_coins=request.POST.get('electrum_coins', 0),
+            gold_coins=request.POST.get('gold_coins', 0),
+            platinum_coins=request.POST.get('platinum_coins', 0)
         )
-
-        new_stats = CharacterStats.objects.create(
-            strength=strength, 
-            dexterity=dexterity, 
-            constitution=constitution, 
-            intelligence=intelligence, 
-            wisdom=wisdom, 
-            charisma=charisma
+        new_money_bag = CharacterMoney.create_from_template(money_bag_template)
+        
+        new_stats_template = CharacterStatsTemplate(
+            strength=request.POST.get('strength'),
+            dexterity=request.POST.get('dexterity'),
+            constitution=request.POST.get('constitution'),
+            intelligence=request.POST.get('intelligence'),
+            wisdom=request.POST.get('wisdom'),
+            charisma=request.POST.get('charisma')
         )
-
-        new_character = Character.objects.create(
-            user = request.user,
-            name=name,
-            character_class=character_class, 
-            character_sub_class=character_sub_class,
-            level=level,
-            experience=experience_points,
-
-            race=race,
-            alignment=alignment,
-
-            size=size,
-            age=age,
-            height=height,
-            weight=weight,
-
-            max_hit_points=max_hit_points,
-            current_hit_points=max_hit_points,
-            armor_class=armor_class, 
-            movement_speed=movement_speed,
-
-            money=new_money_bag,
-            stats=new_stats
-
+        new_stats = CharacterStats.create_from_template(new_stats_template)
+        new_character_template = CharacterTemplate(
+            user=request.user,  
+            character_name=request.POST.get('character_name'),
+            character_class=request.POST.get('class'), 
+            character_sub_class=request.POST.get('subclass'),
+            level=request.POST.get('level'),
+            experience=request.POST.get('experience_points'),
+            race=request.POST.get('race'),
+            alignment=request.POST.get('alignment'),
+            size=request.POST.get('size'),
+            age=request.POST.get('age'),
+            height=request.POST.get('height'),
+            weight=request.POST.get('weight'),
+            max_hit_points=request.POST.get('hit_points'),
+            current_hit_points=request.POST.get('hit_points'),
+            armor_class=request.POST.get('armor_class'), 
+            movement_speed=request.POST.get('movement_speed'),
+            character_money_template=new_money_bag,
+            character_stats_template=new_stats,
+            character_spell_circle_slots_template=None,
+            mastery=0
         )
         
+        new_character = Character.create_from_template(new_character_template)
+        new_character.save()
         
         return redirect('main_page')
         

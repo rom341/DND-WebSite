@@ -129,7 +129,7 @@ class CharacterStats(models.Model):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
 class Character(models.Model):
-    def create_form_template(self, template:CharacterTemplate):
+    def create_from_template(self, template:CharacterTemplate):
         self.name = template.character_name
         self.character_class = template.character_class
         self.character_sub_class = template.character_sub_class
@@ -161,10 +161,14 @@ class Character(models.Model):
         return self
     
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100)
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
+    mastery = models.IntegerField(default=2)
+    dificulty_save_throw = models.IntegerField(default=0)
     race = models.CharField(max_length=50, null=True, blank=True)
     alignment = models.CharField(max_length=50, null=True, blank=True)
     size = models.CharField(max_length=20, null=True, blank=True)
@@ -177,12 +181,9 @@ class Character(models.Model):
     character_class = models.CharField(max_length=15, null=True, blank=True)
     character_sub_class = models.CharField(max_length=15, null=True, blank=True)
     armor_class = models.IntegerField(default=0)
-    money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
-    spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
-    mastery = models.IntegerField(default=2)
-    dificulty_save_throw = models.IntegerField(default=0)
 
 
     def __str__(self):
         return f"ID{self.id}: {self.name} (HP: {self.max_hit_points}, AC: {self.armor_class})"
+    
     
