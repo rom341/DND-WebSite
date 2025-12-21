@@ -3,7 +3,7 @@ venv
 *.pyc
 *.sqlite3
 __pycache__
-migrations
 .vs
 .vscode
 .DS_Store
+
