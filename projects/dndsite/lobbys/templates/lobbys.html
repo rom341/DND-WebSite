@@ -7,10 +7,10 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="select"> 
             
-            <label for="group">Choose a group:</label>
-            <select id="group" name="group_id">  
-                {% for group in groups %}
-                    <option value="{{ group.id }}">{{ group.name }}</option>
+            <label for="lobby">Choose a lobby:</label>
+            <select id="lobby" name="lobby_id">  
+                {% for lobby in lobbys %}
+                    <option value="{{ lobby.id }}">{{ lobby.name }}</option>
                 {% endfor %}
             </select>
             <button type="submit">Select Group</button>
@@ -18,13 +18,13 @@
     </div>
     <hr>
     <div>
-        <h2>Create group</h2>
+        <h2>Create lobby</h2>
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="create"> 
             
-            <label for="group_name">Group Name:</label>
-            <input type="text" id="group_name" name="group_name" required>
+            <label for="lobby_name">Group Name:</label>
+            <input type="text" id="lobby_name" name="lobby_name" required>
             <button type="submit">Create Group</button>
         </form>
     </div>

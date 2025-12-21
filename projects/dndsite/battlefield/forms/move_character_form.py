@@ -1,8 +1,6 @@
 from django import forms
 from battlefield.models import CharacterPosition
-from battlefield.utils.managers.location_manager import LocationManager
 from characters.models import Character
-from groups.utils.managers.group_manager import GroupManager
 
 class MoveCharacterForm(forms.ModelForm):
     name = forms.ChoiceField(label="Character")

@@ -25,7 +25,7 @@ def upload_longstory_character_json(request):
             new_character.user = request.user
             new_character = new_character.create_from_template(new_character_template)
             new_character.save()
-            return redirect('groups')
+            return redirect('lobbys')
         else:
             pass
     else:

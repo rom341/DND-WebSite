@@ -1,7 +1,7 @@
 from django.db import models
 
 from characters.models import Character
-from groups.models import Group
+from lobbys.models import Lobby
 
 # Create your models here.    
 class Location(models.Model):
@@ -9,7 +9,7 @@ class Location(models.Model):
     description = models.TextField(blank=True, null=True)
     rows_count = models.IntegerField(default=10)
     columns_count = models.IntegerField(default=10)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='locations')
+    lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='locations')
 
     def __str__(self):
         return f"{self.name} ({self.rows_count}x{self.columns_count})"

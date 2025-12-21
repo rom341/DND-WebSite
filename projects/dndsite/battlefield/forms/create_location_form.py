@@ -6,8 +6,8 @@ class CreateLocationForm(forms.Form):
     rows_count = forms.IntegerField(min_value=1, initial=100)
     columns_count = forms.IntegerField(min_value=1, initial=100)
     
-    group = None
+    lobby = None
     
     def __init__(self, *args, **kwargs):
-        self.group = kwargs.pop('group', None)
+        self.lobby = kwargs.pop('lobby', None)
         super(CreateLocationForm, self).__init__(*args, **kwargs)

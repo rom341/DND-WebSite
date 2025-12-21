@@ -4,8 +4,8 @@ from characters.models import Character
 
 class LocationManager:
     @staticmethod
-    def create_location(name, group, description="", rows_count=10, columns_count=10):
-        location = Location(name=name, group=group, description=description, rows_count=rows_count, columns_count=columns_count)
+    def create_location(name, lobby, description="", rows_count=10, columns_count=10):
+        location = Location(name=name, lobby=lobby, description=description, rows_count=rows_count, columns_count=columns_count)
         location.save()
         return location
     
@@ -17,8 +17,8 @@ class LocationManager:
             return None
         
     @staticmethod
-    def get_locations_for_group(group):
-        return Location.objects.filter(group=group)
+    def get_locations_for_lobby(lobby):
+        return Location.objects.filter(lobby=lobby)
     
     @staticmethod
     def get_characters_in_location(location):
@@ -35,7 +35,7 @@ class LocationManager:
     
     @staticmethod
     def is_user_has_access_to_location(user, location):
-        return location.group.user_memberships.filter(user=user).exists()
+        return location.lobby.user_memberships.filter(user=user).exists()
     
     @staticmethod
     def delete_location(location_id):

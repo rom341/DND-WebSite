@@ -4,6 +4,6 @@
     hx-swap="outerHTML">
     {% csrf_token %}
     {{ create_location_form.as_p }}
-    <input type="hidden" name="group_id" value="{{ group_id }}">
+    <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
     <button type="submit" class="btn btn-primary mt-2">Create location</button>
 </form>

@@ -7,20 +7,20 @@ from battlefield.utils.contexts.location_map_context import LocationMapContextCo
 from battlefield.utils.managers.character_position_manager import CharacterPositionManager
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.utils.managers.character_manager import CharacterManager
-from groups.utils.managers.group_manager import GroupManager
+from lobbys.utils.managers.lobby_manager import GroupManager
 from battlefield.utils.ruler import ruler
 
 class MoveCharacterConsumer(WebsocketConsumer):
     def connect(self):
         #Initiates once when user connects
         self.user = self.scope["user"]
-        self.group_id = self.scope['url_route']['kwargs']['current_group_id']
-        self.group = GroupManager.get_group_by_id(self.group_id)
+        self.lobby_id = self.scope['url_route']['kwargs']['current_lobby_id']
+        self.lobby = GroupManager.get_lobby_by_id(self.lobby_id)
         self.current_location_id = None
-        self.chatroom_name = f"group_{self.group_id}"
+        self.chatroom_name = f"lobby_{self.lobby_id}"
         
-        # Add user to the websocket group
-        async_to_sync(self.channel_layer.group_add)(
+        # Add user to the websocket lobby
+        async_to_sync(self.channel_layer.lobby_add)(
             self.chatroom_name,
             self.channel_name
         )
@@ -30,7 +30,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         #Called when the socket closes
-        async_to_sync(self.channel_layer.group_discard)(
+        async_to_sync(self.channel_layer.lobby_discard)(
             self.chatroom_name,
             self.channel_name
         )
@@ -68,7 +68,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
                     'location_id': self.current_location_id 
                 }
 
-                async_to_sync(self.channel_layer.group_send)(
+                async_to_sync(self.channel_layer.lobby_send)(
                     self.chatroom_name,
                     event
                 )

@@ -2,35 +2,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
-from battlefield.forms.add_character_to_group_form import AddCharacterToGroupForm
-from battlefield.forms.add_user_to_group_form import AddUserToGroupForm
+from battlefield.forms.add_character_to_lobby_form import AddCharacterToGroupForm
+from battlefield.forms.add_user_to_lobby_form import AddUserToGroupForm
 from battlefield.forms.create_location_form import CreateLocationForm
 from battlefield.forms.move_character_form import MoveCharacterForm
 from battlefield.utils.contexts.battle_context import BattlefieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
 from battlefield.utils.contexts.locations_list_context import LocationsListContextContainer
-from battlefield.utils.decorators import game_master_required, group_id_in_session_required, group_membership_required
+from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
 from battlefield.utils.managers.character_position_manager import CharacterPositionManager
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.utils.managers.character_manager import CharacterManager
-from groups.models import DefaultRoles
-from groups.utils.managers.group_manager import GroupManager
-from groups.utils.managers.role_manager import RoleManager
+from lobbys.models import DefaultRoles
+from lobbys.utils.managers.lobby_manager import GroupManager
+from lobbys.utils.managers.role_manager import RoleManager
 
 
 # Create your views here.
 @login_required
 @game_master_required
-def add_character_to_group(request):
+def add_character_to_lobby(request):
     if request.method == 'POST':
-        group_id = request.session.get('current_group_id')
-        group = GroupManager.get_group_by_id(group_id)
+        lobby_id = request.session.get('current_lobby_id')
+        lobby = GroupManager.get_lobby_by_id(lobby_id)
         character_id = request.POST.get('character_id')
         character = CharacterManager.get_character_by_id(character_id)
-        form = AddCharacterToGroupForm(request.POST, group=group)
+        form = AddCharacterToGroupForm(request.POST, lobby=lobby)
         if form.is_valid():
-            if group:
+            if lobby:
                 current_location_id = request.POST.get('location_id')
                 location = LocationManager.get_location_by_id(current_location_id)
                 target_row = form.cleaned_data['target_row']
@@ -42,9 +42,9 @@ def add_character_to_group(request):
                     column=target_column
                 )
                 context_container = BattlefieldContextContainer(
-                    current_group_id=group_id,
-                    current_group=group,
-                    characters_list=GroupManager.get_characters_in_group(group),
+                    current_lobby_id=lobby_id,
+                    current_lobby=lobby,
+                    characters_list=GroupManager.get_characters_in_lobby(lobby),
                     add_character_form=form
                 )
                 context = context_container.get_context()
@@ -54,18 +54,18 @@ def add_character_to_group(request):
 
 @login_required
 @game_master_required
-def add_user_to_group(request):
+def add_user_to_lobby(request):
     if request.method == 'POST':
-        group_id = request.session.get('current_group_id')
-        group = GroupManager.get_group_by_id(group_id)
+        lobby_id = request.session.get('current_lobby_id')
+        lobby = GroupManager.get_lobby_by_id(lobby_id)
         user_id = request.POST.get('user_id')
         user = User.objects.get(id=user_id)
-        form = AddUserToGroupForm(request.POST, group=group)
+        form = AddUserToGroupForm(request.POST, lobby=lobby)
         if form.is_valid():
-            if group:
-                GroupManager.add_user_to_group(user, group)
+            if lobby:
+                GroupManager.add_user_to_lobby(user, lobby)
                 context = {
-                    'users_list': GroupManager.get_users_in_group(group),
+                    'users_list': GroupManager.get_users_in_lobby(lobby),
                 }
                 return render(request, 'partials/users_list.html', context)
     
@@ -75,8 +75,8 @@ def add_user_to_group(request):
 @game_master_required
 def create_location(request):
     if request.method == 'POST':
-        group_id = request.session.get('current_group_id')
-        group = GroupManager.get_group_by_id(group_id)
+        lobby_id = request.session.get('current_lobby_id')
+        lobby = GroupManager.get_lobby_by_id(lobby_id)
         form = CreateLocationForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
@@ -85,13 +85,13 @@ def create_location(request):
             columns_count = form.cleaned_data['columns_count']
             created_location = LocationManager.create_location(
                 name=name,
-                group=group,
+                lobby=lobby,
                 description=description,
                 rows_count=rows_count,
                 columns_count=columns_count
             )
             context_container = LocationsListContextContainer(
-                locations_list=LocationManager.get_locations_for_group(group)
+                locations_list=LocationManager.get_locations_for_lobby(lobby)
             )
             context = context_container.get_context()
             return render(request, 'partials/locations_list.html', context)
@@ -122,11 +122,11 @@ def select_location(request):
     return HttpResponseBadRequest("Location not found.")
 
 @login_required
-@group_id_in_session_required
-@group_membership_required
+@lobby_id_in_session_required
+@lobby_membership_required
 def battlefield(request):    
-    current_group_id = request.session.get('current_group_id')
-    group = GroupManager.get_group_by_id(current_group_id)  
+    current_lobby_id = request.session.get('current_lobby_id')
+    lobby = GroupManager.get_lobby_by_id(current_lobby_id)  
     current_location_id = request.session.get('current_location_id')
     
     characters_in_current_location = []
@@ -136,7 +136,7 @@ def battlefield(request):
     cols_count = 0
     move_character_form = None
     add_character_form = None
-    add_user_form = AddUserToGroupForm(group=group)
+    add_user_form = AddUserToGroupForm(lobby=lobby)
     create_location_form = CreateLocationForm()
     
     if current_location_id:
@@ -146,18 +146,18 @@ def battlefield(request):
         cols_count = selected_location.columns_count
         
         characters_in_current_location = LocationManager.get_characters_in_location(selected_location)
-        locations_list = LocationManager.get_locations_for_group(group)
+        locations_list = LocationManager.get_locations_for_lobby(lobby)
         
         characters_available_to_move_for_user = None
-        if RoleManager.user_has_role(request.user, group, DefaultRoles.GAME_MASTER):
+        if RoleManager.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
             characters_available_to_move_for_user = characters_in_current_location
         else:        
             characters_available_to_move_for_user = LocationManager.get_characters_in_location_for_user(selected_location, request.user)
         
         move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
-        add_character_form = AddCharacterToGroupForm(group=group)        
+        add_character_form = AddCharacterToGroupForm(lobby=lobby)        
     else:
-        locations_list = LocationManager.get_locations_for_group(group)
+        locations_list = LocationManager.get_locations_for_lobby(lobby)
     
     character_positions_context_container = CharacterPositionContextContainer(
         character_positions=CharacterPositionManager.get_all_character_positions_in_location(selected_location)
@@ -173,10 +173,10 @@ def battlefield(request):
     )
     
     battlefield_context_container = BattlefieldContextContainer(
-        current_group_id=current_group_id,
-        current_group=group,
+        current_lobby_id=current_lobby_id,
+        current_lobby=lobby,
         locations_list=locations_list,
-        users_list=GroupManager.get_users_in_group(group),
+        users_list=GroupManager.get_users_in_lobby(lobby),
         move_character_form=move_character_form,
         add_character_form=add_character_form,
         add_user_form=add_user_form,

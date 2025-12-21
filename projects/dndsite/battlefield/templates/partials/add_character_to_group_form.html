@@ -1,9 +1,9 @@
-<form id="add-character-to-group-form"
-    hx-post="{% url 'add_character_to_group' %}"
+<form id="add-character-to-lobby-form"
+    hx-post="{% url 'add_character_to_lobby' %}"
     hx-target="#battle-map"
     hx-swap="outerHTML">
     {% csrf_token %}
     {{ add_character_form.as_p }}
-    <input type="hidden" name="group_id" value="{{ group_id }}">
+    <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
     <button type="submit" class="btn btn-primary mt-2">Add Character</button>
 </form>
