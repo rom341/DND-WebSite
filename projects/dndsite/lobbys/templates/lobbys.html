@@ -8,7 +8,7 @@
             <input type="hidden" name="action" value="select"> 
             
             <label for="lobby">Choose a lobby:</label>
-            <select id="lobby" name="lobby_id">  
+            <select id="lobby" name="lobby_id" required>  
                 {% for lobby in lobbys %}
                     <option value="{{ lobby.id }}">{{ lobby.name }}</option>
                 {% endfor %}
