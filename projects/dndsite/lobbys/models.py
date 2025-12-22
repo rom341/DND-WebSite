@@ -40,4 +40,4 @@ class LobbyMembershipCharacter(models.Model):
         unique_together = ('character', 'lobby')
 
     def __str__(self):
-        return f"{self.character.name} in {self.lobby.name}"
+        return f"{self.character.character_name} in {self.lobby.name}"

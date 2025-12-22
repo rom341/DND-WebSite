@@ -54,9 +54,9 @@ def longstory_character_importer(data):
     new_character.movement_speed = data.get('vitality',{}).get('speed',{}).get('value',30)
     new_character.armor_class = data.get('vitality',{}).get('ac',{}).get('value',10)
 
-    new_character.character_money_template = new_money_bag
-    new_character.character_stats_template = new_stats
-    new_character.character_spell_circle_slots_template = new_spell_circles_slots
+    new_character.money = new_money_bag
+    new_character.stats = new_stats
+    new_character.spell_circle_slots = new_spell_circles_slots
 
 
     return new_character

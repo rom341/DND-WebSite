@@ -24,4 +24,4 @@ class CharacterPosition(models.Model):
         unique_together = ('character', 'location')
 
     def __str__(self):
-        return f"{self.character.name} at ({self.row}, {self.column}) in {self.location.name}"
+        return f"{self.character.character_name} at ({self.row}, {self.column}) in {self.location.name}"

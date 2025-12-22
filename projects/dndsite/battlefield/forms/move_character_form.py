@@ -17,5 +17,5 @@ class MoveCharacterForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         available_characters = available_characters
         characters = available_characters if available_characters is not None else Character.objects.none()
-        self.fields['name'].choices = [(c.id, c.name) for c in characters]
+        self.fields['name'].choices = [(c.id, c.character_name) for c in characters]
         

@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 
 from accounts.utils.managers.user_manager import UserManager
 from characters.forms.uploading_json_files_form import JsonUploadForm
@@ -34,49 +35,50 @@ def upload_longstory_character_json(request):
 
 def create_character(request):
     if request.method == 'POST':
-        money_bag_template = CharacterMoneyTemplate(
-            copper_coins=request.POST.get('copper_coins', 0),
-            silver_coins=request.POST.get('silver_coins', 0),
-            electrum_coins=request.POST.get('electrum_coins', 0),
-            gold_coins=request.POST.get('gold_coins', 0),
-            platinum_coins=request.POST.get('platinum_coins', 0)
-        )
-        new_money_bag = CharacterMoney.create_from_template(money_bag_template)
-        
-        new_stats_template = CharacterStatsTemplate(
-            strength=request.POST.get('strength'),
-            dexterity=request.POST.get('dexterity'),
-            constitution=request.POST.get('constitution'),
-            intelligence=request.POST.get('intelligence'),
-            wisdom=request.POST.get('wisdom'),
-            charisma=request.POST.get('charisma')
-        )
-        new_stats = CharacterStats.create_from_template(new_stats_template)
-        new_character_template = CharacterTemplate(
-            user=request.user,  
-            character_name=request.POST.get('character_name'),
-            character_class=request.POST.get('class'), 
-            character_sub_class=request.POST.get('subclass'),
-            level=request.POST.get('level'),
-            experience=request.POST.get('experience_points'),
-            race=request.POST.get('race'),
-            alignment=request.POST.get('alignment'),
-            size=request.POST.get('size'),
-            age=request.POST.get('age'),
-            height=request.POST.get('height'),
-            weight=request.POST.get('weight'),
-            max_hit_points=request.POST.get('hit_points'),
-            current_hit_points=request.POST.get('hit_points'),
-            armor_class=request.POST.get('armor_class'), 
-            movement_speed=request.POST.get('movement_speed'),
-            character_money_template=new_money_bag,
-            character_stats_template=new_stats,
-            character_spell_circle_slots_template=None,
-            mastery=0
-        )
-        
-        new_character = Character.create_from_template(new_character_template)
-        new_character.save()
+        with transaction.atomic(): # Ensure that the whole function is atomic (all-or-nothing)
+            print(request.POST)
+            money_bag_template = CharacterMoneyTemplate(
+                copper_coins=request.POST.get('copper_coins', 0),
+                silver_coins=request.POST.get('silver_coins', 0),
+                electrum_coins=request.POST.get('electrum_coins', 0),
+                gold_coins=request.POST.get('gold_coins', 0),
+                platinum_coins=request.POST.get('platinum_coins', 0)
+            )
+            new_money_bag = CharacterMoney.objects.create_from_template(money_bag_template)
+            
+            new_stats_template = CharacterStatsTemplate(
+                strength=request.POST.get('strength'),
+                dexterity=request.POST.get('dexterity'),
+                constitution=request.POST.get('constitution'),
+                intelligence=request.POST.get('intelligence'),
+                wisdom=request.POST.get('wisdom'),
+                charisma=request.POST.get('charisma')
+            )
+            new_stats = CharacterStats.objects.create_from_template(new_stats_template)
+
+            new_character_template = CharacterTemplate(
+                user=request.user,                  
+                character_name=request.POST.get('character_name'),
+                character_class=request.POST.get('class'), 
+                character_sub_class=request.POST.get('subclass'),
+                level=request.POST.get('level'),
+                experience=request.POST.get('experience_points'),
+                race=request.POST.get('race'),
+                alignment=request.POST.get('alignment'),
+                size=request.POST.get('size'),
+                age=request.POST.get('age'),
+                height=request.POST.get('height'),
+                weight=request.POST.get('weight'),
+                max_hit_points=request.POST.get('hit_points'),
+                current_hit_points=request.POST.get('hit_points'),
+                armor_class=request.POST.get('armor_class'), 
+                movement_speed=request.POST.get('movement_speed'),
+                money=new_money_bag,
+                stats=new_stats,
+                spell_circle_slots=None,
+                mastery=0
+            )            
+            new_character = Character.objects.create_from_template(new_character_template)
         
         return redirect('main_page')
         

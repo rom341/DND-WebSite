@@ -142,9 +142,9 @@ class CharacterTemplate:
     movement_speed : int = 0
     """Скорость передвижения персонажа"""
 
-    character_money_template: CharacterMoneyTemplate = None
+    money: CharacterMoneyTemplate = None
     """Кошелёк персонажа"""
-    character_stats_template: CharacterStatsTemplate = None
+    stats: CharacterStatsTemplate = None
     """Статы персонажа"""
-    character_spell_circle_slots_template: CharacterSpellCirclesSlotsTemplate = None
+    spell_circle_slots: CharacterSpellCirclesSlotsTemplate = None
     """Круги и кол-во ячеек заклинания данного круга персонажа"""
