@@ -5,8 +5,8 @@ from django.db import transaction
 
 from accounts.utils.managers.user_manager import UserManager
 from characters.forms.uploading_json_files_form import JsonUploadForm
-from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats
-from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate
+from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
+from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, EntityBaseTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
 
     
@@ -56,13 +56,10 @@ def create_character(request):
             )
             new_stats = CharacterStats.objects.create_from_template(new_stats_template)
 
-            new_character_template = CharacterTemplate(
-                user=request.user,                  
+            new_entity_base_template = EntityBaseTemplate(
                 character_name=request.POST.get('character_name'),
                 character_class=request.POST.get('class'), 
                 character_sub_class=request.POST.get('subclass'),
-                level=request.POST.get('level'),
-                experience=request.POST.get('experience_points'),
                 race=request.POST.get('race'),
                 alignment=request.POST.get('alignment'),
                 size=request.POST.get('size'),
@@ -70,13 +67,21 @@ def create_character(request):
                 height=request.POST.get('height'),
                 weight=request.POST.get('weight'),
                 max_hit_points=request.POST.get('hit_points'),
-                current_hit_points=request.POST.get('hit_points'),
                 armor_class=request.POST.get('armor_class'), 
                 movement_speed=request.POST.get('movement_speed'),
+                mastery=0
+            )
+            new_entity_base = EntityBase.objects.create_from_template(new_entity_base_template)
+
+            new_character_template = CharacterTemplate(
+                user=request.user,                 
+                entity_base=new_entity_base, 
+                level=request.POST.get('level'),
+                experience=request.POST.get('experience_points'),
+                current_hit_points=request.POST.get('hit_points'),
                 money=new_money_bag,
                 stats=new_stats,
                 spell_circle_slots=None,
-                mastery=0
             )            
             new_character = Character.objects.create_from_template(new_character_template)
         

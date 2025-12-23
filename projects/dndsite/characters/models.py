@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from characters.templates import CharacterSpellsTemplate, CharacterSkillsTemplate, CharacterSpellCirclesSlotsTemplate, CharacterMoneyTemplate, CharacterStatsTemplate, CharacterTemplate
-
 # Create your models here.
 class UniversalManager(models.Manager):
     def create_from_template(self, template):
@@ -24,7 +22,6 @@ class CharacterSpells(models.Model):
 
     def __str__(self):
          return f"ID{self.id}: {self.spell_name}"
-
 
 class CharacterSkills(models.Model):
     objects = UniversalManager()
@@ -69,7 +66,6 @@ class CharacterMoney(models.Model):
     def __str__(self):
         return f"ID{self.id}: {self.copper_coins} CC, {self.silver_coins} SC, {self.electrum_coins} EC, {self.gold_coins} GC, {self.platinum_coins} PC"
 
-
 class CharacterStats(models.Model):
     objects = UniversalManager()
     
@@ -89,15 +85,12 @@ class CharacterStats(models.Model):
     def __str__(self):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
-class Character(models.Model):
+class EntityBase(models.Model):
     objects = UniversalManager()
-    
-    user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
+
     character_name = models.CharField(max_length=100)
     character_class = models.CharField(max_length=15, null=True, blank=True)
     character_sub_class = models.CharField(max_length=15, null=True, blank=True)
-    level = models.IntegerField(default=1)
-    experience = models.IntegerField(default=0)
     race = models.CharField(max_length=50, null=True, blank=True)
     alignment = models.CharField(max_length=50, null=True, blank=True)
     size = models.CharField(max_length=20, null=True, blank=True)
@@ -107,15 +100,21 @@ class Character(models.Model):
     mastery = models.IntegerField(default=2)
     dificulty_save_throw = models.IntegerField(default=0)
     max_hit_points = models.IntegerField(default=0)
-    current_hit_points = models.IntegerField(default=0)
     armor_class = models.IntegerField(default=0)
     movement_speed = models.IntegerField(default=0)
+
+class Character(models.Model):
+    objects = UniversalManager()
+    
+    user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
+    entity_base = models.ForeignKey(EntityBase, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
+    level = models.IntegerField(default=1)
+    experience = models.IntegerField(default=0)
+    current_hit_points = models.IntegerField(default=0)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
 
-
     def __str__(self):
-        return f"ID{self.id}: {self.character_name} (HP: {self.max_hit_points}, AC: {self.armor_class})"
-    
-    
+        return f"ID{self.id}: {self.entity_base.character_name} (HP: {self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class})"
+        

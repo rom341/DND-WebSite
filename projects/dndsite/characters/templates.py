@@ -99,29 +99,17 @@ class CharacterMoneyTemplate:
     """Платиновые монеты"""
 
 @dataclass
-class CharacterTemplate:
-    """Шаблон персонажа с новыми полями."""
-    def __str__(self):
-        return f"{self.character_name}, Level {self.level} {self.character_class}/{self.character_sub_class}/{self.age}"
-    
-    user: User = None
-    """Владелец персонажа"""
+class EntityBaseTemplate:
     character_name: str = None
     """Имя персонажа"""
     character_class: str = None
     """Класс персонажа""" 
     character_sub_class:  str = None
     """Специализация персонажа"""
-    level: int = 0
-    """Уровень персонажа"""
-    experience : int = 0
-    """Количество опыта персонажа"""
-
     race : str = None
     """Раса персонажа"""
     alignment : str = None
     """Мировоззрение персонажа"""
-
     size : str = None
     """Размер персонажа"""
     age : int = 0
@@ -130,18 +118,30 @@ class CharacterTemplate:
     """Рост персонажа"""
     weight : int = 0
     """Вес персонажа"""
-
     mastery: int = 0
     """Бонус мастерства персонажа"""
     max_hit_points : int = 0
-    """Максимальные ХП персонажа"""
-    current_hit_points : int = 0
     """Текущие ХП персонажа"""
     armor_class : int = 0
     """Класс брони персонажа"""
     movement_speed : int = 0
     """Скорость передвижения персонажа"""
 
+@dataclass
+class CharacterTemplate:
+    """Шаблон персонажа с новыми полями."""
+    def __str__(self):
+        return f"{self.character_name}, Level {self.level} {self.character_class}/{self.character_sub_class}/{self.age}"
+    
+    user: User = None
+    entity_base: EntityBaseTemplate = None
+    """Владелец персонажа"""
+    level: int = 0
+    """Уровень персонажа"""
+    experience : int = 0
+    """Количество опыта персонажа"""
+    current_hit_points : int = 0
+    """Максимальные ХП персонажа"""
     money: CharacterMoneyTemplate = None
     """Кошелёк персонажа"""
     stats: CharacterStatsTemplate = None
