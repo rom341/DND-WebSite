@@ -1,0 +1,9 @@
+.numeric_input_no_arrows {
+    -moz-appearance: textfield;
+}
+
+.numeric_input_no_arrows::-webkit-outer-spin-button,
+.numeric_input_no_arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
