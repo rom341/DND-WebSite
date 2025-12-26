@@ -16,74 +16,82 @@
             </div>
 
             <div class="col-6">
-                <div class="row mb-3">
-                    <div class="input-group">
-                        <input class="form-control" type="text" id="character_name" name="character_name" placeholder="Character name" required>
+                <div class="border pt-3">
+                    <div class="row mb-3">
+                        <div class="col input-group">
+                            <input class="form-control" type="text" id="character_name" name="character_name" placeholder="Character name" required>
+                        </div>
+                        <div class="col input-group">
+                            <input class="form-control" type="text" id="race" name="race" placeholder="Race">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col input-group">
+                            <input class="form-control" type="text" id="class" name="class" placeholder="Class">
+                        </div>
+                        <div class="col input-group">
+                            <input class="form-control" type="text" id="subclass" name="subclass" placeholder="Subclass">
+                        </div>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="input-group">
-                        <input class="col form-control" type="text" id="class" name="class" placeholder="Class">
-                        <input class="col form-control" type="text" id="subclass" name="subclass" placeholder="Subclass">
-                    </div>
-                </div>
+                <div class="border pt-3">
+                    <div class="row mb-3">
+                        <div class="col input-group">
+                            <span class="input-group-text col-6" for="level">Level</span>
+                            <input class="form-control numeric_input_no_arrows text-end" type="number" id="level" name="level" value="1">
+                        </div>
 
-                <div class="row mb-3">
-                    <div class="col input-group">
-                        <span class="input-group-text col-6" for="level">Level</span>
-                        <input class="form-control numeric_input_no_arrows text-end" type="number" id="level" name="level" value="1">
-                    </div>
-
-                    <div class="col input-group">
-                        <span class="input-group-text col-6" for="experience_points">Exp:</span>
-                        <input class="form-control numeric_input_no_arrows text-end" type="number" id="experience_points" name="experience_points" value="0">
+                        <div class="col input-group">
+                            <span class="input-group-text col-6" for="experience_points">Exp:</span>
+                            <input class="form-control numeric_input_no_arrows text-end" type="number" id="experience_points" name="experience_points" value="0">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-6">
-                <div class="row">
-                    <div class="input-group mb-3 col">
-                        <span class="input-group-text col-9" for="strength">Strength:</span>
-                        <input type="number" id="strength" name="strength" value="10" class="form-control numeric_input_no_arrows text-end">
+                <div class="border pt-3">
+                    <div class="row">
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text col-9" for="strength">Strength:</span>
+                            <input type="number" id="strength" name="strength" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
+
+                        <div class="input-group mb-3 col">
+                            <label class="input-group-text col-9" for="dexterity">Dexterity:</label>
+                            <input type="number" id="dexterity" name="dexterity" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
                     </div>
 
-                    <div class="input-group mb-3 col">
-                        <label class="input-group-text col-9" for="dexterity">Dexterity:</label>
-                        <input type="number" id="dexterity" name="dexterity" value="10" class="form-control numeric_input_no_arrows text-end">
-                    </div>
-                </div>
+                    <div class="row">
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text col-9" for="constitution">Constitution:</span>
+                            <input type="number" id="constitution" name="constitution" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
 
-                <div class="row">
-                    <div class="input-group mb-3 col">
-                        <span class="input-group-text col-9" for="constitution">Constitution:</span>
-                        <input type="number" id="constitution" name="constitution" value="10" class="form-control numeric_input_no_arrows text-end">
-                    </div>
-
-                    <div class="input-group mb-3 col">
-                        <label class="input-group-text col-9" for="intelligence">Intelligence:</label>
-                        <input type="number" id="intelligence" name="intelligence" value="10" class="form-control numeric_input_no_arrows text-end">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="input-group mb-3 col">
-                        <span class="input-group-text col-9" for="wisdom">Wisdom:</span>
-                        <input type="number" id="wisdom" name="wisdom" value="10" class="form-control numeric_input_no_arrows text-end">
+                        <div class="input-group mb-3 col">
+                            <label class="input-group-text col-9" for="intelligence">Intelligence:</label>
+                            <input type="number" id="intelligence" name="intelligence" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
                     </div>
 
-                    <div class="input-group mb-3 col">
-                        <label class="input-group-text col-9" for="charisma">Charisma:</label>
-                        <input type="number" id="charisma" name="charisma" value="10" class="form-control numeric_input_no_arrows text-end">
+                    <div class="row">
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text col-9" for="wisdom">Wisdom:</span>
+                            <input type="number" id="wisdom" name="wisdom" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
+
+                        <div class="input-group mb-3 col">
+                            <label class="input-group-text col-9" for="charisma">Charisma:</label>
+                            <input type="number" id="charisma" name="charisma" value="10" class="form-control numeric_input_no_arrows text-end">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div>
-                <label for="race">Race</label>
-                <input type="text" id="race" name="race"><br><br>
-
                 <label for="aligment">Aligment</label>
                 <input type="text" id="aligment" name="aligment"><br><br>
             </div>
