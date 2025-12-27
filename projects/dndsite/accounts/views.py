@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User, auth 
 from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 def register(request):
@@ -30,10 +31,12 @@ def login(request):
         password = request.POST.get('password')
 
         user = auth.authenticate(username=username, password=password)
+        print(f"User is logining: {username}")
 
         if user is not None:
             auth.login(request, user)
-            return redirect('main_page')
+            next_page = request.POST.get('next', '/') 
+            return redirect(next_page)
         else:
             messages.info(request, 'Invalid credentials')
             return redirect('login')

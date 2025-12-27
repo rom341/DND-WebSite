@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from lobbys.utils.managers.lobby_manager import GroupManager
+from lobby.utils.managers.lobby_manager import GroupManager
 
 class AddUserToGroupForm(forms.Form):
     user_id = forms.ModelChoiceField(queryset=User.objects.all(), label="User")

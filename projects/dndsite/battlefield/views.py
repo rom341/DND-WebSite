@@ -14,9 +14,9 @@ from battlefield.utils.decorators import game_master_required, lobby_id_in_sessi
 from battlefield.utils.managers.character_position_manager import CharacterPositionManager
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.utils.managers.character_manager import CharacterManager
-from lobbys.models import DefaultRoles
-from lobbys.utils.managers.lobby_manager import GroupManager
-from lobbys.utils.managers.role_manager import RoleManager
+from lobby.models import DefaultRoles
+from lobby.utils.managers.lobby_manager import GroupManager
+from lobby.utils.managers.role_manager import RoleManager
 
 
 # Create your views here.

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'battlefield',
     'accounts',
     'characters',
-    'lobbys',
+    'lobby',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +70,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'battlefield', 'templates'),
             os.path.join(BASE_DIR, 'accounts', 'templates'),
             os.path.join(BASE_DIR, 'characters', 'templates'),
-            os.path.join(BASE_DIR, 'lobbys', 'templates'),
+            os.path.join(BASE_DIR, 'lobby', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

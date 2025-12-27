@@ -2,7 +2,7 @@ from functools import wraps
 
 from django.http import HttpResponseForbidden
 
-from lobbys.models import DefaultRoles, LobbyMembershipUser
+from lobby.models import DefaultRoles, LobbyMembershipUser
 
 
 def game_master_required(view_func):

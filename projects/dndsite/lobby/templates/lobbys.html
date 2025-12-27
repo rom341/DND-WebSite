@@ -9,7 +9,7 @@
             
             <label for="lobby">Choose a lobby:</label>
             <select id="lobby" name="lobby_id" required>  
-                {% for lobby in lobbys %}
+                {% for lobby in lobby %}
                     <option value="{{ lobby.id }}">{{ lobby.name }}</option>
                 {% endfor %}
             </select>

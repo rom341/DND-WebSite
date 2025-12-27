@@ -1,7 +1,7 @@
 from django.db import models
 
 from characters.models import Character
-from lobbys.models import Lobby
+from lobby.models import Lobby
 
 # Create your models here.    
 class Location(models.Model):

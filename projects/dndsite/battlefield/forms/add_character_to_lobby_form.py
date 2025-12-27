@@ -2,7 +2,7 @@ from django import forms
 from battlefield.models import Location
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.models import Character
-from lobbys.utils.managers.lobby_manager import GroupManager
+from lobby.utils.managers.lobby_manager import GroupManager
 
 class AddCharacterToGroupForm(forms.Form):
     character_id = forms.ModelChoiceField(queryset=None, label="Character")

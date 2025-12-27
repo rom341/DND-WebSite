@@ -1,14 +1,15 @@
 from django.shortcuts import redirect, render
 
-from lobbys.models import DefaultRoles
-from lobbys.utils.managers.lobby_manager import GroupManager
+from lobby.models import DefaultRoles
+from lobby.utils.managers.lobby_manager import GroupManager
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 @login_required
-def lobbys(request):
+def lobby(request):
     active_user = request.user    
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -25,17 +26,17 @@ def lobbys(request):
                     
                 if lobby_id:
                     request.session['current_lobby_id'] = lobby_id
-                    return redirect('/battlefield/')
+                    return redirect(reverse('battlefield'))
                 else:
                     messages.error(request, "Lobby is not valid")
                     
         except Exception as e:
             messages.error(request, f"Unknown error while operating lobby selection page: {str(e)}")
-            return redirect("/lobbys/")
+            return redirect(reverse('lobby'))
         
-    lobbys = GroupManager.get_lobbys_with_user(active_user)   
+    lobby = GroupManager.get_lobby_with_user(active_user)   
     data = {
-        'lobbys': lobbys,
+        'lobby': lobby,
     }
 
-    return render(request, 'lobbys.html', data)
+    return render(request, 'lobby.html', data)

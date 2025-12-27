@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 from characters.models import Character
-from lobbys.models import DefaultRoles, Lobby, LobbyMembershipCharacter, LobbyMembershipUser, LobbyRole
+from lobby.models import DefaultRoles, Lobby, LobbyMembershipCharacter, LobbyMembershipUser, LobbyRole
 
 class GroupManager:
     @staticmethod
@@ -28,7 +28,7 @@ class GroupManager:
         )
     
     @staticmethod
-    def get_lobbys_with_user(user):
+    def get_lobby_with_user(user):
         return Lobby.objects.filter(
             user_memberships__user=user
         )

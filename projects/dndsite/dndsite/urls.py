@@ -21,6 +21,6 @@ urlpatterns = [
     path('', include('battlefield.urls')),
     path('', include('accounts.urls')),
     path('', include('characters.urls')),
-    path('', include('lobbys.urls')),
-    path('admin/', admin.site.urls),
+    path('', include('lobby.urls')),
+    path('admin/', admin.site.urls, name='admin'),
 ]

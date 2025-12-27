@@ -26,17 +26,17 @@ def upload_longstory_character_json(request):
             new_character.user = request.user
             new_character = new_character.create_from_template(new_character_template)
             new_character.save()
-            return redirect('lobbys')
+            return redirect('lobby')
         else:
             pass
     else:
         form = JsonUploadForm()
     return render(request, 'create_character.html', {'upload_json_files_form': form})
 
+@login_required()
 def create_character(request):
     if request.method == 'POST':
         with transaction.atomic(): # Ensure that the whole function is atomic (all-or-nothing)
-            print(request.POST)
             money_bag_template = CharacterMoneyTemplate(
                 copper_coins=request.POST.get('copper_coins', 0),
                 silver_coins=request.POST.get('silver_coins', 0),
@@ -94,6 +94,7 @@ def create_character(request):
 
     return render(request, 'create_character.html', data)
 
+@login_required
 def create_skill(request):
     if request.method == 'POST':
         skill = CharacterSkillsTemplate()
@@ -109,8 +110,9 @@ def create_skill(request):
         new_skill.create_from_template(skill)
         return redirect('main_page')
     
-    return render(request,'create_skill.html' )
+    return render(request, 'create_skill.html' )
 
+@login_required
 def create_spell(request):
     if request.method == 'POST':
         spell = CharacterSpellsTemplate()
@@ -126,12 +128,13 @@ def create_spell(request):
         new_spell.create_from_template(spell)
         return redirect('main_page')
      
-    return render(request,'create_spell.html')
+    return render(request, 'create_spell.html')
 
+@login_required
 def my_characters_list(request):
     user = request.user
     all_user_characters = UserManager.get_user_characters(user)
     data = {
         'all_user_characters': all_user_characters
     }
-    return render(request,'my_characters_list.html',data)
+    return render(request, 'my_characters_list.html',data)

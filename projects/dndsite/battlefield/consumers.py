@@ -7,7 +7,7 @@ from battlefield.utils.contexts.location_map_context import LocationMapContextCo
 from battlefield.utils.managers.character_position_manager import CharacterPositionManager
 from battlefield.utils.managers.location_manager import LocationManager
 from characters.utils.managers.character_manager import CharacterManager
-from lobbys.utils.managers.lobby_manager import GroupManager
+from lobby.utils.managers.lobby_manager import GroupManager
 from battlefield.utils.ruler import ruler
 
 class MoveCharacterConsumer(WebsocketConsumer):

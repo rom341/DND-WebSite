@@ -1,4 +1,4 @@
-from lobbys.models import LobbyMembershipUser, LobbyRole
+from lobby.models import LobbyMembershipUser, LobbyRole
 
 
 class RoleManager:
