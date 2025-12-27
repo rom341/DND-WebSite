@@ -35,7 +35,8 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            next_page = request.POST.get('next', '/') 
+            next_page = request.POST.get('next', '')
+            next_page = reverse('main_page') if not next_page else next_page
             return redirect(next_page)
         else:
             messages.info(request, 'Invalid credentials')
