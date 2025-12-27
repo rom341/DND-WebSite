@@ -7,3 +7,5 @@ __pycache__
 .vscode
 .DS_Store
 
+**/migrations/*
+!**/migrations/__init__.py
