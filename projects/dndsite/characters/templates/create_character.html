@@ -8,10 +8,11 @@
             <div class="container">
             <div class="mb-5">
                 <select class="form-select" aria-label="Default select example">
-                    <option selected>Select template</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    {% for template in all_character_templates %}
+                        <option value="{{template.id}}">
+                            {{template.character_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
 

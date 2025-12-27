@@ -8,6 +8,7 @@ from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
 from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, EntityBaseTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
+from characters.utils.managers.character_manager import CharacterManager
 
     
 
@@ -87,8 +88,10 @@ def create_character(request):
         
         return redirect('main_page')
         
+    all_character_templates = CharacterManager.get_all_character_model_templates()
     uploadform = JsonUploadForm()
     data = {
+        'all_character_templates': all_character_templates,
         'upload_json_files_form': uploadform
     }
 
