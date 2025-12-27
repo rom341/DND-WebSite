@@ -16,7 +16,7 @@
 
                     {% for template in all_character_templates_list %}
                         <option value="{{template.id}}">
-                            {{template.character_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
+                            {{template.entity_base_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
                         </option>
                     {% endfor %}
                 </select>
@@ -26,7 +26,7 @@
                 <div class="border pt-3">
                     <div class="row mb-3">
                         <div class="col input-group">
-                            {% render_field entity_base_form.character_name class="form-control" type="text" id="character_name" name="character_name" placeholder="Character name" required="required"%}
+                            {% render_field entity_base_form.entity_base_name class="form-control" type="text" id="entity_base_name" name="entity_base_name" placeholder="Base name" required="required"%}
                         </div>
                         <div class="col input-group">
                             {% render_field entity_base_form.race class="form-control" type="text" id="race" name="race" placeholder="Race"%}
