@@ -10,157 +10,165 @@
             {% csrf_token %}
             <h2>Create Character</h2>
             <div class="container">
-            <div class="mb-5">
-                <select class="form-select" aria-label="Default select example" id="selected_character_base" name="selected_character_base">
-                    <option value="-1" selected="selected">None</option>
+                <div class="mb-5">
+                    <select class="form-select" aria-label="Default select example" id="selected_character_base" name="selected_character_base">
+                        <option value="-1" selected="selected">None</option>
+                        {% for template in all_character_templates_list %}
+                            <option value="{{template.id}}">
+                                {{template.entity_base_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                    {% for template in all_character_templates_list %}
-                        <option value="{{template.id}}">
-                            {{template.entity_base_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="col-6">
-                <div class="border pt-3">
-                    <div class="row mb-3">
-                        <div class="col input-group">
-                            {% render_field entity_base_form.entity_base_name class="form-control" type="text" id="entity_base_name" name="entity_base_name" placeholder="Base name" required="required"%}
+                <div class="col-12 pt-3">
+                    <div class="border">
+                        <h2 class="text-center mb-3">Template</h2>
+                        <div class="row mb-3">
+                            <div class="col input-group">
+                                {% render_field entity_base_form.entity_base_name class="form-control" type="text" id="entity_base_name" placeholder="Base name" required="required"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.race class="form-control" type="text" id="race" placeholder="Race"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.character_class class="form-control" type="text" id="character_class" placeholder="Class"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.character_sub_class class="form-control" type="text" id="character_sub_class" placeholder="Subclass"%}
+                            </div>
                         </div>
-                        <div class="col input-group">
-                            {% render_field entity_base_form.race class="form-control" type="text" id="race" name="race" placeholder="Race"%}
+                        
+                        <div class="row mb-3">
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="max_hit_points">Max HP</span>
+                                {% render_field entity_base_form.max_hit_points class="form-control numeric_input_no_arrows" type="number" id="max_hit_points" placeholder="Max HP"%}
+                            </div>
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="armor_class">Armor Class</span>
+                                {% render_field entity_base_form.armor_class class="form-control numeric_input_no_arrows" type="number" id="armor_class" placeholder="Armor Class"%}
+                            </div>
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="movement_speed">Move Speed</span>
+                                {% render_field entity_base_form.movement_speed class="form-control numeric_input_no_arrows" type="number" id="movement_speed" placeholder="Move Speed"%}
+                            </div>
+                             <div class="col input-group">
+                                <span class="input-group-text col-6" for="masteryt">Mastery</span>
+                                 {% render_field entity_base_form.mastery class="form-control numeric_input_no_arrows" type="number" id="mastery" placeholder="Mastery"%}
+                            </div>
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="dificulty_save_throw">Save Throw</span>
+                                {% render_field entity_base_form.dificulty_save_throw class="form-control numeric_input_no_arrows" type="number" id="dificulty_save_throw" placeholder="Save Throw"%}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col input-group">
+                                {% render_field entity_base_form.alignment class="form-control" type="text" id="alignment" placeholder="Alignment"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.size class="form-control" type="text" id="size" placeholder="Size"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.age class="form-control" type="text" id="age" placeholder="Age"%}
+                            </div>
+                             <div class="col input-group">
+                                {% render_field entity_base_form.height class="form-control" type="text" id="height" placeholder="Height"%}
+                            </div>
+                            <div class="col input-group">
+                                {% render_field entity_base_form.weight class="form-control" type="text" id="weight" placeholder="Weight"%}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col input-group">
-                            {% render_field entity_base_form.character_class class="form-control" type="text" id="class" name="class" placeholder="Class"%}
-                        </div>
-                        <div class="col input-group">
-                            {% render_field entity_base_form.character_sub_class class="form-control" type="text" id="subclass" name="subclass" placeholder="Subclass"%}
+                    <div class="border pt-3">
+                        <div class="row mb-3">
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="level">Level</span>
+                                <input class="form-control numeric_input_no_arrows text-end" type="number" id="level" name="level" value="1">
+                            </div>
+
+                            <div class="col input-group">
+                                <span class="input-group-text col-6" for="experience_points">Exp:</span>
+                                <input class="form-control numeric_input_no_arrows text-end" type="number" id="experience_points" name="experience_points" value="0">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="border pt-3">
-                    <div class="row mb-3">
-                        <div class="col input-group">
-                            <span class="input-group-text col-6" for="level">Level</span>
-                            <input class="form-control numeric_input_no_arrows text-end" type="number" id="level" name="level" value="1">
+                <div class="col-6">
+                    <div class="border pt-3">
+                        <div class="row">
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text col-9" for="strength">Strength:</span>
+                                <input type="number" id="strength" name="strength" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
+
+                            <div class="input-group mb-3 col">
+                                <label class="input-group-text col-9" for="dexterity">Dexterity:</label>
+                                <input type="number" id="dexterity" name="dexterity" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
                         </div>
 
-                        <div class="col input-group">
-                            <span class="input-group-text col-6" for="experience_points">Exp:</span>
-                            <input class="form-control numeric_input_no_arrows text-end" type="number" id="experience_points" name="experience_points" value="0">
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="row">
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text col-9" for="constitution">Constitution:</span>
+                                <input type="number" id="constitution" name="constitution" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
 
-            <div class="col-6">
-                <div class="border pt-3">
-                    <div class="row">
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text col-9" for="strength">Strength:</span>
-                            <input type="number" id="strength" name="strength" value="10" class="form-control numeric_input_no_arrows text-end">
+                            <div class="input-group mb-3 col">
+                                <label class="input-group-text col-9" for="intelligence">Intelligence:</label>
+                                <input type="number" id="intelligence" name="intelligence" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
                         </div>
 
-                        <div class="input-group mb-3 col">
-                            <label class="input-group-text col-9" for="dexterity">Dexterity:</label>
-                            <input type="number" id="dexterity" name="dexterity" value="10" class="form-control numeric_input_no_arrows text-end">
-                        </div>
-                    </div>
+                        <div class="row">
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text col-9" for="wisdom">Wisdom:</span>
+                                <input type="number" id="wisdom" name="wisdom" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
 
-                    <div class="row">
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text col-9" for="constitution">Constitution:</span>
-                            <input type="number" id="constitution" name="constitution" value="10" class="form-control numeric_input_no_arrows text-end">
-                        </div>
-
-                        <div class="input-group mb-3 col">
-                            <label class="input-group-text col-9" for="intelligence">Intelligence:</label>
-                            <input type="number" id="intelligence" name="intelligence" value="10" class="form-control numeric_input_no_arrows text-end">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text col-9" for="wisdom">Wisdom:</span>
-                            <input type="number" id="wisdom" name="wisdom" value="10" class="form-control numeric_input_no_arrows text-end">
-                        </div>
-
-                        <div class="input-group mb-3 col">
-                            <label class="input-group-text col-9" for="charisma">Charisma:</label>
-                            <input type="number" id="charisma" name="charisma" value="10" class="form-control numeric_input_no_arrows text-end">
+                            <div class="input-group mb-3 col">
+                                <label class="input-group-text col-9" for="charisma">Charisma:</label>
+                                <input type="number" id="charisma" name="charisma" value="10" class="form-control numeric_input_no_arrows text-end">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <label for="aligment">Aligment</label>
-                {{entity_base_form.alignment}}
-            </div>
-            <div>
-                <label for="size">Size</label>
-                {{entity_base_form.size}}
-
-                <label for="age">Age:</label>
-                {{entity_base_form.age}}
-
-                <label for="height">Height:</label>
-                {{entity_base_form.height}}
-
-                <label for="weight">Weight:</label>
-                {{entity_base_form.weight}}
-            </div>
-            <div>       
-                <label for="dificulty_save_throw">dificulty save throw:</label>
-                {{entity_base_form.dificulty_save_throw}}
-
-                <label for="mastery">Mastery:</label>
-                {{entity_base_form.mastery}}
                 
-                <label for="max_hit_points">Max hit points:</label>
-                {{entity_base_form.max_hit_points}}
+                <div>
+                    <label for="hit_points">Hit points:</label>
+                    <input type="number" id="hit_points" name="hit_points" value="0"><br><br>
+                </div>
+                <div>
+                    <label for="copper_coins">Copper Coins:</label>
+                    <input type="number" id="copper_coins" name="copper_coins" value="0"><br><br>
 
-                <label for="hit_points">Hit points:</label>
-                <input type="number" id="hit_points" name="hit_points" value="0"><br><br>
+                    <label for="silver_coins">Silver Coins:</label>
+                    <input type="number" id="silver_coins" name="silver_coins" value="0"><br><br>
 
-                <label for="armor_class">Armor Class:</label>
-                {{entity_base_form.armor_class}}
+                    <label for="electrum_coins">Electrum Coins:</label>
+                    <input type="number" id="electrum_coins" name="electrum_coins" value="0"><br><br>
 
-                <label for ="movement_speed">Movement Speed:</label>
-                {{entity_base_form.movement_speed}}
+                    <label for="gold_coins">Gold Coins:</label>
+                    <input type="number" id="gold_coins" name="gold_coins" value="0"><br><br>
+
+                    <label for="platinum_coins">Platinum Coins:</label>
+                    <input type="number" id="platinum_coins" name="platinum_coins" value="0"><br><br>
+                </div>
+
+                <button type="submit">Create Character</button>
             </div>
-            <div>
-                <label for="copper_coins">Copper Coins:</label>
-                <input type="number" id="copper_coins" name="copper_coins" value="0"><br><br>
-
-                <label for="silver_coins">Silver Coins:</label>
-                <input type="number" id="silver_coins" name="silver_coins" value="0"><br><br>
-
-                <label for="electrum_coins">Electrum Coins:</label>
-                <input type="number" id="electrum_coins" name="electrum_coins" value="0"><br><br>
-
-                <label for="gold_coins">Gold Coins:</label>
-                <input type="number" id="gold_coins" name="gold_coins" value="0"><br><br>
-
-                <label for="platinum_coins">Platinum Coins:</label>
-                <input type="number" id="platinum_coins" name="platinum_coins" value="0"><br><br>
-            </div>
-
-            <button type="submit">Create Character</button>
         </form>
-    </div>
 
-    <div>
         <h3>Upload Character JSON</h3>
         <form method="post" action="{% url 'upload_json' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ upload_json_files_form.as_p }}
-            <button type="submit">Upload JSON</button>
+            <div>
+                {% csrf_token %}
+                {{ upload_json_files_form.as_p }}
+                <button type="submit">Upload JSON</button>
+            </div>
         </form> 
     </div>
 </div>
