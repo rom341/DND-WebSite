@@ -8,14 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     selector.addEventListener('change', function() {
         const selectedId = this.value;
         const data = templatesData[selectedId];
-        console.log(data)
         if (data) {
             for (let [htmlId, apiKey] of Object.entries(data)) {
                 const input = document.getElementById(htmlId);
-                console.log(input)
                 if (input) {
                     let val = apiKey;
-                    console.log(val)
                     input.value = (val !== null && val !== undefined) ? val : (input.type === 'number' ? 0 : "");
                 }
             }
