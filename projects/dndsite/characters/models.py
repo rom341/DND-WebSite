@@ -8,6 +8,7 @@ class UniversalManager(models.Manager):
         stats_data = {field: getattr(template, field) for field in field_names if hasattr(template, field)}        
         return self.create(**stats_data)
 
+
 class CharacterSpells(models.Model):
     objects = UniversalManager()
     
@@ -88,7 +89,7 @@ class CharacterStats(models.Model):
 class EntityBase(models.Model):
     objects = UniversalManager()
 
-    character_name = models.CharField(max_length=100)
+    entity_base_name = models.CharField(max_length=100)
     character_class = models.CharField(max_length=15, null=True, blank=True)
     character_sub_class = models.CharField(max_length=15, null=True, blank=True)
     race = models.CharField(max_length=50, null=True, blank=True)
@@ -97,16 +98,40 @@ class EntityBase(models.Model):
     age = models.IntegerField(null=True, blank=True)
     height = models.CharField(max_length=20, null=True, blank=True)
     weight = models.CharField(max_length=20, null=True, blank=True)
-    mastery = models.IntegerField(default=2)
+    mastery = models.IntegerField(default=0)
     dificulty_save_throw = models.IntegerField(default=0)
     max_hit_points = models.IntegerField(default=0)
     armor_class = models.IntegerField(default=0)
     movement_speed = models.IntegerField(default=0)
 
+    def __str__(self):
+            fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
+            return f"EntityBase({', '.join(fields)})"
+
+    def is_equal_to_template(self, template):
+        field_names = [f.name for f in self._meta.fields if not f.primary_key]
+        
+        stats_data = []
+        for field in field_names:
+            if hasattr(template, field):
+                val_self = getattr(self, field)
+                val_temp = getattr(template, field)
+
+                if val_self is None: val_self = ''
+                if val_temp is None: val_temp = ''
+
+                is_equal = str(val_self).strip() == str(val_temp).strip()
+                
+                stats_data.append(is_equal)
+                
+                # print(f"Field: {field} | Base: {val_self} ({type(val_self)}) | Temp: {val_temp} ({type(val_temp)}) | Match: {is_equal}")
+        return all(stats_data)
+
 class Character(models.Model):
     objects = UniversalManager()
     
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
+    character_name = models.CharField(max_length=100)
     entity_base = models.ForeignKey(EntityBase, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
@@ -116,5 +141,5 @@ class Character(models.Model):
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"ID{self.id}: {self.entity_base.character_name} (HP: {self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class})"
+        return f"ID{self.id}: {self.character_name} (HP: {self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class})"
         

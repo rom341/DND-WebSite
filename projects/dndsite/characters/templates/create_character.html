@@ -1,14 +1,20 @@
 {% extends "base.html" %}
-
+{% load static %}
+{% load widget_tweaks %}
 {% block content %}
+    {{ templates_data_json|json_script:"templates-json" }}
+    <script src="{% static "js/create_character_template_select.js" %}"></script>
+
     <div class="container">
         <form method="post">
             {% csrf_token %}
             <h2>Create Character</h2>
             <div class="container">
             <div class="mb-5">
-                <select class="form-select" aria-label="Default select example">
-                    {% for template in all_character_templates %}
+                <select class="form-select" aria-label="Default select example" id="selected_character_base" name="selected_character_base">
+                    <option value="-1" selected="selected">None</option>
+
+                    {% for template in all_character_templates_list %}
                         <option value="{{template.id}}">
                             {{template.character_name}} [{{template.race}}] ({{template.max_hit_points}} HP, {{template.armor_class}} AC)
                         </option>
@@ -20,19 +26,19 @@
                 <div class="border pt-3">
                     <div class="row mb-3">
                         <div class="col input-group">
-                            <input class="form-control" type="text" id="character_name" name="character_name" placeholder="Character name" required>
+                            {% render_field entity_base_form.character_name class="form-control" type="text" id="character_name" name="character_name" placeholder="Character name" required="required"%}
                         </div>
                         <div class="col input-group">
-                            <input class="form-control" type="text" id="race" name="race" placeholder="Race">
+                            {% render_field entity_base_form.race class="form-control" type="text" id="race" name="race" placeholder="Race"%}
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col input-group">
-                            <input class="form-control" type="text" id="class" name="class" placeholder="Class">
+                            {% render_field entity_base_form.character_class class="form-control" type="text" id="class" name="class" placeholder="Class"%}
                         </div>
                         <div class="col input-group">
-                            <input class="form-control" type="text" id="subclass" name="subclass" placeholder="Subclass">
+                            {% render_field entity_base_form.character_sub_class class="form-control" type="text" id="subclass" name="subclass" placeholder="Subclass"%}
                         </div>
                     </div>
                 </div>
@@ -94,30 +100,39 @@
 
             <div>
                 <label for="aligment">Aligment</label>
-                <input type="text" id="aligment" name="aligment"><br><br>
+                {{entity_base_form.alignment}}
             </div>
             <div>
-            <label for="size">Size</label>
-                <input type="text" id="size" name="size"><br><br>
+                <label for="size">Size</label>
+                {{entity_base_form.size}}
 
                 <label for="age">Age:</label>
-                <input type="number" id="age" name="age" value="0"><br><br>
+                {{entity_base_form.age}}
 
                 <label for="height">Height:</label>
-                <input type="text" id="height" name="height"><br><br>
+                {{entity_base_form.height}}
 
                 <label for="weight">Weight:</label>
-                <input type="text" id="weight" name="weight"><br><br>
+                {{entity_base_form.weight}}
             </div>
-            <div>
-                <label for="hit_points">Hit Points:</label>
+            <div>       
+                <label for="dificulty_save_throw">dificulty save throw:</label>
+                {{entity_base_form.dificulty_save_throw}}
+
+                <label for="mastery">Mastery:</label>
+                {{entity_base_form.mastery}}
+                
+                <label for="max_hit_points">Max hit points:</label>
+                {{entity_base_form.max_hit_points}}
+
+                <label for="hit_points">Hit points:</label>
                 <input type="number" id="hit_points" name="hit_points" value="0"><br><br>
 
                 <label for="armor_class">Armor Class:</label>
-                <input type="number" id="armor_class" name="armor_class" value="10"><br><br>
+                {{entity_base_form.armor_class}}
 
                 <label for ="movement_speed">Movement Speed:</label>
-                <input type="number" id="movement_speed" name="movement_speed" value="30"><br><br>
+                {{entity_base_form.movement_speed}}
             </div>
             <div>
                 <label for="copper_coins">Copper Coins:</label>

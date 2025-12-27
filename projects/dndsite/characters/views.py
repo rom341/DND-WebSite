@@ -4,12 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
 from accounts.utils.managers.user_manager import UserManager
+from characters.forms.create_character_form import EntityBaseForm
 from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
 from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, EntityBaseTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
 from characters.utils.managers.character_manager import CharacterManager
-
+from django.forms.models import model_to_dict
+from django.contrib import messages
     
 
 # Create your views here.
@@ -72,7 +74,18 @@ def create_character(request):
                 movement_speed=request.POST.get('movement_speed'),
                 mastery=0
             )
-            new_entity_base = EntityBase.objects.create_from_template(new_entity_base_template)
+            selected_character_base_id = request.POST.get('selected_character_base', -1)
+            selected_character_base = EntityBase.objects.filter(id=selected_character_base_id).first()
+
+            entity_base_form = EntityBaseForm(request.POST)
+            if not entity_base_form.is_valid():
+                messages.info(request, f'{entity_base_form.errors}')
+                return redirect('create_character')
+
+            if selected_character_base and selected_character_base.is_equal_to_template(new_entity_base_template):
+                new_entity_base = selected_character_base
+            else:
+                new_entity_base = entity_base_form.save()
 
             new_character_template = CharacterTemplate(
                 user=request.user,                 
@@ -88,13 +101,19 @@ def create_character(request):
         
         return redirect('main_page')
         
-    all_character_templates = CharacterManager.get_all_character_model_templates()
-    uploadform = JsonUploadForm()
-    data = {
-        'all_character_templates': all_character_templates,
-        'upload_json_files_form': uploadform
-    }
+    all_templates_queryset = CharacterManager.get_all_character_model_templates()
+    templates_dict = {}
+    for t in all_templates_queryset:
+        templates_dict[str(t.id)] = model_to_dict(t)
 
+    uploadform = JsonUploadForm()
+    entity_base_form = EntityBaseForm()
+    data = {
+        'all_character_templates_list': all_templates_queryset, 
+        'templates_data_json': templates_dict,
+        'upload_json_files_form': uploadform,
+        'entity_base_form': entity_base_form
+    }
     return render(request, 'create_character.html', data)
 
 @login_required
