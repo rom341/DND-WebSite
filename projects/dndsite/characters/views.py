@@ -69,7 +69,7 @@ def create_character(request):
                 age=request.POST.get('age'),
                 height=request.POST.get('height'),
                 weight=request.POST.get('weight'),
-                max_hit_points=request.POST.get('hit_points'),
+                max_hit_points=request.POST.get('max_hit_points'),
                 armor_class=request.POST.get('armor_class'), 
                 movement_speed=request.POST.get('movement_speed'),
                 mastery=0
@@ -92,7 +92,7 @@ def create_character(request):
                 entity_base=new_entity_base, 
                 level=request.POST.get('level'),
                 experience=request.POST.get('experience_points'),
-                current_hit_points=request.POST.get('hit_points'),
+                current_hit_points=request.POST.get('max_hit_points'),
                 money=new_money_bag,
                 stats=new_stats,
                 spell_circle_slots=None,
