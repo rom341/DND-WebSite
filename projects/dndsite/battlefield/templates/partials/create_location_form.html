@@ -1,6 +1,6 @@
 <form id="create-location-form"
     hx-post="{% url 'create_location' %}"
-    hx-target="#locations_list"
+    hx-target="#locations-list-wrapper"
     hx-swap="outerHTML">
     {% csrf_token %}
     {{ create_location_form.as_p }}

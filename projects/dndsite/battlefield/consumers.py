@@ -20,7 +20,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         self.chatroom_name = f"lobby_{self.lobby_id}"
         
         # Add user to the websocket lobby
-        async_to_sync(self.channel_layer.lobby_add)(
+        async_to_sync(self.channel_layer.group_add)(
             self.chatroom_name,
             self.channel_name
         )
@@ -30,7 +30,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         #Called when the socket closes
-        async_to_sync(self.channel_layer.lobby_discard)(
+        async_to_sync(self.channel_layer.group_discard)(
             self.chatroom_name,
             self.channel_name
         )
@@ -68,7 +68,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
                     'location_id': self.current_location_id 
                 }
 
-                async_to_sync(self.channel_layer.lobby_send)(
+                async_to_sync(self.channel_layer.group_send)(
                     self.chatroom_name,
                     event
                 )

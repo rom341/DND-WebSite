@@ -79,21 +79,13 @@ def create_location(request):
         lobby = GroupManager.get_lobby_by_id(lobby_id)
         form = CreateLocationForm(request.POST)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
-            rows_count = form.cleaned_data['rows_count']
-            columns_count = form.cleaned_data['columns_count']
-            created_location = LocationManager.create_location(
-                name=name,
-                lobby=lobby,
-                description=description,
-                rows_count=rows_count,
-                columns_count=columns_count
-            )
+            form.instance.lobby = lobby
+            form.save()
             context_container = LocationsListContextContainer(
                 locations_list=LocationManager.get_locations_for_lobby(lobby)
             )
             context = context_container.get_context()
+            print(context)
             return render(request, 'partials/locations_list.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
@@ -138,15 +130,18 @@ def battlefield(request):
     add_character_form = None
     add_user_form = AddUserToGroupForm(lobby=lobby)
     create_location_form = CreateLocationForm()
-    
+
+    locations_list = LocationManager.get_locations_for_lobby(lobby)
+    if locations_list and not current_location_id:
+        current_location_id = locations_list.first().id
+
     if current_location_id:
         selected_location = LocationManager.get_location_by_id(current_location_id)
         
         rows_count = selected_location.rows_count
         cols_count = selected_location.columns_count
         
-        characters_in_current_location = LocationManager.get_characters_in_location(selected_location)
-        locations_list = LocationManager.get_locations_for_lobby(lobby)
+        characters_in_current_location = LocationManager.get_characters_in_location(selected_location)        
         
         characters_available_to_move_for_user = None
         if RoleManager.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
@@ -155,9 +150,7 @@ def battlefield(request):
             characters_available_to_move_for_user = LocationManager.get_characters_in_location_for_user(selected_location, request.user)
         
         move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
-        add_character_form = AddCharacterToGroupForm(lobby=lobby)        
-    else:
-        locations_list = LocationManager.get_locations_for_lobby(lobby)
+        add_character_form = AddCharacterToGroupForm(lobby=lobby)
     
     character_positions_context_container = CharacterPositionContextContainer(
         character_positions=CharacterPositionManager.get_all_character_positions_in_location(selected_location)
