@@ -189,6 +189,5 @@ def battlefield(request):
         location_map_context=location_context_container
     )
     context = battlefield_context_container.get_context()
-    print(context)
     return render(request, 'battlefield.html', context)
     

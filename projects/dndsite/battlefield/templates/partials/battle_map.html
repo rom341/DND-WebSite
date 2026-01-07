@@ -1,50 +1,12 @@
-<style>
-    .grid-cell {
-        aspect-ratio: 1 / 1; 
-        border: 1px solid #555;
-        text-align: center;
-        display: flex; 
-        justify-content: center;
-        align-items: center;
-        background-color: #3e3e3e; 
-        color: white;
-        cursor: pointer;
-    }
-    .token { /* Character token style */
-        background-color: red; 
-        color: white;
-        border-radius: 50%;
-        width: 80%;
-        height: 80%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 0.7em;
-        padding: 2px;
-        overflow: hidden;
-    }
-    #battle-map {
-        width: fit-content;
-        margin: auto;
-        padding: 10px;
-    }
-    #grid-map {
-        width: 100%;
-        border: 2px solid #555; 
-        display: grid;
-        grid-template-columns: repeat({{ cols_count }}, 50px);
-    }
-</style>
-
 <div id="battle-map"> 
     {% if current_location_id %}
-        <div id="grid-map">
+        <div id="grid-map" style="grid-template-columns: repeat({{ cols_count }}, 50px);">
             {% for row in rows_range %}    
                 {% for column in cols_range %}         
                 <div class="grid-cell" data-x="{{ column }}" data-y="{{ row }}">
                     {% for character_position in character_positions %}
                         {% if character_position.column == column and character_position.row == row %}
-                            <div class="token">{{ character_position.character.name }}</div>
+                            <div class="character_mark">{{ character_position.character.name }}</div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -53,3 +15,5 @@
         </div>
     {% endif %}
 </div>
+
+
