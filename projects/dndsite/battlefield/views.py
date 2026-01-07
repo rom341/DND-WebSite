@@ -22,6 +22,25 @@ from lobby.utils.managers.role_manager import RoleManager
 # Create your views here.
 @login_required
 @game_master_required
+def add_user_to_lobby(request):
+    if request.method == 'POST':
+        lobby_id = request.session.get('current_lobby_id')
+        lobby = GroupManager.get_lobby_by_id(lobby_id)
+        user_id = request.POST.get('user_id')
+        user = User.objects.get(id=user_id)
+        form = AddUserToGroupForm(request.POST, lobby=lobby)
+        if form.is_valid():
+            if lobby:
+                GroupManager.add_user_to_lobby(user, lobby)
+                context = {
+                    'users_list': GroupManager.get_users_in_lobby(lobby),
+                }
+                return render(request, 'partials/users_list.html', context)
+    
+    return HttpResponseBadRequest("Invalid request method.")
+
+@login_required
+@game_master_required
 def add_character_to_lobby(request):
     if request.method == 'POST':
         lobby_id = request.session.get('current_lobby_id')
@@ -41,35 +60,28 @@ def add_character_to_lobby(request):
                     row=target_row,
                     column=target_column
                 )
+
+                character_positions_context_container = CharacterPositionContextContainer(
+                    character_positions=CharacterPositionManager.get_all_character_positions_in_location(location)
+                )
+                location_context_container = LocationMapContextContainer(
+                    current_location_id=current_location_id,
+                    rows_count=location.rows_count,
+                    cols_count=location.columns_count,
+                    characters_list=LocationManager.get_characters_in_location(location),
+                    character_position_context=character_positions_context_container
+                )
                 context_container = BattlefieldContextContainer(
                     current_lobby_id=lobby_id,
                     current_lobby=lobby,
                     characters_list=GroupManager.get_characters_in_lobby(lobby),
+                    location_map_context=location_context_container,
                     add_character_form=form
                 )
                 context = context_container.get_context()
                 return render(request, 'partials/battle_map.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
-
-@login_required
-@game_master_required
-def add_user_to_lobby(request):
-    if request.method == 'POST':
-        lobby_id = request.session.get('current_lobby_id')
-        lobby = GroupManager.get_lobby_by_id(lobby_id)
-        user_id = request.POST.get('user_id')
-        user = User.objects.get(id=user_id)
-        form = AddUserToGroupForm(request.POST, lobby=lobby)
-        if form.is_valid():
-            if lobby:
-                GroupManager.add_user_to_lobby(user, lobby)
-                context = {
-                    'users_list': GroupManager.get_users_in_lobby(lobby),
-                }
-                return render(request, 'partials/users_list.html', context)
-    
-    return HttpResponseBadRequest("Invalid request method.")
 
 @login_required
 @game_master_required
@@ -177,5 +189,6 @@ def battlefield(request):
         location_map_context=location_context_container
     )
     context = battlefield_context_container.get_context()
+    print(context)
     return render(request, 'battlefield.html', context)
     

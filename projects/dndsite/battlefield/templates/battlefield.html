@@ -10,6 +10,7 @@
 {% endif %}
 
 {% block content %}
+    {{ character_positions_dict|json_script:"characters-positions" }}
     <div class="container my-4">
         
         <div class="row justify-content-center">
@@ -83,25 +84,37 @@
     </div>
     
     <script>
+    
+
     document.addEventListener('click', function(event) {
+        const dataElement = document.getElementById('characters-positions');
+        const character_positions = JSON.parse(dataElement.textContent);
+        if (character_positions == undefined) {
+            console.log("No character position data")
+            return;
+        }
+
         const clickedCell = event.target.closest('.grid-cell');
         if (!clickedCell || !clickedCell.closest('#battle-map')) {
             return;
         }
-        console.log('Clicked element:', clickedCell);
         const x = clickedCell.dataset.x;
         const y = clickedCell.dataset.y;
-        console.log('Clicked position - x:', x, 'y:', y);
         if (x !== undefined && y !== undefined) {
+            const inputName = document.getElementById('id_name');
             const inputX = document.getElementById('id_column');
             const inputY = document.getElementById('id_row');
 
             if (inputX && inputY) {
                 inputX.value = x;
                 inputY.value = y;
-                console.log('Position x and Position y fields updated.');
+            }
+            found_character = character_positions.find(pos => pos.col == x && pos.row == y);
+            if(found_character && inputName){
+                inputName.value = found_character.id;
             }
         }
+
     });
     </script>
 
