@@ -1,0 +1,10 @@
+<div id="character-list">
+    <h3>Charcters</h3>
+    <ul>
+        {% for character in characters_list %}
+            <li>{{ character.character_name }}</li>
+        {% empty %}
+            <li>No characters in this lobby.</li>
+        {% endfor %}
+    </ul>
+</div>

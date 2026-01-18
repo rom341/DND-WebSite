@@ -6,7 +6,7 @@
                 <div class="grid-cell" data-x="{{ column }}" data-y="{{ row }}">
                     {% for character_position in character_positions %}
                         {% if character_position.column == column and character_position.row == row %}
-                            <div class="character_mark">{{ character_position.character.name }}</div>
+                            <div class="character_mark">{{ character_position.character.character_name }}</div>
                         {% endif %}
                     {% endfor %}
                 </div>

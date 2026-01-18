@@ -13,8 +13,8 @@
     background-color: red; 
     color: white;
     border-radius: 50%;
-    width: 80%;
-    height: 80%;
+    width: 95%;
+    height: 95%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,12 +23,15 @@
     overflow: hidden;
 }
 #battle-map {
+    max-height: 900px;
+    max-width: 100%;
     width: fit-content;
-    margin: auto;
+    overflow-y: auto;
+    overflow-x: auto;
     padding: 10px;
 }
 #grid-map {
     width: 100%;
-    border: 2px solid #555; 
+    /* border: 2px solid #555;  */
     display: grid;
 }
