@@ -6,15 +6,12 @@
 
             <label for="all_user_characters">Choose Character:</label>
 
+            <div class="contaner">
+                <div class="row m-4">
                 {% for character in all_user_characters %}
-                 <div>
-                    <label>Name: {{character.name}}</label><br>
-                    <label>race: {{character.rece}}</label><br>
-                    <label>Class: {{character.character_class}}</label><br>
-                    <label>level: {{character.level}}</label><br>
-                    <label>current HP: {{character.current_hit_points}}</label><br>    
-                 </div>
-                 <br>
+                    {% include "partials/character_stats_widget.html" %}
                 {% endfor %}
+                </div>
+            </div>
     </div>
 {% endblock %}

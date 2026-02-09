@@ -1,0 +1,14 @@
+<div class="card border-3 border-info m-1" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{% firstof character.character_name "Unknown" %} </h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{character.entity_base.race}}</h6>
+    {% comment %} <a href="#" class="card-link">Card link</a>
+    <a href="#" class="card-link">Another link</a> {% endcomment %}
+
+    <label>level: {{character.level}}</label><br>
+
+    <label>HP: {{character.current_hit_points}}</label>
+    <label>AC: {{character.entity_base.armor_class}}</label>
+    <label>MS: {{character.entity_base.movement_speed}}</label>
+  </div>
+</div>
