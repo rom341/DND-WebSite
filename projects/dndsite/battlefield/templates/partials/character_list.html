@@ -1,10 +1,22 @@
 <div id="character-list">
     <h3>Charcters</h3>
-    <ul>
-        {% for character in characters_list %}
-            <li>{{ character.character_name }}</li>
+    <div id="battlefield_characters_list" class="accordion">
+        {% for character_position in character_positions %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-{{forloop.counter0}}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter0}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter0}}">
+                    {{character_position.character.character_name}} at ({{character_position.row}}:{{character_position.column}})
+                </button>
+                </h2>
+
+                <div id="collapse-{{forloop.counter0}}" class="accordion-collapse collapse" aria-labelledby="heading-{{forloop.counter0}}" data-bs-parent="#battlefield_characters_list">
+                    {% with character=character_position.character %}
+                        {%include "partials/character_stats_widget.html"%}
+                    {% endwith %}
+                </div>
+            </div>
         {% empty %}
             <li>No characters in this lobby.</li>
         {% endfor %}
-    </ul>
+    </div>
 </div>
