@@ -2,7 +2,7 @@ class BattlefieldContextContainer:
     """Class to encapsulate battle context data"""
     def __init__(self, current_lobby_id, current_lobby=None,
                  locations_list=None, users_list=None,
-                 move_character_form=None, add_character_form=None, add_user_form=None, create_location_form=None,
+                 move_character_form=None, add_character_form=None, add_user_form=None, create_location_form=None, add_npc_form=None,
                  location_map_context=None
                  ):
         self.current_lobby_id = current_lobby_id
@@ -11,6 +11,7 @@ class BattlefieldContextContainer:
         self.users_list = users_list if users_list is not None else []
         self.move_character_form = move_character_form
         self.add_character_form = add_character_form
+        self.add_npc_form = add_npc_form
         self.add_user_form = add_user_form
         self.create_location_form = create_location_form
         self.location_map_context = location_map_context

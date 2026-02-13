@@ -49,6 +49,11 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-npc-tab" data-bs-toggle="tab" data-bs-target="#add-npc-pane" type="button" role="tab" aria-controls="add-npc-pane" aria-selected="false">
+                            Add NPC
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="add-user-tab" data-bs-toggle="tab" data-bs-target="#add-user-pane" type="button" role="tab" aria-controls="add-user-pane" aria-selected="false">
                             Add User
                         </button>
@@ -68,12 +73,17 @@
                     </div>
 
                     <div class="tab-pane fade" id="add-char-pane" role="tabpanel" aria-labelledby="add-char-tab" tabindex="0">
-                        <h4>Add Character to Group</h4>
+                        <h4>Add Character to lobby</h4>
                         {% include 'partials/add_character_to_lobby_form.html' %}
                     </div>
 
+                    <div class="tab-pane fade" id="add-npc-pane" role="tabpanel" aria-labelledby="add-npc-tab" tabindex="0">
+                        <h4>Add NPC to lobby</h4>
+                        {% include 'partials/add_npc_to_lobby_form.html' %}
+                    </div>
+
                     <div class="tab-pane fade" id="add-user-pane" role="tabpanel" aria-labelledby="add-user-tab" tabindex="0">
-                        <h4>Add User to Group</h4>
+                        <h4>Add User to lobby</h4>
                         {% include 'partials/add_user_to_lobby_form.html' %}
                     </div>
 

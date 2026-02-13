@@ -1,0 +1,9 @@
+<form id="add-npc-to-lobby-form"
+    hx-post="{% url 'add_npc_to_lobby' %}"
+    hx-target="#battle-map"
+    hx-swap="outerHTML">
+    {% csrf_token %}
+    {{ add_npc_form.as_p }}
+    <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
+    <button type="submit" class="btn btn-primary mt-2">Add NPC</button>
+</form>

@@ -2,7 +2,7 @@ from battlefield.models import Location
 from characters.models import Character
 
 
-class LocationManager:
+class LocationController:
     @staticmethod
     def create_location(name, lobby, description="", rows_count=10, columns_count=10):
         location = Location(name=name, lobby=lobby, description=description, rows_count=rows_count, columns_count=columns_count)
@@ -26,7 +26,7 @@ class LocationManager:
     
     @staticmethod
     def get_characters_in_location_for_user(location, user):
-        if LocationManager.is_user_has_access_to_location(user, location):
+        if LocationController.is_user_has_access_to_location(user, location):
             return Character.objects.filter(
                 positions__location=location,
                 user=user
@@ -39,7 +39,7 @@ class LocationManager:
     
     @staticmethod
     def delete_location(location_id):
-        location = LocationManager.get_location_by_id(location_id)
+        location = LocationController.get_location_by_id(location_id)
         if location:
             location.delete()
             return True

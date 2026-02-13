@@ -4,10 +4,9 @@ from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
-from battlefield.utils.managers.character_position_manager import CharacterPositionManager
-from battlefield.utils.managers.location_manager import LocationManager
-from characters.utils.managers.character_manager import CharacterManager
-from lobby.utils.managers.lobby_manager import GroupManager
+from battlefield.utils.controllers.character_position_manager import CharacterPositionController
+from battlefield.utils.controllers.location_manager import LocationController
+from lobby.utils.managers.lobby_manager import LobbyController
 from battlefield.utils.ruler import ruler
 
 class MoveCharacterConsumer(WebsocketConsumer):
@@ -15,7 +14,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         #Initiates once when user connects
         self.user = self.scope["user"]
         self.lobby_id = self.scope['url_route']['kwargs']['current_lobby_id']
-        self.lobby = GroupManager.get_lobby_by_id(self.lobby_id)
+        self.lobby = LobbyController.get_lobby_by_id(self.lobby_id)
         self.current_location_id = None
         self.chatroom_name = f"lobby_{self.lobby_id}"
         
@@ -43,10 +42,10 @@ class MoveCharacterConsumer(WebsocketConsumer):
         character_id = text_data_json.get('name')
         
         self.current_location_id = text_data_json.get('current_location_id')
-        current_location = LocationManager.get_location_by_id(self.current_location_id)
+        current_location = LocationController.get_location_by_id(self.current_location_id)
 
-        character = CharacterManager.get_character_by_id(character_id)
-        character_position = CharacterPositionManager.get_character_position_in_location(
+        character = Characters.objects.get_character_by_id(character_id)
+        character_position = CharacterPositionController.get_character_position_in_location(
             character,
             current_location
         )
@@ -54,9 +53,9 @@ class MoveCharacterConsumer(WebsocketConsumer):
         requested_distance = ruler(character_position.column, character_position.row, new_pos_column, new_pos_row)
         allowed_distance = character.entity_base.movement_speed / 5
         if allowed_distance >= requested_distance:
-            if not CharacterPositionManager.is_position_occupied(current_location, new_pos_row, new_pos_column):
+            if not CharacterPositionController.is_position_occupied(current_location, new_pos_row, new_pos_column):
                 
-                CharacterPositionManager.move_character(
+                CharacterPositionController.move_character(
                     character,
                     current_location,
                     new_pos_row,
@@ -78,11 +77,11 @@ class MoveCharacterConsumer(WebsocketConsumer):
         if not current_location_id:
             return
             
-        location = LocationManager.get_location_by_id(current_location_id)
-        characters = LocationManager.get_characters_in_location(location)
+        location = LocationController.get_location_by_id(current_location_id)
+        characters = LocationController.get_characters_in_location(location)
         
         character_positions_context_container = CharacterPositionContextContainer(
-            character_positions=CharacterPositionManager.get_all_character_positions_in_location(location)
+            character_positions=CharacterPositionController.get_all_character_positions_in_location(location)
         )
         
         context_container = LocationMapContextContainer(

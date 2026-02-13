@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from characters.models import Character
 from lobby.models import DefaultRoles, Lobby, LobbyMembershipCharacter, LobbyMembershipUser, LobbyRole
 
-class GroupManager:
+class LobbyController:
     @staticmethod
     def create_lobby(name) -> Lobby:
         lobby = Lobby(name=name)
@@ -86,4 +86,4 @@ class GroupManager:
         
     @staticmethod
     def is_position_occupied(lobby, x, y):
-        return GroupManager.get_characters_on_position(lobby, x, y).exists()
+        return LobbyController.get_characters_on_position(lobby, x, y).exists()

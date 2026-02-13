@@ -9,7 +9,6 @@ from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
 from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, EntityBaseTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
-from characters.utils.managers.character_manager import CharacterManager
 from django.forms.models import model_to_dict
 from django.contrib import messages
     
@@ -101,7 +100,7 @@ def create_character(request):
         
         return redirect('main_page')
         
-    all_templates_queryset = CharacterManager.get_all_character_model_templates()
+    all_templates_queryset = EntityBaseController.get_all_character_model_templates()
     templates_dict = {}
     for t in all_templates_queryset:
         templates_dict[str(t.id)] = model_to_dict(t)

@@ -1,16 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-class UniversalManager(models.Manager):
-    def create_from_template(self, template):
-        field_names = [f.name for f in self.model._meta.fields if not f.primary_key]
-        stats_data = {field: getattr(template, field) for field in field_names if hasattr(template, field)}        
-        return self.create(**stats_data)
+from base.managers.UniversalManager import UniversalManager
 
+# Create your models here.
+
+class CharacterController(UniversalManager):
+    @staticmethod
+    def get_character_by_id(character_id: int):
+        return Character.objects.get(id=character_id)
+    
+class EntityBaseController(UniversalManager):
+    @staticmethod
+    def get_all_character_model_templates():
+        return EntityBase.objects.all()
+    
+    @staticmethod
+    def add_npc(entity_base_id: int):
+        EntityBase.objects.create()
 
 class CharacterSpells(models.Model):
-    objects = UniversalManager()
+    objects: UniversalManager = UniversalManager()
     
     spell_name = models.CharField(max_length=50)
     atack_roll = models.CharField(max_length=10)
@@ -25,7 +35,7 @@ class CharacterSpells(models.Model):
          return f"ID{self.id}: {self.spell_name}"
 
 class CharacterSkills(models.Model):
-    objects = UniversalManager()
+    objects: UniversalManager = UniversalManager()
     
     skill_name = models.CharField(max_length=50)
     atack_roll = models.CharField(max_length=10)
@@ -40,7 +50,7 @@ class CharacterSkills(models.Model):
          return f"ID{self.id}: {self.skill_name}"
 
 class CharacterSpellCircleSlots(models.Model):
-    objects = UniversalManager()
+    objects: UniversalManager = UniversalManager()
     
     circle_1 = models.IntegerField(default=0)
     circle_2 = models.IntegerField(default=0)
@@ -56,7 +66,7 @@ class CharacterSpellCircleSlots(models.Model):
         return f"ID{self.id}: Circles Slots - 1:{self.circle_1}, 2:{self.circle_2}, 3:{self.circle_3}, 4:{self.circle_4}, 5:{self.circle_5}, 6:{self.circle_6}, 7:{self.circle_7}, 8:{self.circle_8}, 9:{self.circle_9}"
     
 class CharacterMoney(models.Model):
-    objects = UniversalManager()
+    objects: UniversalManager = UniversalManager()
     
     copper_coins = models.IntegerField(default=0)
     silver_coins = models.IntegerField(default=0)
@@ -68,7 +78,7 @@ class CharacterMoney(models.Model):
         return f"ID{self.id}: {self.copper_coins} CC, {self.silver_coins} SC, {self.electrum_coins} EC, {self.gold_coins} GC, {self.platinum_coins} PC"
 
 class CharacterStats(models.Model):
-    objects = UniversalManager()
+    objects: UniversalManager = UniversalManager()
     
     strength = models.IntegerField(default=0)
     """Main character stat СИЛА"""
@@ -87,7 +97,7 @@ class CharacterStats(models.Model):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
 class EntityBase(models.Model):
-    objects = UniversalManager()
+    objects: EntityBaseController = EntityBaseController()
 
     entity_base_name = models.CharField(max_length=100)
     character_class = models.CharField(max_length=15, null=True, blank=True)
@@ -128,7 +138,7 @@ class EntityBase(models.Model):
         return all(stats_data)
 
 class Character(models.Model):
-    objects = UniversalManager()
+    objects: CharacterController = CharacterController()
     
     user = models.ForeignKey(User, related_name='characters', on_delete=models.CASCADE)
     character_name = models.CharField(max_length=100)

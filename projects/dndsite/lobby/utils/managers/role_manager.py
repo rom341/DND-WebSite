@@ -1,7 +1,7 @@
 from lobby.models import LobbyMembershipUser, LobbyRole
 
 
-class RoleManager:
+class RoleController:
     @staticmethod
     def get_role_by_name(role_name):
         try:

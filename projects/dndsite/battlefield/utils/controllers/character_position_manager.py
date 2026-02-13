@@ -1,7 +1,7 @@
 from battlefield.models import CharacterPosition
 
 
-class CharacterPositionManager:
+class CharacterPositionController:
     @staticmethod
     def set_character_position(character, location, row, column):
         char_pos, created = CharacterPosition.objects.get_or_create(character=character, location=location)
@@ -27,7 +27,7 @@ class CharacterPositionManager:
     
     @staticmethod
     def move_character(character, location, new_row, new_column):
-        character_position = CharacterPositionManager.get_character_position_in_location(character, location)
+        character_position = CharacterPositionController.get_character_position_in_location(character, location)
         if character_position:
             character_position.row = new_row
             character_position.column = new_column
