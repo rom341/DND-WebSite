@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
-from accounts.utils.managers.user_manager import UserManager
+from accounts.models import UserManager
 from characters.forms.create_character_form import EntityBaseForm
 from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
@@ -100,7 +100,7 @@ def create_character(request):
         
         return redirect('main_page')
         
-    all_templates_queryset = EntityBaseController.get_all_character_model_templates()
+    all_templates_queryset = EntityBase.objects.get_all_character_model_templates()
     templates_dict = {}
     for t in all_templates_queryset:
         templates_dict[str(t.id)] = model_to_dict(t)

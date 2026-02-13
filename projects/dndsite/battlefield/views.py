@@ -7,13 +7,12 @@ from battlefield.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from battlefield.forms.add_user_to_lobby_form import AddUserToGroupForm
 from battlefield.forms.create_location_form import CreateLocationForm
 from battlefield.forms.move_character_form import MoveCharacterForm
+from battlefield.models import CharacterPosition, Location
 from battlefield.utils.contexts.battle_context import BattlefieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
 from battlefield.utils.contexts.locations_list_context import LocationsListContextContainer
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
-from battlefield.utils.controllers.character_position_manager import CharacterPositionController
-from battlefield.utils.controllers.location_manager import LocationController
 from characters.models import Character
 from lobby.models import DefaultRoles
 from lobby.utils.managers.lobby_manager import LobbyController
@@ -52,10 +51,10 @@ def add_character_to_lobby(request):
         if form.is_valid():
             if lobby:
                 current_location_id = request.POST.get('location_id')
-                location = LocationController.get_location_by_id(current_location_id)
+                location = Location.objects.get_location_by_id(current_location_id)
                 target_row = form.cleaned_data['target_row']
                 target_column = form.cleaned_data['target_column']
-                CharacterPositionController.set_character_position(
+                CharacterPosition.objects.set_character_position(
                     character=character,
                     location=location,
                     row=target_row,
@@ -63,13 +62,13 @@ def add_character_to_lobby(request):
                 )
 
                 character_positions_context_container = CharacterPositionContextContainer(
-                    character_positions=CharacterPositionController.get_all_character_positions_in_location(location)
+                    character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
                 )
                 location_context_container = LocationMapContextContainer(
                     current_location_id=current_location_id,
                     rows_count=location.rows_count,
                     cols_count=location.columns_count,
-                    characters_list=LocationController.get_characters_in_location(location),
+                    characters_list=Location.objects.get_characters_in_location(location),
                     character_position_context=character_positions_context_container
                 )
                 context_container = BattlefieldContextContainer(
@@ -139,7 +138,7 @@ def create_location(request):
             form.instance.lobby = lobby
             form.save()
             context_container = LocationsListContextContainer(
-                locations_list=LocationController.get_locations_for_lobby(lobby)
+                locations_list=Location.objects.get_locations_for_lobby(lobby)
             )
             context = context_container.get_context()
             print(context)
@@ -150,12 +149,12 @@ def create_location(request):
 def select_location(request):
     if request.method == 'POST':
         location_id = request.POST.get('location_id')
-        location = LocationController.get_location_by_id(location_id)
-        if location and LocationController.is_user_has_access_to_location(request.user, location):
+        location = Location.objects.get_location_by_id(location_id)
+        if location and Location.objects.is_user_has_access_to_location(request.user, location):
             request.session['current_location_id'] = location.id
             
             character_positions_context_container = CharacterPositionContextContainer(
-                character_positions=CharacterPositionController.get_all_character_positions_in_location(location)
+                character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
             )
             
             location_map_context_container = LocationMapContextContainer(
@@ -163,7 +162,7 @@ def select_location(request):
                 current_location=location,
                 rows_count=location.rows_count,
                 cols_count=location.columns_count,
-                characters_list=LocationController.get_characters_in_location(location),
+                characters_list=Location.objects.get_characters_in_location(location),
                 character_position_context=character_positions_context_container
             )
             context = location_map_context_container.get_context()
@@ -189,30 +188,30 @@ def battlefield(request):
     add_user_form = AddUserToGroupForm(lobby=lobby)
     create_location_form = CreateLocationForm()
 
-    locations_list = LocationController.get_locations_for_lobby(lobby)
+    locations_list = Location.objects.get_locations_for_lobby(lobby)
     if locations_list and not current_location_id:
         current_location_id = locations_list.first().id
 
     if current_location_id:
-        selected_location = LocationController.get_location_by_id(current_location_id)
+        selected_location = Location.objects.get_location_by_id(current_location_id)
         
         rows_count = selected_location.rows_count
         cols_count = selected_location.columns_count
         
-        characters_in_current_location = LocationController.get_characters_in_location(selected_location)        
+        characters_in_current_location = Location.objects.get_characters_in_location(selected_location)        
         
         characters_available_to_move_for_user = None
         if RoleController.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
             characters_available_to_move_for_user = characters_in_current_location
         else:        
-            characters_available_to_move_for_user = LocationController.get_characters_in_location_for_user(selected_location, request.user)
+            characters_available_to_move_for_user = Location.objects.get_characters_in_location_for_user(selected_location, request.user)
         
         move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
         add_character_form = AddCharacterToGroupForm(lobby=lobby)
         add_npc_form = AddNPCToLobbyForm(lobby=lobby)
     
     character_positions_context_container = CharacterPositionContextContainer(
-        character_positions=CharacterPositionController.get_all_character_positions_in_location(selected_location)
+        character_positions=CharacterPosition.objects.get_all_character_positions_in_location(selected_location)
     )
     
     location_context_container = LocationMapContextContainer(

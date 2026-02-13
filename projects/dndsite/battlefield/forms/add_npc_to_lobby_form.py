@@ -1,6 +1,5 @@
 from django import forms
 from battlefield.models import Location
-from battlefield.utils.controllers.location_manager import LocationController
 from characters.models import EntityBase
 
 class AddNPCToLobbyForm(forms.Form):
@@ -17,7 +16,7 @@ class AddNPCToLobbyForm(forms.Form):
             
             # Filter characters to only those whose users are in the lobby and not already in the lobby
             self.fields['entity_base_id'].queryset = entities
-            self.fields['location_id'].queryset = LocationController.get_locations_for_lobby(lobby)
+            self.fields['location_id'].queryset = Location.objects.get_locations_for_lobby(lobby)
         else:
             self.fields['entity_base_id'].queryset = EntityBase.objects.none()
             self.fields['location_id'].queryset = Location.objects.none()
