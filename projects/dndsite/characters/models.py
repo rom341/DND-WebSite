@@ -4,21 +4,6 @@ from django.contrib.auth.models import User
 from base.managers.UniversalManager import UniversalManager
 
 # Create your models here.
-
-class CharacterController(UniversalManager):
-    @staticmethod
-    def get_character_by_id(character_id: int):
-        return Character.objects.get(id=character_id)
-    
-class EntityBaseController(UniversalManager):
-    @staticmethod
-    def get_all_character_model_templates():
-        return EntityBase.objects.all()
-    
-    @staticmethod
-    def add_npc(entity_base_id: int):
-        EntityBase.objects.create()
-
 class CharacterSpells(models.Model):
     objects: UniversalManager = UniversalManager()
     
@@ -96,6 +81,20 @@ class CharacterStats(models.Model):
     def __str__(self):
         return f"ID{self.id}: str {self.strength}, dex {self.dexterity}, con {self.constitution}, int  {self.intelligence}, wis {self.wisdom}, cha {self.charisma}"
 
+
+class EntityBaseController(UniversalManager):
+    def get_by_id(self, id: int):
+        return EntityBase.objects.get(id=id)
+    
+    def get_all_entity_bases(self):
+        return EntityBase.objects.all()
+    
+    def create_npc(self, user: User, entity_base: "EntityBase", count: int = 1):
+        created = []
+        for i in range(count):
+            created.append(Character.objects.create_character_for_npc(user, entity_base))
+        return created
+
 class EntityBase(models.Model):
     objects: EntityBaseController = EntityBaseController()
 
@@ -137,6 +136,38 @@ class EntityBase(models.Model):
                 # print(f"Field: {field} | Base: {val_self} ({type(val_self)}) | Temp: {val_temp} ({type(val_temp)}) | Match: {is_equal}")
         return all(stats_data)
 
+class CharacterController(UniversalManager):
+    def get_character_by_id(self, character_id: int):
+        return Character.objects.get(id=character_id)
+    
+    def create_character(
+        self,
+        user: User,
+        character_name: str,
+        entity_base_id: int,
+        level: int = 1,
+        experience: int = 0,
+        current_hit_points: int = 0,
+        is_npc: bool = False,
+        money: CharacterMoney = None,
+        stats: CharacterStats = None,
+        spell_circle_slots: CharacterSpellCircleSlots = None
+        ):
+        return self.create(user=user, character_name=character_name, entity_base_id=entity_base_id, level=level, experience=experience, current_hit_points=current_hit_points, is_npc=is_npc, money=money, stats=stats, spell_circle_slots=spell_circle_slots)
+        
+    def create_character_for_npc(
+            self,
+            user: User,
+            entity_base: EntityBase           
+            ):
+        return self.create_character(
+            user,
+            f"npc_{entity_base.entity_base_name}",
+            entity_base.id,
+            current_hit_points=entity_base.max_hit_points,
+            is_npc=True
+        )
+
 class Character(models.Model):
     objects: CharacterController = CharacterController()
     
@@ -146,6 +177,7 @@ class Character(models.Model):
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
     current_hit_points = models.IntegerField(default=0)
+    is_npc = models.BooleanField(default=False)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)

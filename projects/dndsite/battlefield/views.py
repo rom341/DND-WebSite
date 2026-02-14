@@ -13,10 +13,8 @@ from battlefield.utils.contexts.character_position_context import CharacterPosit
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
 from battlefield.utils.contexts.locations_list_context import LocationsListContextContainer
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
-from characters.models import Character
-from lobby.models import DefaultRoles
-from lobby.utils.managers.lobby_manager import LobbyController
-from lobby.utils.managers.role_manager import RoleController
+from characters.models import Character, EntityBase
+from lobby.models import DefaultRoles, Lobby, LobbyRole
 
 
 # Create your views here.
@@ -25,15 +23,15 @@ from lobby.utils.managers.role_manager import RoleController
 def add_user_to_lobby(request):
     if request.method == 'POST':
         lobby_id = request.session.get('current_lobby_id')
-        lobby = LobbyController.get_lobby_by_id(lobby_id)
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
         user_id = request.POST.get('user_id')
         user = User.objects.get(id=user_id)
         form = AddUserToGroupForm(request.POST, lobby=lobby)
         if form.is_valid():
             if lobby:
-                LobbyController.add_user_to_lobby(user, lobby)
+                Lobby.objects.add_user_to_lobby(user, lobby)
                 context = {
-                    'users_list': LobbyController.get_users_in_lobby(lobby),
+                    'users_list': Lobby.objects.get_users_in_lobby(lobby),
                 }
                 return render(request, 'partials/users_list.html', context)
     
@@ -44,7 +42,7 @@ def add_user_to_lobby(request):
 def add_character_to_lobby(request):
     if request.method == 'POST':
         lobby_id = request.session.get('current_lobby_id')
-        lobby = LobbyController.get_lobby_by_id(lobby_id)
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
         character_id = request.POST.get('character_id')
         character = Character.objects.get_character_by_id(character_id)
         form = AddCharacterToGroupForm(request.POST, lobby=lobby)
@@ -74,7 +72,6 @@ def add_character_to_lobby(request):
                 context_container = BattlefieldContextContainer(
                     current_lobby_id=lobby_id,
                     current_lobby=lobby,
-                    characters_list=LobbyController.get_characters_in_lobby(lobby),
                     location_map_context=location_context_container,
                     add_character_form=form
                 )
@@ -88,42 +85,43 @@ def add_character_to_lobby(request):
 def add_npc_to_lobby(request):
     if request.method == 'POST':
         lobby_id = request.session.get('current_lobby_id')
-        lobby = LobbyController.get_lobby_by_id(lobby_id)
-        entity_base_id = request.POST.get('character_id')
-        #entity_base = Characters.objects.get_character_by_id(entity_base_id)
-        # form = AddCharacterToGroupForm(request.POST, lobby=lobby)
-        # if form.is_valid():
-        #     if lobby:
-        #         current_location_id = request.POST.get('location_id')
-        #         location = LocationManager.get_location_by_id(current_location_id)
-        #         target_row = form.cleaned_data['target_row']
-        #         target_column = form.cleaned_data['target_column']
-        #         CharacterPositionManager.set_character_position(
-        #             character=entity_base,
-        #             location=location,
-        #             row=target_row,
-        #             column=target_column
-        #         )
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
+        form = AddNPCToLobbyForm(request.POST, lobby=lobby)
+        if form.is_valid():
+            if lobby:
+                entity_base = form.cleaned_data.get('entity_base')
+                count = form.cleaned_data.get('count', 0)
+                location = form.cleaned_data.get("location")
+                created_characters_npc_list = EntityBase.objects.create_npc(request.user, entity_base, count)
+                
+                target_row = 0
+                target_column = 0
+                for character in created_characters_npc_list:
+                    CharacterPosition.objects.set_character_position(
+                        character=character,
+                        location=location,
+                        row=target_row,
+                        column=target_column
+                    )
 
-        #         character_positions_context_container = CharacterPositionContextContainer(
-        #             character_positions=CharacterPositionManager.get_all_character_positions_in_location(location)
-        #         )
-        #         location_context_container = LocationMapContextContainer(
-        #             current_location_id=current_location_id,
-        #             rows_count=location.rows_count,
-        #             cols_count=location.columns_count,
-        #             characters_list=LocationManager.get_characters_in_location(location),
-        #             character_position_context=character_positions_context_container
-        #         )
-        #         context_container = BattlefieldContextContainer(
-        #             current_lobby_id=lobby_id,
-        #             current_lobby=lobby,
-        #             characters_list=GroupManager.get_characters_in_lobby(lobby),
-        #             location_map_context=location_context_container,
-        #             add_character_form=form
-        #         )
-        #         context = context_container.get_context()
-        #         return render(request, 'partials/battle_map.html', context)
+                character_positions_context_container = CharacterPositionContextContainer(
+                    character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location=location)
+                )
+                location_context_container = LocationMapContextContainer(
+                    current_location_id=location.id,
+                    rows_count=location.rows_count,
+                    cols_count=location.columns_count,
+                    characters_list=Location.objects.get_characters_in_location(location=location),
+                    character_position_context=character_positions_context_container
+                )
+                context_container = BattlefieldContextContainer(
+                    current_lobby_id=lobby_id,
+                    current_lobby=lobby,
+                    location_map_context=location_context_container,
+                    add_character_form=form
+                )
+                context = context_container.get_context()
+                return render(request, 'partials/battle_map.html', context)
     else:
         return HttpResponseBadRequest("Invalid request method.")
 
@@ -132,7 +130,7 @@ def add_npc_to_lobby(request):
 def create_location(request):
     if request.method == 'POST':
         lobby_id = request.session.get('current_lobby_id')
-        lobby = LobbyController.get_lobby_by_id(lobby_id)
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
         form = CreateLocationForm(request.POST)
         if form.is_valid():
             form.instance.lobby = lobby
@@ -174,7 +172,7 @@ def select_location(request):
 @lobby_membership_required
 def battlefield(request):    
     current_lobby_id = request.session.get('current_lobby_id')
-    lobby = LobbyController.get_lobby_by_id(current_lobby_id)  
+    lobby = Lobby.objects.get_lobby_by_id(current_lobby_id)  
     current_location_id = request.session.get('current_location_id')
     
     characters_in_current_location = []
@@ -201,10 +199,10 @@ def battlefield(request):
         characters_in_current_location = Location.objects.get_characters_in_location(selected_location)        
         
         characters_available_to_move_for_user = None
-        if RoleController.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
+        if LobbyRole.objects.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
             characters_available_to_move_for_user = characters_in_current_location
         else:        
-            characters_available_to_move_for_user = Location.objects.get_characters_in_location_for_user(selected_location, request.user)
+            characters_available_to_move_for_user = Location.objects.get_characters_in_location_for_user(user=request.user, location=selected_location)
         
         move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
         add_character_form = AddCharacterToGroupForm(lobby=lobby)
@@ -227,7 +225,7 @@ def battlefield(request):
         current_lobby_id=current_lobby_id,
         current_lobby=lobby,
         locations_list=locations_list,
-        users_list=LobbyController.get_users_in_lobby(lobby),
+        users_list=Lobby.objects.get_users_in_lobby(lobby),
         move_character_form=move_character_form,
         add_character_form=add_character_form,
         add_npc_form=add_npc_form,

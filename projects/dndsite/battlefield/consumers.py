@@ -6,15 +6,15 @@ from battlefield.models import CharacterPosition, Location
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
 from characters.models import Character
-from lobby.utils.managers.lobby_manager import LobbyController
 from battlefield.utils.ruler import ruler
+from lobby.models import Lobby
 
 class MoveCharacterConsumer(WebsocketConsumer):
     def connect(self):
         #Initiates once when user connects
         self.user = self.scope["user"]
         self.lobby_id = self.scope['url_route']['kwargs']['current_lobby_id']
-        self.lobby = LobbyController.get_lobby_by_id(self.lobby_id)
+        self.lobby = Lobby.objects.get_lobby_by_id(self.lobby_id)
         self.current_location_id = None
         self.chatroom_name = f"lobby_{self.lobby_id}"
         

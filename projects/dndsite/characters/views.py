@@ -74,7 +74,7 @@ def create_character(request):
                 mastery=0
             )
             selected_character_base_id = request.POST.get('selected_character_base', -1)
-            selected_character_base = EntityBase.objects.filter(id=selected_character_base_id).first()
+            selected_character_base: EntityBase = EntityBase.objects.filter(id=selected_character_base_id).first()
 
             entity_base_form = EntityBaseForm(request.POST)
             if not entity_base_form.is_valid():
@@ -95,12 +95,17 @@ def create_character(request):
                 money=new_money_bag,
                 stats=new_stats,
                 spell_circle_slots=None,
-            )            
-            new_character = Character.objects.create_from_template(new_character_template)
+            )
+            new_character = Character.objects.create_character(
+                new_character_template.user,
+                selected_character_base.entity_base_name,
+                selected_character_base_id
+            )   
+            #new_character = Character.objects.create_from_template(new_character_template)
         
         return redirect('main_page')
         
-    all_templates_queryset = EntityBase.objects.get_all_character_model_templates()
+    all_templates_queryset = EntityBase.objects.get_all_entity_bases()
     templates_dict = {}
     for t in all_templates_queryset:
         templates_dict[str(t.id)] = model_to_dict(t)

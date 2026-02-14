@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 
-from lobby.models import DefaultRoles
-from lobby.utils.managers.lobby_manager import LobbyController
+from lobby.models import DefaultRoles, Lobby
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.contrib import messages
@@ -20,8 +19,8 @@ def lobby(request):
                     lobby_id = request.POST.get('lobby_id')  
                 elif action == 'create': # new lobby created
                     new_lobby_name = request.POST.get('lobby_name')
-                    new_lobby = LobbyController.create_lobby(new_lobby_name)
-                    LobbyController.add_user_to_lobby(active_user, new_lobby, role_name=DefaultRoles.GAME_MASTER.value)
+                    new_lobby = Lobby.objects.create_lobby(new_lobby_name)
+                    Lobby.objects.add_user_to_lobby(active_user, new_lobby, role_name=DefaultRoles.GAME_MASTER.value)
                     lobby_id = new_lobby.id
                     
                 if lobby_id:
@@ -34,7 +33,7 @@ def lobby(request):
             messages.error(request, f"Unknown error while operating lobby selection page: {str(e)}")
             return redirect(reverse('lobby'))
         
-    lobby = LobbyController.get_lobby_with_user(active_user)   
+    lobby = Lobby.objects.get_lobby_with_user(active_user)   
     data = {
         'lobby': lobby,
     }

@@ -1,7 +1,7 @@
 from django import forms
 from battlefield.models import Location
 from characters.models import Character
-from lobby.utils.managers.lobby_manager import LobbyController
+from lobby.models import Lobby
 
 class AddCharacterToGroupForm(forms.Form):
     character_id = forms.ModelChoiceField(queryset=None, label="Character")
@@ -13,8 +13,8 @@ class AddCharacterToGroupForm(forms.Form):
         lobby = kwargs.pop('lobby', None)
         super().__init__(*args, **kwargs)
         if lobby:
-            users_in_lobby = LobbyController.get_users_in_lobby(lobby)
-            characters_in_lobby = LobbyController.get_characters_in_lobby(lobby)
+            users_in_lobby = Lobby.objects.get_users_in_lobby(lobby)
+            characters_in_lobby = Lobby.objects.get_characters_in_lobby(lobby)
             character_in_lobby_ids = characters_in_lobby.values_list('id', flat=True)
             
             # Filter characters to only those whose users are in the lobby and not already in the lobby
