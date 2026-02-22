@@ -1,4 +1,5 @@
 <div id="battle-map"> 
+    {% include "notification_container.html" %}
     {% if current_location_id %}
         <div id="grid-map" style="grid-template-columns: repeat({{ cols_count }}, 50px);">
             {% for row in rows_range %}    

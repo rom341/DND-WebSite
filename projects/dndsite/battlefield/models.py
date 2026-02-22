@@ -89,7 +89,7 @@ class CharacterPositionController(UniversalManager):
         return CharacterPosition.objects.filter(location=location)
     
     def move_character(self, character: Character, location: Location, new_row: int, new_column: int) -> Optional["CharacterPosition"]:
-        character_position = CharacterPositionController.get_character_position_in_location(character, location)
+        character_position = self.get_character_position_in_location(character, location)
         if character_position:
             character_position.row = new_row
             character_position.column = new_column
@@ -97,8 +97,8 @@ class CharacterPositionController(UniversalManager):
             return character_position
         return None
     
-    def is_position_occupied(self, location: Location, column: int, row: int) -> bool:
-        return CharacterPosition.objects.filter(location=location, column=column, row=row).exists()
+    def is_position_occupied(self, location: Location, row: int, column: int) -> bool:
+        return CharacterPosition.objects.filter(location=location, row=row, column=column).exists()
     
 class CharacterPosition(models.Model):
     objects: CharacterPositionController = CharacterPositionController()

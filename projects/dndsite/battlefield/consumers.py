@@ -8,6 +8,7 @@ from battlefield.utils.contexts.location_map_context import LocationMapContextCo
 from characters.models import Character
 from battlefield.utils.ruler import ruler
 from lobby.models import Lobby
+from django.utils.safestring import mark_safe
 
 class MoveCharacterConsumer(WebsocketConsumer):
     def connect(self):
@@ -44,16 +45,15 @@ class MoveCharacterConsumer(WebsocketConsumer):
         self.current_location_id = text_data_json.get('current_location_id')
         current_location = Location.objects.get_location_by_id(self.current_location_id)
 
-        character = Character.objects.objects.get_character_by_id(character_id)
+        character = Character.objects.get_character_by_id(character_id)
         character_position = CharacterPosition.objects.get_character_position_in_location(
             character,
             current_location
         )
-
         requested_distance = ruler(character_position.column, character_position.row, new_pos_column, new_pos_row)
         allowed_distance = character.entity_base.movement_speed / 5
         if allowed_distance >= requested_distance:
-            if not CharacterPosition.objects.is_position_occupied(current_location, new_pos_row, new_pos_column):
+            if not CharacterPosition.objects.is_position_occupied(current_location, row=new_pos_row, column=new_pos_column):
                 
                 CharacterPosition.objects.move_character(
                     character,
@@ -71,6 +71,10 @@ class MoveCharacterConsumer(WebsocketConsumer):
                     self.chatroom_name,
                     event
                 )
+            else:
+                self.send_error("Position ocupied")
+        else:
+            self.send_error("Not enough movement speed")
 
     def send_map_update(self, event):
         current_location_id = event.get('location_id')
@@ -94,6 +98,20 @@ class MoveCharacterConsumer(WebsocketConsumer):
         )
         
         context = context_container.get_context()
-        html = render_to_string('partials/battle_map.html', context)
+        battle_map_html = render_to_string('partials/battle_map.html', context)
+        response_html = f"""
+        <div id="battle-map-container" class="col-10">
+            {battle_map_html}
+        </div>
+        """
+        self.send(text_data=response_html)
+
+    def send_error(self, message: str):
+        message_html = f'<div class="alert alert-danger p-1 small">Error: {message}</div>'
+        context: dict[str, any] = {
+            "extra_properties": mark_safe('hx-swap-oob="beforeend"'),
+            "message": mark_safe(message_html),
+        }
+        html = render_to_string('notification_container.html', context)
         
         self.send(text_data=html)
