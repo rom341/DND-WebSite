@@ -1,7 +1,9 @@
 from functools import wraps
 
 from django.http import HttpResponseForbidden
+from django.contrib import messages
 
+from base.managers.SessionManager import SessionManager
 from lobby.models import DefaultRoles, LobbyMembershipUser
 
 
@@ -22,11 +24,13 @@ def game_master_required(view_func):
             )
         except LobbyMembershipUser.DoesNotExist:
             # User is not a member of this lobby
+            messages.info(request, 'You are not a member of this D&D room.')
             return HttpResponseForbidden("You are not a member of this D&D room.")
 
         # 3. Role check
         # Assuming 'GM' is the Game Master role
         if membership.role.name != DefaultRoles.GAME_MASTER.value:
+            messages.info(request, 'Game Master privileges are required for this action.')
             return HttpResponseForbidden("Game Master privileges are required for this action.")
 
         # 4. If all checks pass, call the original view
@@ -40,7 +44,8 @@ def lobby_id_in_session_required(view_func):
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        lobby_id = request.session.get('current_lobby_id')
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby_id = session_manager.get_current_lobby_id()
         if not lobby_id:
             return HttpResponseForbidden("lobby_id parameter is required.")
         return view_func(request, *args, **kwargs)
@@ -54,7 +59,8 @@ def lobby_membership_required(view_func):
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        lobby_id = request.session.get('current_lobby_id')
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby_id = session_manager.get_current_lobby_id()
         if not lobby_id or not request.user.is_authenticated:
             return HttpResponseForbidden("You must be logged in and specify a D&D room to access this page.")
         try:

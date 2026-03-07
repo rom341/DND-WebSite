@@ -27,11 +27,18 @@
         </div>
 
         <div class="row">
-            <div id="battle-map-container" class="col-10 {{ map_col_class }}"> 
-                {% include 'partials/battle_map.html' %}
+            <div class="col-10">
+                <div id="battle-map-container" class="{{ map_col_class }}"> 
+                    {% include 'partials/battle_map.html' %}
+                </div>
             </div>
-            <div id="character-list-container" class="col-2">
-                {% include 'partials/character_list.html' %}
+            <div class="col-2">
+                <div id="user-list-container">
+                    {% include 'partials/users_list.html' %}
+                </div>
+                <div id="character-list-container">
+                    {% include 'partials/character_list.html' %}
+                </div>
             </div>
         </div>
 

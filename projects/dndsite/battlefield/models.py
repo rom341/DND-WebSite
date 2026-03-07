@@ -3,8 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from base.managers.UniversalManager import UniversalManager
-from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
-from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
 from characters.models import Character, CharacterController
 from lobby.models import Lobby
 
@@ -57,16 +55,6 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.rows_count}x{self.columns_count})"
-    
-    
-    def to_context(self, character_position_context_container: CharacterPositionContextContainer = None) -> LocationMapContextContainer:
-        return LocationMapContextContainer(
-                    current_location_id=self.id,
-                    rows_count=self.rows_count,
-                    cols_count=self.columns_count,
-                    characters_list=Location.objects.get_characters_in_location(location=self),
-                    character_position_context=character_position_context_container
-                )
 
 class CharacterPositionController(UniversalManager):
     def set_character_position(self, character: Character, location: Location, row: int, column: int) -> 'CharacterPosition':
@@ -113,7 +101,3 @@ class CharacterPosition(models.Model):
     def __str__(self):
         return f"{self.character.character_name} at ({self.row}, {self.column}) in {self.location.name}"
     
-    def to_context(self, location: Location) -> CharacterPositionContextContainer:
-        return CharacterPositionContextContainer(
-                    character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location=location)
-                )

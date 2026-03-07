@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
 from battlefield.models import CharacterPosition, Location
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
-from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
+from battlefield.utils.contexts.location_map_context import LocationMapContext
 from characters.models import Character
 from battlefield.utils.ruler import ruler
 from lobby.models import Lobby
@@ -47,8 +47,8 @@ class MoveCharacterConsumer(WebsocketConsumer):
 
         character = Character.objects.get_character_by_id(character_id)
         character_position = CharacterPosition.objects.get_character_position_in_location(
-            character,
-            current_location
+            character=character,
+            location=current_location
         )
         requested_distance = ruler(character_position.column, character_position.row, new_pos_column, new_pos_row)
         allowed_distance = character.entity_base.movement_speed / 5
@@ -56,10 +56,10 @@ class MoveCharacterConsumer(WebsocketConsumer):
             if not CharacterPosition.objects.is_position_occupied(current_location, row=new_pos_row, column=new_pos_column):
                 
                 CharacterPosition.objects.move_character(
-                    character,
-                    current_location,
-                    new_pos_row,
-                    new_pos_column
+                    character=character,
+                    location=current_location,
+                    new_row=new_pos_row,
+                    new_column=new_pos_column
                 )
 
                 event = {
@@ -82,19 +82,17 @@ class MoveCharacterConsumer(WebsocketConsumer):
             return
             
         location = Location.objects.get_location_by_id(current_location_id)
-        characters = Location.objects.get_characters_in_location(location)
+        #characters = Location.objects.get_characters_in_location(location)
         
         character_positions_context_container = CharacterPositionContextContainer(
             character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
         )
         
-        context_container = LocationMapContextContainer(
-            current_location_id=current_location_id,
+        context_container = LocationMapContext(
             current_location=location,
             rows_count=location.rows_count,
             cols_count=location.columns_count,
-            characters_list=characters,
-            character_position_context=character_positions_context_container
+            character_positions=character_positions_context_container.character_positions
         )
         
         context = context_container.get_context()

@@ -10,3 +10,7 @@ class CommonRequestHelper:
             'users_list': Lobby.objects.get_users_in_lobby(lobby=lobby),
         }
         return render(request, 'partials/users_list.html', context)
+    
+    @staticmethod
+    def get_updated_battle_map_widget(request, ):
+        pass

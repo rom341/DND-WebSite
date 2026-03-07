@@ -12,7 +12,7 @@ from battlefield.models import CharacterPosition, Location
 from battlefield.utils.common_request_helper import CommonRequestHelper
 from battlefield.utils.contexts.battlefield_context import BattleieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
-from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
+from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.contexts.locations_list_context import LocationsListContext
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
 from characters.models import Character, EntityBase
@@ -26,11 +26,11 @@ def add_user_to_lobby(request):
     if request.method == 'POST':
         session_manager = SessionManager.get_session_manager(request=request)
         current_lobby = session_manager.get_current_lobby()
-        selected_user_id = request.POST.get('user_id')
-        selected_user = User.objects.get(id=selected_user_id)
-        form = AddUserToLobbyForm(request.POST, lobby=current_lobby)
-        if form.is_valid():
-            if current_lobby:
+        if current_lobby:
+            form = AddUserToLobbyForm(request.POST, lobby=current_lobby)
+            if form.is_valid():
+                selected_user_id = request.POST.get('user_id')
+                selected_user = User.objects.get(id=selected_user_id)
                 Lobby.objects.add_user_to_lobby(selected_user, current_lobby)
                 return CommonRequestHelper.get_updated_user_list_widget(request, current_lobby)
     
@@ -62,12 +62,11 @@ def add_character_to_lobby(request):
                 character_positions_context_container = CharacterPositionContextContainer(
                     character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
                 )
-                location_context_container = LocationMapContextContainer(
-                    current_location_id=current_location_id,
+                location_context_container = LocationMapContext(
+                    current_locationd=location,
                     rows_count=location.rows_count,
                     cols_count=location.columns_count,
-                    characters_list=Location.objects.get_characters_in_location(location),
-                    character_position_context=character_positions_context_container
+                    character_positions=character_positions_context_container.character_positions
                 )
                 context_container = BattleieldContextContainer(
                     current_lobby_id=lobby_id,
@@ -108,12 +107,11 @@ def add_npc_to_lobby(request):
                 character_positions_context_container = CharacterPositionContextContainer(
                     character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location=location)
                 )
-                location_context_container = LocationMapContextContainer(
-                    current_location_id=location.id,
+                location_context_container = LocationMapContext(
+                    current_location=location,
                     rows_count=location.rows_count,
                     cols_count=location.columns_count,
-                    characters_list=Location.objects.get_characters_in_location(location=location),
-                    character_position_context=character_positions_context_container
+                    character_positions=character_positions_context_container.character_positions
                 )
                 context_container = BattleieldContextContainer(
                     current_lobby_id=lobby_id,
@@ -154,13 +152,11 @@ def select_location(request):
                 character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
             )
             
-            location_map_context_container = LocationMapContextContainer(
-                current_location_id=location.id,
+            location_map_context_container = LocationMapContext(
                 current_location=location,
                 rows_count=location.rows_count,
                 cols_count=location.columns_count,
-                characters_list=Location.objects.get_characters_in_location(location),
-                character_position_context=character_positions_context_container
+                character_positions=character_positions_context_container.character_positions
             )
             context = location_map_context_container.get_context()
             return render(request, 'partials/battle_map.html', context)
@@ -174,6 +170,7 @@ def battlefield(request:  HttpRequest):
     current_lobby_id = session_manager.get_current_lobby_id() 
     lobby = session_manager.get_current_lobby()
     current_location_id = session_manager.get_current_location_id()
+    current_location = None
     
     characters_in_current_location = []
     locations_list = []
@@ -189,11 +186,9 @@ def battlefield(request:  HttpRequest):
     locations_list = Location.objects.get_locations_for_lobby(lobby)
     if locations_list and not current_location_id:
         current_location_id = locations_list.first().id
+        current_location = locations_list.first()
 
     if current_location_id:
-
-
-
         selected_location = Location.objects.get_location_by_id(current_location_id)
         
         rows_count = selected_location.rows_count
@@ -215,13 +210,11 @@ def battlefield(request:  HttpRequest):
         character_positions=CharacterPosition.objects.get_all_character_positions_in_location(selected_location)
     )
     
-    location_context_container = LocationMapContextContainer(
-        current_location_id=current_location_id,
+    location_context_container = LocationMapContext(
         current_location=selected_location,
         rows_count=rows_count,
         cols_count=cols_count,
-        characters_list=characters_in_current_location,
-        character_position_context=character_positions_context_container
+        character_positions=character_positions_context_container.character_positions
     )
     
     battlefield_context_container = BattleieldContextContainer(
