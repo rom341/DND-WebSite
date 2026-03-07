@@ -1,4 +1,4 @@
-class BattlefieldContextContainer:
+class BattleieldContextContainer:
     """Class to encapsulate battle context data"""
     def __init__(self, current_lobby_id, current_lobby=None,
                  locations_list=None, users_list=None,

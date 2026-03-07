@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from lobby.models import Lobby
 
-class AddUserToGroupForm(forms.Form):
+class AddUserToLobbyForm(forms.Form):
     user_id = forms.ModelChoiceField(queryset=User.objects.all(), label="User")
     
     def __init__(self, *args, **kwargs):

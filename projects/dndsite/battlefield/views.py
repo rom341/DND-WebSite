@@ -1,17 +1,19 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect, render
+from base.managers.SessionManager import SessionManager
 from battlefield.forms.add_character_to_lobby_form import AddCharacterToGroupForm
 from battlefield.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
-from battlefield.forms.add_user_to_lobby_form import AddUserToGroupForm
+from battlefield.forms.add_user_to_lobby_form import AddUserToLobbyForm
 from battlefield.forms.create_location_form import CreateLocationForm
 from battlefield.forms.move_character_form import MoveCharacterForm
 from battlefield.models import CharacterPosition, Location
-from battlefield.utils.contexts.battle_context import BattlefieldContextContainer
+from battlefield.utils.common_request_helper import CommonRequestHelper
+from battlefield.utils.contexts.battlefield_context import BattleieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContextContainer
-from battlefield.utils.contexts.locations_list_context import LocationsListContextContainer
+from battlefield.utils.contexts.locations_list_context import LocationsListContext
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
 from characters.models import Character, EntityBase
 from lobby.models import DefaultRoles, Lobby, LobbyRole
@@ -22,18 +24,15 @@ from lobby.models import DefaultRoles, Lobby, LobbyRole
 @game_master_required
 def add_user_to_lobby(request):
     if request.method == 'POST':
-        lobby_id = request.session.get('current_lobby_id')
-        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
-        user_id = request.POST.get('user_id')
-        user = User.objects.get(id=user_id)
-        form = AddUserToGroupForm(request.POST, lobby=lobby)
+        session_manager = SessionManager.get_session_manager(request=request)
+        current_lobby = session_manager.get_current_lobby()
+        selected_user_id = request.POST.get('user_id')
+        selected_user = User.objects.get(id=selected_user_id)
+        form = AddUserToLobbyForm(request.POST, lobby=current_lobby)
         if form.is_valid():
-            if lobby:
-                Lobby.objects.add_user_to_lobby(user, lobby)
-                context = {
-                    'users_list': Lobby.objects.get_users_in_lobby(lobby),
-                }
-                return render(request, 'partials/users_list.html', context)
+            if current_lobby:
+                Lobby.objects.add_user_to_lobby(selected_user, current_lobby)
+                return CommonRequestHelper.get_updated_user_list_widget(request, current_lobby)
     
     return HttpResponseBadRequest("Invalid request method.")
 
@@ -41,8 +40,9 @@ def add_user_to_lobby(request):
 @game_master_required
 def add_character_to_lobby(request):
     if request.method == 'POST':
-        lobby_id = request.session.get('current_lobby_id')
-        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby_id = session_manager.get_current_lobby_id()
+        lobby = session_manager.get_current_lobby()
         character_id = request.POST.get('character_id')
         character = Character.objects.get_character_by_id(character_id)
         form = AddCharacterToGroupForm(request.POST, lobby=lobby)
@@ -69,7 +69,7 @@ def add_character_to_lobby(request):
                     characters_list=Location.objects.get_characters_in_location(location),
                     character_position_context=character_positions_context_container
                 )
-                context_container = BattlefieldContextContainer(
+                context_container = BattleieldContextContainer(
                     current_lobby_id=lobby_id,
                     current_lobby=lobby,
                     location_map_context=location_context_container,
@@ -84,8 +84,9 @@ def add_character_to_lobby(request):
 @game_master_required
 def add_npc_to_lobby(request):
     if request.method == 'POST':
-        lobby_id = request.session.get('current_lobby_id')
-        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby_id = session_manager.get_current_lobby_id()
+        lobby = session_manager.get_current_lobby()
         form = AddNPCToLobbyForm(request.POST, lobby=lobby)
         if form.is_valid():
             if lobby:
@@ -114,7 +115,7 @@ def add_npc_to_lobby(request):
                     characters_list=Location.objects.get_characters_in_location(location=location),
                     character_position_context=character_positions_context_container
                 )
-                context_container = BattlefieldContextContainer(
+                context_container = BattleieldContextContainer(
                     current_lobby_id=lobby_id,
                     current_lobby=lobby,
                     location_map_context=location_context_container,
@@ -129,18 +130,16 @@ def add_npc_to_lobby(request):
 @game_master_required
 def create_location(request):
     if request.method == 'POST':
-        lobby_id = request.session.get('current_lobby_id')
-        lobby = Lobby.objects.get_lobby_by_id(lobby_id)
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby = session_manager.get_current_lobby()
         form = CreateLocationForm(request.POST)
         if form.is_valid():
             form.instance.lobby = lobby
             form.save()
-            context_container = LocationsListContextContainer(
+            context = LocationsListContext(
                 locations_list=Location.objects.get_locations_for_lobby(lobby)
             )
-            context = context_container.get_context()
-            print(context)
-            return render(request, 'partials/locations_list.html', context)
+            return render(request, 'partials/locations_list.html', context.to_dict())
     else:
         return HttpResponseBadRequest("Invalid request method.")
     
@@ -170,10 +169,11 @@ def select_location(request):
 @login_required
 @lobby_id_in_session_required
 @lobby_membership_required
-def battlefield(request):    
-    current_lobby_id = request.session.get('current_lobby_id')
-    lobby = Lobby.objects.get_lobby_by_id(current_lobby_id)  
-    current_location_id = request.session.get('current_location_id')
+def battlefield(request:  HttpRequest):  
+    session_manager = SessionManager.get_session_manager(request=request)
+    current_lobby_id = session_manager.get_current_lobby_id() 
+    lobby = session_manager.get_current_lobby()
+    current_location_id = session_manager.get_current_location_id()
     
     characters_in_current_location = []
     locations_list = []
@@ -183,7 +183,7 @@ def battlefield(request):
     move_character_form = None
     add_character_form = None
     add_npc_form = None
-    add_user_form = AddUserToGroupForm(lobby=lobby)
+    add_user_form = AddUserToLobbyForm(lobby=lobby)
     create_location_form = CreateLocationForm()
 
     locations_list = Location.objects.get_locations_for_lobby(lobby)
@@ -191,6 +191,9 @@ def battlefield(request):
         current_location_id = locations_list.first().id
 
     if current_location_id:
+
+
+
         selected_location = Location.objects.get_location_by_id(current_location_id)
         
         rows_count = selected_location.rows_count
@@ -221,7 +224,7 @@ def battlefield(request):
         character_position_context=character_positions_context_container
     )
     
-    battlefield_context_container = BattlefieldContextContainer(
+    battlefield_context_container = BattleieldContextContainer(
         current_lobby_id=current_lobby_id,
         current_lobby=lobby,
         locations_list=locations_list,
