@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% if current_location_id %}
     {% with map_col_class="col-auto" locations_col_class="col-auto" %}
@@ -10,7 +10,7 @@
 {% endif %}
 
 {% block content %}
-    {{ character_positions_dict|json_script:"characters-positions" }}
+    {{ current_lobby_id|json_script:"current-lobby-id" }}
     <div class="my-4">
         
         <div class="row justify-content-center">
@@ -103,37 +103,6 @@
         </div>
     </div>
     
-    <script>
-    document.addEventListener('click', function(event) {
-        const dataElement = document.getElementById('characters-positions');
-        const character_positions = JSON.parse(dataElement.textContent);
-        if (character_positions == undefined) {
-            console.log("No character position data")
-            return;
-        }
-
-        const clickedCell = event.target.closest('.grid-cell');
-        if (!clickedCell || !clickedCell.closest('#battle-map')) {
-            return;
-        }
-        const x = clickedCell.dataset.x;
-        const y = clickedCell.dataset.y;
-        if (x !== undefined && y !== undefined) {
-            const inputName = document.getElementById('id_name');
-            const inputX = document.getElementById('id_column');
-            const inputY = document.getElementById('id_row');
-
-            if (inputX && inputY) {
-                inputX.value = x;
-                inputY.value = y;
-            }
-            found_character = character_positions.find(pos => pos.col == x && pos.row == y);
-            if(found_character && inputName){
-                inputName.value = found_character.id;
-            }
-        }
-
-    });
-    </script>
+    <script src="{% static 'battlefield/js/battle_map_character_selector.js' %}"></script> 
 
 {% endblock %}

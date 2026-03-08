@@ -72,6 +72,9 @@ class CharacterPositionController(UniversalManager):
         
     def get_all_character_positions_in_location(self, location: Location) -> "CharacterPositionController":
         return CharacterPosition.objects.filter(location=location)
+    
+    def get_all_character_positions_in_location_by_id(self, location_id: int) -> "CharacterPositionController":
+        return CharacterPosition.objects.filter(location__id=location_id)
         
     def get_characters_in_location(self, location: Location) -> "CharacterPositionController":
         return CharacterPosition.objects.filter(location=location)

@@ -95,7 +95,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
             character_positions=character_positions_context_container.character_positions
         )
         
-        context = context_container.get_context()
+        context = context_container.to_dict()
         battle_map_html = render_to_string('partials/battle_map.html', context)
         response_html = f"""
         <div id="battle-map-container" class="col-10">

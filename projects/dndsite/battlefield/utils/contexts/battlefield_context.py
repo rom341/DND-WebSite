@@ -24,6 +24,6 @@ class BattleieldContextContainer:
         map_context_container = context.pop('location_map_context', None)
         
         if map_context_container:
-            context.update(**map_context_container.get_context())
+            context.update(**map_context_container.to_dict())
         
         return context

@@ -158,7 +158,7 @@ def select_location(request):
                 cols_count=location.columns_count,
                 character_positions=character_positions_context_container.character_positions
             )
-            context = location_map_context_container.get_context()
+            context = location_map_context_container.to_dict()
             return render(request, 'partials/battle_map.html', context)
     return HttpResponseBadRequest("Location not found.")
 

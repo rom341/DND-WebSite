@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, "static"),
 ]
 
 # Application definition
@@ -44,9 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'widget_tweaks',
-    'battlefield',
+    'rest_framework',
+
     'accounts',
+    'battlefield',
     'characters',
     'lobby',
 ]

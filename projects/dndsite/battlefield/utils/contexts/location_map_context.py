@@ -12,7 +12,7 @@ class LocationMapContext:
     current_location: Optional[Location]
     rows_count: int
     cols_count: int
-    character_positions: Optional[QuerySet]
+    character_positions: Optional[QuerySet[CharacterPosition]]
     
     rows_range: range = field(init=False)
     cols_range: range = field(init=False)
@@ -23,6 +23,3 @@ class LocationMapContext:
 
     def to_dict(self):
         return asdict(self)
-    
-    def get_context(self):
-        return self.to_dict()
