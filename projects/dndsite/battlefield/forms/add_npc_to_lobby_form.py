@@ -1,6 +1,8 @@
 from django import forms
+from django.db.models import QuerySet
 from battlefield.models import Location
 from characters.models import EntityBase
+from lobby.models import Lobby
 
 class AddNPCToLobbyForm(forms.Form):
     entity_base = forms.ModelChoiceField(queryset=None, label="Entity base")

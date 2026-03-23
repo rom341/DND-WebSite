@@ -136,6 +136,15 @@ class EntityBase(models.Model):
                 # print(f"Field: {field} | Base: {val_self} ({type(val_self)}) | Temp: {val_temp} ({type(val_temp)}) | Match: {is_equal}")
         return all(stats_data)
 
+class HealActionType:
+    Heal = 1
+    Damage = 2
+
+    Choices = [
+        (Heal, "Heal"),
+        (Damage, "Damage")
+    ]
+
 class CharacterController(UniversalManager):
     def get_character_by_id(self, character_id: int):
         return Character.objects.get(id=character_id)
@@ -159,7 +168,7 @@ class CharacterController(UniversalManager):
             self,
             user: User,
             entity_base: EntityBase           
-            ):
+        ):
         return self.create_character(
             user,
             f"npc_{entity_base.entity_base_name}",
@@ -167,6 +176,34 @@ class CharacterController(UniversalManager):
             current_hit_points=entity_base.max_hit_points,
             is_npc=True
         )
+    
+    def get_characters_available_for_user_in_location(
+            self,
+            user: User,
+            location: "Location",
+        ):
+        from battlefield.models import Location
+        from lobby.models import DefaultRoles, LobbyRole
+
+        if LobbyRole.objects.user_has_role(user=user, lobby=location.lobby, role=DefaultRoles.GAME_MASTER):
+            return Location.objects.get_characters_in_location(location=location)
+        else:        
+            return Location.objects.get_characters_in_location_for_user(user=user, location=location)
+        
+    def change_health(
+            self,
+            character: 'Character',
+            heal_value: int,
+            heal_type: int
+    ):
+        if not character:
+            return
+        
+        health_change_value = heal_value * -1 if heal_type == HealActionType.Heal else 1
+
+        new_health = max(-10000, min(character.current_hit_points + health_change_value, character.entity_base.max_hit_points))
+        character.current_hit_points = new_health
+        character.save()
 
 class Character(models.Model):
     objects: CharacterController = CharacterController()
@@ -183,5 +220,5 @@ class Character(models.Model):
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"ID{self.id}: {self.character_name} (HP: {self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class})"
+        return f"ID{self.id}: {self.character_name} (HP: {self.current_hit_points}/{self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class}, MS: {self.entity_base.movement_speed})"
         

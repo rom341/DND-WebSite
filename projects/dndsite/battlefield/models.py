@@ -15,10 +15,10 @@ class LocationManager(UniversalManager):
         location.save()
         return location
     
-    def get_location_by_id(self, location_id) -> 'Location':
+    def get_location_by_id(self, location_id: int) -> 'Location':
         try:
             return Location.objects.get(id=location_id)
-        except Location.DoesNotExist:
+        except:
             return None
         
     def get_locations_for_lobby(self, lobby: Lobby) -> 'LocationManager':

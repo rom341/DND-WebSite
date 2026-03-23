@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 
+from base.managers.SessionManager import SessionManager
 from lobby.models import DefaultRoles, Lobby
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -24,7 +25,8 @@ def lobby(request):
                     lobby_id = new_lobby.id
                     
                 if lobby_id:
-                    request.session['current_lobby_id'] = lobby_id
+                    session_manager = SessionManager.get_session_manager(request=request)
+                    session_manager.set_current_lobby_id(lobby_id=lobby_id)
                     return redirect(reverse('battlefield'))
                 else:
                     messages.error(request, "Lobby is not valid")

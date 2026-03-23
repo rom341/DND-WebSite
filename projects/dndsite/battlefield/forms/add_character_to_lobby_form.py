@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import QuerySet
 from battlefield.models import Location
 from characters.models import Character
 from lobby.models import Lobby

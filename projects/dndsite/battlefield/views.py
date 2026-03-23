@@ -15,6 +15,7 @@ from battlefield.utils.contexts.character_position_context import CharacterPosit
 from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.contexts.locations_list_context import LocationsListContext
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
+from characters.forms.heal_character_form import HealCharacterForm
 from characters.models import Character, EntityBase
 from lobby.models import DefaultRoles, Lobby, LobbyRole
 
@@ -80,6 +81,24 @@ def add_character_to_lobby(request):
         return HttpResponseBadRequest("Invalid request method.")
 
 @login_required
+def heal_character(request):
+    if request.method == 'POST':
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby = session_manager.get_current_lobby()
+        current_location = session_manager.get_current_location()
+        characters_available_for_current_user = Character.objects.get_characters_available_for_user_in_location(user=request.user, location=current_location)
+
+        form = HealCharacterForm(request.POST, available_characters=characters_available_for_current_user)
+        if form.is_valid():
+            character = form.cleaned_data.get('character')
+            heal_value = form.cleaned_data.get('health_value')
+            heal_type = form.cleaned_data.get('heal_action_type')
+            Character.objects.change_health(character=character, heal_value=heal_value, heal_type=heal_type)
+            return HttpRequest("Successfull")
+
+        return HttpResponseBadRequest("Failed")
+
+@login_required
 @game_master_required
 def add_npc_to_lobby(request):
     if request.method == 'POST':
@@ -143,8 +162,9 @@ def create_location(request):
     
 def select_location(request):
     if request.method == 'POST':
-        location_id = request.POST.get('location_id')
-        location = Location.objects.get_location_by_id(location_id)
+        session_manager = SessionManager.get_session_manager(request=request)
+        location_id = session_manager.get_current_location_id()
+        location = session_manager.get_current_location()
         if location and Location.objects.is_user_has_access_to_location(request.user, location):
             request.session['current_location_id'] = location.id
             
@@ -159,6 +179,8 @@ def select_location(request):
                 character_positions=character_positions_context_container.character_positions
             )
             context = location_map_context_container.to_dict()
+
+            session_manager.set_current_location_id(location_id=location_id)
             return render(request, 'partials/battle_map.html', context)
     return HttpResponseBadRequest("Location not found.")
 
@@ -170,7 +192,7 @@ def battlefield(request:  HttpRequest):
     current_lobby_id = session_manager.get_current_lobby_id() 
     lobby = session_manager.get_current_lobby()
     current_location_id = session_manager.get_current_location_id()
-    current_location = None
+    current_location = session_manager.get_current_location()
     
     characters_in_current_location = []
     locations_list = []
@@ -181,6 +203,7 @@ def battlefield(request:  HttpRequest):
     add_character_form = None
     add_npc_form = None
     add_user_form = AddUserToLobbyForm(lobby=lobby)
+    heal_character_form = None
     create_location_form = CreateLocationForm()
 
     locations_list = Location.objects.get_locations_for_lobby(lobby)
@@ -196,13 +219,10 @@ def battlefield(request:  HttpRequest):
         
         characters_in_current_location = Location.objects.get_characters_in_location(selected_location)        
         
-        characters_available_to_move_for_user = None
-        if LobbyRole.objects.user_has_role(request.user, lobby, DefaultRoles.GAME_MASTER):
-            characters_available_to_move_for_user = characters_in_current_location
-        else:        
-            characters_available_to_move_for_user = Location.objects.get_characters_in_location_for_user(user=request.user, location=selected_location)
-        
-        move_character_form = MoveCharacterForm(available_characters=characters_available_to_move_for_user)    
+        characters_available_for_current_user = Character.objects.get_characters_available_for_user_in_location(user=request.user, location=current_location)
+
+        move_character_form = MoveCharacterForm(available_characters=characters_available_for_current_user)
+        heal_character_form = HealCharacterForm(available_characters=characters_available_for_current_user)
         add_character_form = AddCharacterToGroupForm(lobby=lobby)
         add_npc_form = AddNPCToLobbyForm(lobby=lobby)
     
@@ -227,8 +247,10 @@ def battlefield(request:  HttpRequest):
         add_npc_form=add_npc_form,
         add_user_form=add_user_form,
         create_location_form=create_location_form,
+        heal_character_form=heal_character_form,
         location_map_context=location_context_container
     )
     context = battlefield_context_container.get_context()
+    session_manager.set_current_location_id(location_id=current_location_id)
     return render(request, 'battlefield.html', context)
     

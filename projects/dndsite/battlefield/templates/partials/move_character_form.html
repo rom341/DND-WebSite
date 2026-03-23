@@ -5,7 +5,7 @@
     {% csrf_token %}
     {{ move_character_form.as_p }} 
     <input type="hidden" name="current_lobby_id" value="{{ current_lobby_id }}">
-    <input type="hidden" name="current_location_id" value="{{ current_location_id }}">
+    <input type="hidden" name="current_location_id" value="{{ current_location.id }}">
     <button type="submit" class="btn btn-primary mt-2">Move</button>
     <p class="text-muted mt-2 small">Click a cell on the map to set coordinates.</p>
 </form>

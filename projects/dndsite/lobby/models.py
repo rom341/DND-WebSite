@@ -118,10 +118,10 @@ class RoleManager(UniversalManager):
         )
 
     @staticmethod
-    def user_has_role(user, lobby, role_name):
+    def user_has_role(user, lobby, role):
         try:
             membership = LobbyMembershipUser.objects.get(user=user, lobby=lobby)
-            return membership.role.name == role_name
+            return membership.role.name == role.value
         except LobbyMembershipUser.DoesNotExist:
             return False
 
