@@ -1,17 +1,4 @@
-const BattlefieldAPI = {
-    BASE_URL: '/battlefield', 
-
-    async getCharacterPositions(lobbyId) {
-        try {
-            const response = await fetch(`${this.BASE_URL}/character_position_in_location/${lobbyId}/`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error("Failed to fetch positions:", error);
-            return [];
-        }
-    }
-};
+import { BattlefieldAPI } from './battlefield_api.js';
 
 const MapFormController = {
     inputs: {
@@ -48,12 +35,12 @@ document.addEventListener('click', async (event) => {
     
     MapFormController.updateCoords(column, row);
     
-    const positions = await BattlefieldAPI.getCharacterPositions(lobbyId);
+    const battlefieldAPI = new BattlefieldAPI();
+    const positions = await battlefieldAPI.getCharacterPositions(lobbyId);
     
     const found_position = positions.find(pos => 
         Number(pos.column) === column && Number(pos.row) === row
     );
-    console.log(found_position);
     
     MapFormController.setCharacter(found_position ? found_position.character : null);
 });

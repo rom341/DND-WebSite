@@ -102,7 +102,9 @@ class MoveCharacterConsumer(WebsocketConsumer):
             {battle_map_html}
         </div>
         """
-        self.send(text_data=response_html)
+        #self.send(text_data=response_html)
+        d = context_container.to_dict_full()
+        self.send(text_data=json.dumps(d))
 
     def send_error(self, message: str):
         message_html = f'<div class="alert alert-danger p-1 small">Error: {message}</div>'

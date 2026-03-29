@@ -5,6 +5,7 @@ from typing import Optional
 from django.db.models.query import QuerySet
 
 from battlefield.models import CharacterPosition, Location
+from django.forms.models import model_to_dict
 
 
 @dataclass
@@ -22,4 +23,13 @@ class LocationMapContext:
         self.cols_range = range(self.cols_count)
 
     def to_dict(self):
-        return asdict(self)
+        result = asdict(self)
+        return result
+    
+    def to_dict_full(self):
+        result = asdict(self)
+        result["current_location"] = model_to_dict(self.current_location)
+        result["character_positions"] = [model_to_dict(pos) for pos in self.character_positions]
+        result['cols_range'] = list(self.cols_range)
+        result['rows_range'] = list(self.rows_range)
+        return result
