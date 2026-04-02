@@ -1,4 +1,4 @@
-import { BattlefieldAPI } from './battlefield_api.js';
+import { battleState } from './battle_state.js';
 
 const MapFormController = {
     inputs: {
@@ -21,11 +21,8 @@ document.addEventListener('click', async (event) => {
     const cell = event.target.closest('.grid-cell');
     const map = event.target.closest('#battle-map');
     if (!cell || !map) return;
-    
-    const lobbyData = document.getElementById('current-lobby-id');
-    const lobbyId = lobbyData ? JSON.parse(lobbyData.textContent) : null;
-    
-    if (!lobbyId) {
+       
+    if (!battleState.lobbyId) {
         console.error("Lobby ID is missing");
         return;
     }
@@ -35,12 +32,16 @@ document.addEventListener('click', async (event) => {
     
     MapFormController.updateCoords(column, row);
     
-    const battlefieldAPI = new BattlefieldAPI();
-    const positions = await battlefieldAPI.getCharacterPositions(lobbyId);
+    //const positions = await battlefieldAPI.getCharacterPositions(lobbyId);
+    const positions = battleState.characterPositions;
     
     const found_position = positions.find(pos => 
         Number(pos.column) === column && Number(pos.row) === row
     );
-    
-    MapFormController.setCharacter(found_position ? found_position.character : null);
+    if (found_position) {
+        MapFormController.setCharacter(found_position.character.id);
+    }
 });
+
+//character position initialisation
+battleState.characterPositions = await battleState.battlefieldAPI.getCharacterPositions(battleState.lobbyId);

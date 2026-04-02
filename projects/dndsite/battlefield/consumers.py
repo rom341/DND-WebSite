@@ -3,6 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
 from battlefield.models import CharacterPosition, Location
+from battlefield.serializers import CharacterPositionSerializer, LocationSerializer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContext
 from characters.models import Character
@@ -84,27 +85,31 @@ class MoveCharacterConsumer(WebsocketConsumer):
         location = Location.objects.get_location_by_id(current_location_id)
         #characters = Location.objects.get_characters_in_location(location)
         
-        character_positions_context_container = CharacterPositionContextContainer(
-            character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location)
-        )
+        # character_positions = CharacterPosition.objects.get_all_character_positions_in_location(location)
+        # character_positions_context_container = CharacterPositionContextContainer(
+        #     character_positions=character_positions
+        # )
         
-        context_container = LocationMapContext(
-            current_location=location,
-            rows_count=location.rows_count,
-            cols_count=location.columns_count,
-            character_positions=character_positions_context_container.character_positions
-        )
+        # context_container = LocationMapContext(
+        #     current_location=location,
+        #     rows_count=location.rows_count,
+        #     cols_count=location.columns_count,
+        #     character_positions=character_positions_context_container.character_positions
+        # )
         
-        context = context_container.to_dict()
-        battle_map_html = render_to_string('partials/battle_map.html', context)
-        response_html = f"""
-        <div id="battle-map-container" class="col-10">
-            {battle_map_html}
-        </div>
-        """
+        # context = context_container.to_dict()
+        # battle_map_html = render_to_string('partials/battle_map.html', context)
+        # response_html = f"""
+        # <div id="battle-map-container" class="col-10">
+        #     {battle_map_html}
+        # </div>
+        # """
         #self.send(text_data=response_html)
-        d = context_container.to_dict_full()
-        self.send(text_data=json.dumps(d))
+        #d = context_container.to_dict_full()
+        # self.send(text_data=json.dumps(d))
+        serializer_loc = LocationSerializer(location)
+        s_loc = json.dumps(serializer_loc.data)
+        self.send(text_data=s_loc)
 
     def send_error(self, message: str):
         message_html = f'<div class="alert alert-danger p-1 small">Error: {message}</div>'

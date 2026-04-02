@@ -1,16 +1,6 @@
-import { BattlefieldAPI } from './battlefield_api.js';
+import { battleState } from './battle_state.js';
 
-const lobbyData = document.getElementById('current-lobby-id');
-const lobbyId = lobbyData ? JSON.parse(lobbyData.textContent) : null;
-if (!lobbyId) {
-    console.error("Lobby ID is missing");
-}
-
-const locationData = document.getElementById('current-lobby-id');
-const locationId = lobbyData ? JSON.parse(lobbyData.textContent) : null;
-
-const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${lobbyId}/`);
-console.log("Connected to ws");
+const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${battleState.lobbyId}/`);
 
 function clearCells(gridCells){
     for(var i = 0; i < gridCells.length; i++){
@@ -28,16 +18,14 @@ function addCharacterMarks(gridCells, characterPositions){
         const newDiv = document.createElement('div');
 
         newDiv.className = 'character_mark';
-        newDiv.textContent = characterPosition.character;
+        newDiv.textContent = characterPosition.character.character_name;
         CellToAddCharacter.appendChild(newDiv);
     }
 }
 
-function drawBattleMap(characterPositions){
+async function drawBattleMap(characterPositions){
     const grid = document.getElementById("grid-map");
     const gridCells = grid.children;
-
-    const battlefieldAPI = new BattlefieldAPI();
     
     //Clear all
     clearCells(gridCells);
@@ -45,26 +33,33 @@ function drawBattleMap(characterPositions){
     addCharacterMarks(gridCells, characterPositions)
 }
 
-socket.onmessage = function(e) {
+socket.onmessage = async function(e) {
     const data = JSON.parse(e.data);
-    drawBattleMap(data.character_positions);
+    battleState.characterPositions = data.character_positions;  
+    await drawBattleMap(data.character_positions);
 };
 
-function sendMessage() {
+function sendMoveCharacterMessageWS() {
     const target_column = document.getElementById("id_column").value;
     const target_row = document.getElementById("id_row").value;
     const target_character_id = document.getElementById("id_name").value;
 
-    socket.send(JSON.stringify({
-        'column': target_column,
-        'row': target_row,
-        'name': target_character_id,
-        'current_location_id': locationId,
-        'current_lobby_id': lobbyId
-    }));
+    if (battleState.lobbyId != undefined && battleState.locationId != undefined && target_character_id != undefined && target_column != undefined && target_row != undefined){
+        const dataToSend = JSON.stringify({
+            'column': target_column,
+            'row': target_row,
+            'name': target_character_id,
+            'current_location_id': battleState.locationId,
+            'current_lobby_id': battleState.lobbyId
+        });
+        socket.send(dataToSend);
+    }
+    else {
+        console.error("Cant move character. Wrong input data")
+    }
 }
 
 document.getElementById('move-character-button').addEventListener('click', (e) => {
     e.preventDefault(); 
-    sendMessage();
+    sendMoveCharacterMessageWS();
 });

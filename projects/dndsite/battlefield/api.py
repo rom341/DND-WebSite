@@ -14,6 +14,9 @@ class CharacterPositionApi(APIView):
     
     @api_view(('GET',))
     def get_characters_in_location(request, location_id=None) -> Response:
+        if not location_id:
+            return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
+        
         character_positions = CharacterPosition.objects.get_all_character_positions_in_location_by_id(location_id=location_id)
         serializer = CharacterPositionSerializer(character_positions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
