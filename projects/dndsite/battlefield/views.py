@@ -208,7 +208,7 @@ def battlefield(request:  HttpRequest):
         current_location = locations_list.first()
 
     if current_location_id:
-        selected_location = Location.objects.get_location_by_id(current_location_id)
+        selected_location = session_manager.get_current_location()
         
         rows_count = selected_location.rows_count
         cols_count = selected_location.columns_count
