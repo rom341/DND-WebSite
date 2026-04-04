@@ -42,7 +42,6 @@ def add_user_to_lobby(request):
 def add_character_to_lobby(request):
     if request.method == 'POST':
         session_manager = SessionManager.get_session_manager(request=request)
-        lobby_id = session_manager.get_current_lobby_id()
         lobby = session_manager.get_current_lobby()
         character_id = request.POST.get('character_id')
         character = Character.objects.get_character_by_id(character_id)
@@ -70,7 +69,6 @@ def add_character_to_lobby(request):
                     character_positions=character_positions_context_container.character_positions
                 )
                 context_container = BattleieldContextContainer(
-                    current_lobby_id=lobby_id,
                     current_lobby=lobby,
                     location_map_context=location_context_container,
                     add_character_form=form
@@ -103,7 +101,6 @@ def heal_character(request):
 def add_npc_to_lobby(request):
     if request.method == 'POST':
         session_manager = SessionManager.get_session_manager(request=request)
-        lobby_id = session_manager.get_current_lobby_id()
         lobby = session_manager.get_current_lobby()
         form = AddNPCToLobbyForm(request.POST, lobby=lobby)
         if form.is_valid():
@@ -133,7 +130,6 @@ def add_npc_to_lobby(request):
                     character_positions=character_positions_context_container.character_positions
                 )
                 context_container = BattleieldContextContainer(
-                    current_lobby_id=lobby_id,
                     current_lobby=lobby,
                     location_map_context=location_context_container,
                     add_character_form=form
@@ -189,7 +185,6 @@ def select_location(request):
 @lobby_membership_required
 def battlefield(request:  HttpRequest):  
     session_manager = SessionManager.get_session_manager(request=request)
-    current_lobby_id = session_manager.get_current_lobby_id() 
     lobby = session_manager.get_current_lobby()
     current_location_id = session_manager.get_current_location_id()
     current_location = session_manager.get_current_location()
@@ -238,7 +233,6 @@ def battlefield(request:  HttpRequest):
     )
     
     battlefield_context_container = BattleieldContextContainer(
-        current_lobby_id=current_lobby_id,
         current_lobby=lobby,
         locations_list=locations_list,
         users_list=Lobby.objects.get_users_in_lobby(lobby),

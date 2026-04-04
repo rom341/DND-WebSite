@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% if current_location_id %}
+{% if current_location.id %}
     {% with map_col_class="col-auto" locations_col_class="col-auto" %}
 {% endwith %}
 {% else %}
@@ -10,7 +10,8 @@
 {% endif %}
 
 {% block content %}
-    {{ current_lobby_id|json_script:"current-lobby-id" }}
+    {{ current_lobby.id|json_script:"current-lobby-id" }}
+    {{ current_location.id|json_script:"current-location-id" }}
     <div class="my-4">
         
         <div class="row justify-content-center">
@@ -29,6 +30,7 @@
         <div class="row">
             <div class="col-10">
                 <div id="battle-map-container" class="{{ map_col_class }}"> 
+                    {% comment %} {% include 'partials/battle_map.html' %} {% endcomment %}
                     {% include 'partials/battle_map.html' %}
                 </div>
             </div>
@@ -113,7 +115,7 @@
         </div>
     </div>
 
-    <script type="module" src="{% static 'battlefield/js/battle_state.js' %}"></script> 
-    <script type="module" src="{% static 'battlefield/js/battle_map_character_selector.js' %}"></script> 
+    <script defer type="module" src="{% static 'battlefield/js/battle_state.js' %}"></script> 
+    <script defer type="module" src="{% static 'battlefield/js/battle_map_character_selector.js' %}"></script> 
 
 {% endblock %}

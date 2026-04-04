@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 {% block content %}
     {{ templates_data_json|json_script:"templates-json" }}
-    <script src="{% static "js/create_character_template_select.js" %}"></script>
+    <script defer src="{% static "js/create_character_template_select.js" %}"></script>
 
     <div class="container">
         <form method="post">

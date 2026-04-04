@@ -11,5 +11,6 @@ urlpatterns = [
     path('battlefield/create_location/', views.create_location, name='create_location'),
     path('battlefield/select_location/', views.select_location, name='select_location'),
 
-    path('battlefield/character_position_in_location/<int:location_id>/', api.CharacterPositionApi.get_characters_in_location, name='character_position_in_location_api')
+    path('battlefield/character_position_in_location/<int:location_id>/', api.CharacterPositionApi.get_characters_in_location, name='character_position_in_location_api'),
+    path('battlefield/location/<int:location_id>/', api.CharacterPositionApi.get_location, name='location_api'),
 ]

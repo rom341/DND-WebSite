@@ -1,30 +1,42 @@
 import { BattlefieldAPI } from './battlefield_api.js';
 
-export const battleState = {
+const battleState = {
     lobbyId: -1,
     locationId: -1,
     characterPositions: [],
+    locationData: {},
     battlefieldAPI: new BattlefieldAPI()
 };
 
-const lobbyData = document.getElementById('current-lobby-id');
-const lobbyId = lobbyData ? JSON.parse(lobbyData.textContent) : null;
-if (!lobbyId) {
-    console.error("Lobby ID is missing");
+async function initBattleState() {
+    const lobbyIdElement = document.getElementById('current-lobby-id');
+    const lobbyId = lobbyIdElement ? JSON.parse(lobbyIdElement.textContent) : null;
+    if (!lobbyId) {
+        console.error("Lobby ID is missing");
+    }
+    else {
+        battleState.lobbyId = lobbyId;
+    }
+
+    const locationIdElement = document.getElementById('current-location-id');
+    const locationId = locationIdElement ? JSON.parse(locationIdElement.textContent) : null;
+    if (!lobbyId) {
+        console.error("Location ID is missing");
+    }
+    else {
+        battleState.locationId = locationId;
+    }
+
+    battleState.locationData = await battleState.battlefieldAPI.getLocation(battleState.locationId);
+    battleState.characterPositions = await battleState.battlefieldAPI.getCharacterPositions(battleState.lobbyId);
+
+    return battleState;
 }
-else {
-    battleState.lobbyId = lobbyId;
-}
 
-const locationData = document.getElementById('current-lobby-id');
-const locationId = locationData ? JSON.parse(locationData.textContent) : null;
-if (!lobbyId) {
-    console.error("Location ID is missing");
-}
-else {
-    battleState.locationId = locationId
-}
-
-
-
-
+export const stateReady = new Promise((resolve) => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => resolve(initBattleState()));
+    } else {
+        resolve(initBattleState());
+    }
+});

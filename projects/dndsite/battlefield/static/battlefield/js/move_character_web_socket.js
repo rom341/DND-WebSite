@@ -1,45 +1,28 @@
-import { battleState } from './battle_state.js';
+import { stateReady } from './battle_state.js';
+import { renderBattleMap } from './battle_map.js';
 
-const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${battleState.lobbyId}/`);
 
-function clearCells(gridCells){
-    for(var i = 0; i < gridCells.length; i++){
-        var gridCell = gridCells[i];
-        gridCell.innerHTML = '';
-    }
-}
+// function clearCells(gridCells){
+//     const marks = document.querySelectorAll('.character_mark');
+//     marks.forEach(mark => mark.remove());
+// }
 
-function addCharacterMarks(gridCells, characterPositions){
-    const gridCellsArray = Array.from(gridCells);
-    for(var i = 0; i < characterPositions.length; i++){
-        var characterPosition = characterPositions[i];
-        var CellToAddCharacter = gridCellsArray.filter(element => element.dataset.x == characterPosition.column && element.dataset.y == characterPosition.row)[0];
+// function addCharacterMarks(gridCells, characterPositions){
+//     const gridCellsArray = Array.from(gridCells);
+//     for(var i = 0; i < characterPositions.length; i++){
+//         var characterPosition = characterPositions[i];
+//         var CellToAddCharacter = grid.querySelector(`[data-x="${pos.column}"][data-y="${pos.row}"]`);
 
-        const newDiv = document.createElement('div');
+//         const newDiv = document.createElement('div');
 
-        newDiv.className = 'character_mark';
-        newDiv.textContent = characterPosition.character.character_name;
-        CellToAddCharacter.appendChild(newDiv);
-    }
-}
+//         newDiv.className = 'character_mark';
+//         newDiv.textContent = characterPosition.character.character_name;
+//         CellToAddCharacter.appendChild(newDiv);
+//     }
+// }
 
-async function drawBattleMap(characterPositions){
-    const grid = document.getElementById("grid-map");
-    const gridCells = grid.children;
-    
-    //Clear all
-    clearCells(gridCells);
-    //Add characters
-    addCharacterMarks(gridCells, characterPositions)
-}
-
-socket.onmessage = async function(e) {
-    const data = JSON.parse(e.data);
-    battleState.characterPositions = data.character_positions;  
-    await drawBattleMap(data.character_positions);
-};
-
-function sendMoveCharacterMessageWS() {
+async function sendMoveCharacterMessageWS(socket) {
+    const battleState = await stateReady;
     const target_column = document.getElementById("id_column").value;
     const target_row = document.getElementById("id_row").value;
     const target_character_id = document.getElementById("id_name").value;
@@ -59,7 +42,26 @@ function sendMoveCharacterMessageWS() {
     }
 }
 
-document.getElementById('move-character-button').addEventListener('click', (e) => {
-    e.preventDefault(); 
-    sendMoveCharacterMessageWS();
+async function onMessageCallback(e) {
+    const battleState = await stateReady;
+    const data = JSON.parse(e.data); 
+
+    battleState.characterPositions = data.character_positions;
+    await renderBattleMap();
+}
+
+async function initWebSocket() {
+    const battleState = await stateReady;
+    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${battleState.lobbyId}/`);
+    socket.onmessage = onMessageCallback;
+    return socket;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const webSocket = await initWebSocket()
+
+    document.getElementById('move-character-button').addEventListener('click', async (e) => {
+        e.preventDefault(); 
+        await sendMoveCharacterMessageWS(webSocket);
+    });
 });

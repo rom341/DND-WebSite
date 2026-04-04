@@ -4,7 +4,7 @@
 
     {% csrf_token %}
     {{ heal_character_form.as_p }} 
-    <input type="hidden" name="current_lobby_id" value="{{ current_lobby_id }}">
+    <input type="hidden" name="current_lobby_id" value="{{ current_lobby.id }}">
     <input type="hidden" name="current_location_id" value="{{ current_location.id }}">
     <button type="submit" class="btn btn-primary mt-2">Activate</button>
 </form>

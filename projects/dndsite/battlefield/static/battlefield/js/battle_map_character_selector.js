@@ -1,4 +1,4 @@
-import { battleState } from './battle_state.js';
+import { stateReady } from './battle_state.js';
 
 const MapFormController = {
     inputs: {
@@ -18,6 +18,7 @@ const MapFormController = {
 };
 
 document.addEventListener('click', async (event) => {
+    const battleState = await stateReady;
     const cell = event.target.closest('.grid-cell');
     const map = event.target.closest('#battle-map');
     if (!cell || !map) return;
@@ -42,6 +43,3 @@ document.addEventListener('click', async (event) => {
         MapFormController.setCharacter(found_position.character.id);
     }
 });
-
-//character position initialisation
-battleState.characterPositions = await battleState.battlefieldAPI.getCharacterPositions(battleState.lobbyId);
