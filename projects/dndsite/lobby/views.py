@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 
 from base.managers.SessionManager import SessionManager
+from battlefield.models import Location
 from lobby.models import DefaultRoles, Lobby
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -17,7 +18,7 @@ def lobby(request):
         try:
             with transaction.atomic(): # Ensure that the whole function is atomic (all-or-nothing)
                 if action == 'select': # lobby selected
-                    lobby_id = request.POST.get('lobby_id')  
+                    lobby_id = request.POST.get('lobby_id')
                 elif action == 'create': # new lobby created
                     new_lobby_name = request.POST.get('lobby_name')
                     new_lobby = Lobby.objects.create_lobby(new_lobby_name)
@@ -27,6 +28,9 @@ def lobby(request):
                 if lobby_id:
                     session_manager = SessionManager.get_session_manager(request=request)
                     session_manager.set_current_lobby_id(lobby_id=lobby_id)
+                    if any_location := Location.objects.get_locations_for_lobby_by_id(lobby_id=lobby_id).first():
+                        session_manager.set_current_location_id(location_id=any_location.id)
+                    
                     return redirect(reverse('battlefield'))
                 else:
                     messages.error(request, "Lobby is not valid")

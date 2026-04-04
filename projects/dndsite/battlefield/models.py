@@ -21,6 +21,9 @@ class LocationManager(UniversalManager):
         except:
             return None
         
+    def get_locations_for_lobby_by_id(self, lobby_id: int) -> 'LocationManager':
+        return Location.objects.filter(lobby__id=lobby_id)
+
     def get_locations_for_lobby(self, lobby: Lobby) -> 'LocationManager':
         return Location.objects.filter(lobby=lobby)
     

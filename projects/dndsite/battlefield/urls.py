@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('battlefield/character_position_in_location/<int:location_id>/', api.CharacterPositionApi.get_characters_in_location, name='character_position_in_location_api'),
     path('battlefield/location/<int:location_id>/', api.CharacterPositionApi.get_location, name='location_api'),
+    path('battlefield/get_locations_for_lobby/<int:lobby_id>/', api.CharacterPositionApi.get_locations_for_lobby, name='get_locations_for_lobby'),
+    path('battlefield/get_lobby/<int:lobby_id>/', api.CharacterPositionApi.get_lobby, name='get_lobby'),
 ]

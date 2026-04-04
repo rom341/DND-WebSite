@@ -2,9 +2,14 @@ import { BattlefieldAPI } from './battlefield_api.js';
 
 const battleState = {
     lobbyId: -1,
-    locationId: -1,
+    lobbyData: {
+        locations: [{
+            characterPositions: []
+        }]
+    },
+    selectedLocationId: -1,
+    selectedLocationData: {},
     characterPositions: [],
-    locationData: {},
     battlefieldAPI: new BattlefieldAPI()
 };
 
@@ -24,13 +29,27 @@ async function initBattleState() {
         console.error("Location ID is missing");
     }
     else {
-        battleState.locationId = locationId;
+        battleState.selectedLocationId = locationId;
     }
 
-    battleState.locationData = await battleState.battlefieldAPI.getLocation(battleState.locationId);
-    battleState.characterPositions = await battleState.battlefieldAPI.getCharacterPositions(battleState.lobbyId);
-
+    battleState.lobbyData = await battleState.battlefieldAPI.getLobby(battleState.lobbyId);
+    
+    
+    updateSelectedLocation(battleState.selectedLocationId);
+    //battleState.characterPositions = battleState.selectedLocationData.characterPositions;
+    
     return battleState;
+}
+
+export function updateSelectedLocation(newLocationId) {
+    if (!newLocationId) 
+        return;
+
+    battleState.selectedLocationId = newLocationId;
+    battleState.selectedLocationData = battleState.lobbyData.locations.find(loc => {
+        return loc.id == battleState.selectedLocationId;
+    });
+    
 }
 
 export const stateReady = new Promise((resolve) => {

@@ -27,12 +27,12 @@ async function sendMoveCharacterMessageWS(socket) {
     const target_row = document.getElementById("id_row").value;
     const target_character_id = document.getElementById("id_name").value;
 
-    if (battleState.lobbyId != undefined && battleState.locationId != undefined && target_character_id != undefined && target_column != undefined && target_row != undefined){
+    if (battleState.lobbyId != undefined && battleState.selectedLocationId != undefined && target_character_id != undefined && target_column != undefined && target_row != undefined){
         const dataToSend = JSON.stringify({
             'column': target_column,
             'row': target_row,
             'name': target_character_id,
-            'current_location_id': battleState.locationId,
+            'current_location_id': battleState.selectedLocationId,
             'current_lobby_id': battleState.lobbyId
         });
         socket.send(dataToSend);

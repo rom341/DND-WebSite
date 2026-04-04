@@ -8,11 +8,10 @@ export async function renderBattleMap() {
     
     gridMap.style.display = 'grid';
     gridMap.style.width = '100%';
-    gridMap.style.gridTemplateColumns = `repeat(${battleState.locationData.columns_count}, 50px)`;
+    gridMap.style.gridTemplateColumns = `repeat(${battleState.selectedLocationData.columns_count}, 50px)`;
     gridMap.innerHTML = '';
-    console.log(battleState);
-    for (let r = 0; r < battleState.locationData.rows_count; r++) {
-        for (let c = 0; c < battleState.locationData.columns_count; c++) {            
+    for (let r = 0; r < battleState.selectedLocationData.rows_count; r++) {
+        for (let c = 0; c < battleState.selectedLocationData.columns_count; c++) {            
             const gridCellFragment = cellTemplate.content.cloneNode(true);
             const gridCellInstance = gridCellFragment.querySelector('.battle-map-grid-cell');
             
@@ -26,12 +25,10 @@ export async function renderBattleMap() {
                     const characterMarkFragment = characterMarkTemplate.content.cloneNode(true);
                     const characterMarkInstance = characterMarkFragment.querySelector('.character_mark');
                     if (characterMarkInstance != null) {
-                        console.log("fd");
                         characterMarkInstance.textContent = characterPosition.character.character_name;
                         gridCellInstance.appendChild(characterMarkInstance);
                     }           
                 });
-
             }
             gridMap.appendChild(gridCellInstance);
         }

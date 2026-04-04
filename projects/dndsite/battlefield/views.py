@@ -152,6 +152,7 @@ def create_location(request):
             context = LocationsListContext(
                 locations_list=Location.objects.get_locations_for_lobby(lobby)
             )
+            session_manager.set_current_location_id(location_id=context.locations_list[0].id)
             return render(request, 'partials/locations_list.html', context.to_dict())
     else:
         return HttpResponseBadRequest("Invalid request method.")

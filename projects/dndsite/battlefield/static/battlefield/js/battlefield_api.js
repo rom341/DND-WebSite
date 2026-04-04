@@ -24,4 +24,26 @@ export class BattlefieldAPI {
             return [];
         }
     }
+    
+    async getLocationsForLobby(lobbyId) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/get_locations_for_lobby/${lobbyId}/`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to fetch locations for lobby data:", error);
+            return [];
+        }
+    }
+
+    async getLobby(lobbyId) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/get_lobby/${lobbyId}/`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to fetch lobby data:", error);
+            return [];
+        }
+    }
 }
