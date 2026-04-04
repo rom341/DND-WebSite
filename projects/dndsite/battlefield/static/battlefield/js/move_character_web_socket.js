@@ -1,25 +1,5 @@
-import { stateReady } from './battle_state.js';
+import { stateReady, updateLocationData } from './battle_state.js';
 import { renderBattleMap } from './battle_map.js';
-
-
-// function clearCells(gridCells){
-//     const marks = document.querySelectorAll('.character_mark');
-//     marks.forEach(mark => mark.remove());
-// }
-
-// function addCharacterMarks(gridCells, characterPositions){
-//     const gridCellsArray = Array.from(gridCells);
-//     for(var i = 0; i < characterPositions.length; i++){
-//         var characterPosition = characterPositions[i];
-//         var CellToAddCharacter = grid.querySelector(`[data-x="${pos.column}"][data-y="${pos.row}"]`);
-
-//         const newDiv = document.createElement('div');
-
-//         newDiv.className = 'character_mark';
-//         newDiv.textContent = characterPosition.character.character_name;
-//         CellToAddCharacter.appendChild(newDiv);
-//     }
-// }
 
 async function sendMoveCharacterMessageWS(socket) {
     const battleState = await stateReady;
@@ -27,13 +7,13 @@ async function sendMoveCharacterMessageWS(socket) {
     const target_row = document.getElementById("id_row").value;
     const target_character_id = document.getElementById("id_name").value;
 
-    if (battleState.lobbyId != undefined && battleState.selectedLocationId != undefined && target_character_id != undefined && target_column != undefined && target_row != undefined){
+    if (battleState.lobbyData.id != undefined && battleState.selectedLocationData.id != undefined && target_character_id != undefined && target_column != undefined && target_row != undefined){
         const dataToSend = JSON.stringify({
             'column': target_column,
             'row': target_row,
             'name': target_character_id,
-            'current_location_id': battleState.selectedLocationId,
-            'current_lobby_id': battleState.lobbyId
+            'current_location_id': battleState.selectedLocationData.id,
+            'current_lobby_id': battleState.lobbyData.id
         });
         socket.send(dataToSend);
     }
@@ -46,13 +26,13 @@ async function onMessageCallback(e) {
     const battleState = await stateReady;
     const data = JSON.parse(e.data); 
 
-    battleState.characterPositions = data.character_positions;
+    updateLocationData(data);
     await renderBattleMap();
 }
 
 async function initWebSocket() {
     const battleState = await stateReady;
-    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${battleState.lobbyId}/`);
+    const socket = new WebSocket(`ws://127.0.0.1:8000/ws/battlefield/${battleState.lobbyData.id}/`);
     socket.onmessage = onMessageCallback;
     return socket;
 }

@@ -8,10 +8,10 @@ export async function renderBattleMap() {
     
     gridMap.style.display = 'grid';
     gridMap.style.width = '100%';
-    gridMap.style.gridTemplateColumns = `repeat(${battleState.selectedLocationData.columns_count}, 50px)`;
+    gridMap.style.gridTemplateColumns = `repeat(${battleState.selectedLocationData.columnsCount}, 50px)`;
     gridMap.innerHTML = '';
-    for (let r = 0; r < battleState.selectedLocationData.rows_count; r++) {
-        for (let c = 0; c < battleState.selectedLocationData.columns_count; c++) {            
+    for (let r = 0; r < battleState.selectedLocationData.rowsCount; r++) {
+        for (let c = 0; c < battleState.selectedLocationData.columnsCount; c++) {      
             const gridCellFragment = cellTemplate.content.cloneNode(true);
             const gridCellInstance = gridCellFragment.querySelector('.battle-map-grid-cell');
             
@@ -19,7 +19,7 @@ export async function renderBattleMap() {
             gridCellInstance.dataset.x = c;
             gridCellInstance.dataset.y = r;
 
-            const characterPositions = battleState.characterPositions.filter(p => p.column == c && p.row == r);
+            const characterPositions = battleState.selectedLocationData.characterPositions.filter(p => p.column == c && p.row == r);
             if (characterPositions.length > 0) {
                 characterPositions.forEach(characterPosition => {
                     const characterMarkFragment = characterMarkTemplate.content.cloneNode(true);

@@ -14,7 +14,7 @@ export async function renderLocationList() {
 
     const locationSelectOptionTemplate = document.getElementById("location-select-option-template");
     
-    const locations = await battleState.battlefieldAPI.getLocationsForLobby(battleState.lobbyId)
+    const locations = await battleState.battlefieldAPI.getLocationsForLobby(battleState.lobbyData.id);
     
     locations.forEach((location) => {
         const locationSelectOptionInstance = locationSelectOptionTemplate.content.cloneNode(true).querySelector('.location-select-option');
