@@ -98,8 +98,8 @@ def create_character(request):
             )
             new_character = Character.objects.create_character(
                 new_character_template.user,
-                selected_character_base.entity_base_name,
-                selected_character_base_id
+                new_entity_base.entity_base_name,
+                new_entity_base.id
             )   
             #new_character = Character.objects.create_from_template(new_character_template)
         

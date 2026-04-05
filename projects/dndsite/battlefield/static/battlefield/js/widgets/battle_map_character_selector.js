@@ -23,7 +23,7 @@ document.addEventListener('click', async (event) => {
     const map = event.target.closest('#battle-map');
     if (!cell || !map) return;
        
-    if (!battleState.lobbyId) {
+    if (!battleState.lobbyData.id) {
         console.error("Lobby ID is missing");
         return;
     }
@@ -34,7 +34,7 @@ document.addEventListener('click', async (event) => {
     MapFormController.updateCoords(column, row);
     
     //const positions = await battlefieldAPI.getCharacterPositions(lobbyId);
-    const positions = battleState.characterPositions;
+    const positions = battleState.selectedLocationData.characterPositions;
     
     const found_position = positions.find(pos => 
         Number(pos.column) === column && Number(pos.row) === row
