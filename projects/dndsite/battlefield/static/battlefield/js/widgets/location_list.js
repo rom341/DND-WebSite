@@ -1,4 +1,4 @@
-import { stateReady, updateSelectedLocation } from './battle_state.js';
+import { stateReady, updateSelectedLocation } from '../battle_state.js';
 import { renderBattleMap } from './battle_map.js';
 
 async function onLocationSelectChange(event) {
