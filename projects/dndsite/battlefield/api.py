@@ -46,6 +46,31 @@ class CharacterPositionApi(APIView):
         if not lobby_id:
             return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
         
-        locations = Lobby.objects.get_lobby_by_id(lobby_id=lobby_id)
-        serializer = LobbySerializer(locations)
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id=lobby_id)
+        serializer = LobbySerializer(lobby)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    @api_view(('POST',))
+    def create_location(request) -> Response:
+        lobbyId = request.data.get("lobbyId")
+        locationName = request.data.get("locationName")
+        locationDescription = request.data.get("locationDesription")
+        locationRowsCount = request.data.get("locationRowsCount")
+        locationColumnsCount = request.data.get("locationColumnsCount")
+
+        if not lobbyId or not locationName or not locationRowsCount or not locationColumnsCount:
+            return Response("Not valid data", status=status.HTTP_400_BAD_REQUEST)
+        
+        selectedLobby = Lobby.objects.get_lobby_by_id(lobby_id=lobbyId)
+        if not selectedLobby:
+            return Response("Lobby with this id does not exists", status=status.HTTP_400_BAD_REQUEST)
+        
+        createdLocation = Location.objects.create_location(
+            lobby=selectedLobby,
+            name=locationName,
+            description=locationDescription,
+            rows_count=locationRowsCount,
+            columns_count=locationColumnsCount
+        )
+        serializer = LocationSerializer(createdLocation)
         return Response(serializer.data, status=status.HTTP_200_OK)

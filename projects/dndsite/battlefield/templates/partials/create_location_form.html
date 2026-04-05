@@ -1,9 +1,24 @@
-<form id="create-location-form"
-    hx-post="{% url 'create_location' %}"
-    hx-target="#locations-list-wrapper"
-    hx-swap="outerHTML">
-    {% csrf_token %}
-    {{ create_location_form.as_p }}
-    <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
-    <button type="submit" class="btn btn-primary mt-2">Create location</button>
-</form>
+{% load static %}
+
+<div id="create-location-widget">
+    <div id="create-location-widget-content">
+        {% csrf_token %}
+
+        <div class="fieldWrapper">
+            {{ create_location_form.name.as_field_group }}
+        </div>
+        <div class="fieldWrapper">
+            {{ create_location_form.description.as_field_group }}
+        </div>
+        <div class="fieldWrapper">
+            {{ create_location_form.rows_count.as_field_group }}
+        </div>
+        <div class="fieldWrapper">
+            {{ create_location_form.columns_count.as_field_group }}
+        </div>
+
+        <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
+        <button id="create-location-widget-button" class="btn btn-primary mt-2">Create location</button>
+    </div>
+    <script defer type="module" src="{% static 'battlefield/js/forms/create_location_form.js' %}"></script> 
+</div>

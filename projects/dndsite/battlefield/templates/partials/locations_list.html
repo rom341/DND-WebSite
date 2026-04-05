@@ -16,35 +16,4 @@
     </template>
     <script defer type="module" src="{% static 'battlefield/js/location_list.js' %}"></script> 
 </div>
-{% comment %} 
-<div id="locations-list-wrapper">
-    <form hx-post="{% url 'select_location' %}"
-          hx-target="#battle-map-container" 
-          hx-swap="outerHTML" 
-          class="d-flex align-items-center"
-          >
-        
-        {% csrf_token %}
-        
-        <label for="location-select" class="me-2 text-white-50">Location:</label>
-        
-        <select name="location_id" 
-                id="location-select" 
-                class="form-select bg-dark text-white border-primary" 
-                hx-trigger="change" 
-                hx-target="#battle-map" 
-                hx-post="{% url 'select_location' %}"
-                hx-swap="outerHTML"
-                >
-            
-            {% for location in locations_list %}
-                <option value="{{ location.id }}" 
-                    {% if location.id == current_location.id %}selected{% endif %}>
-                    {{ location.name }} ({{ location.rows_count }}x{{ location.columns_count }})
-                </option>
-            {% endfor %}
-        </select>
-        
-    </form>
-</div> {% endcomment %}
 

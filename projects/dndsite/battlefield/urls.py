@@ -8,11 +8,13 @@ urlpatterns = [
     path('battlefield/add_npc_to_lobby/', views.add_npc_to_lobby, name='add_npc_to_lobby'),
     path('battlefield/heal_cahracter/', views.heal_character, name='heal_character'),
     path('battlefield/add_user_to_lobby/', views.add_user_to_lobby, name='add_user_to_lobby'),
-    path('battlefield/create_location/', views.create_location, name='create_location'),
+    #path('battlefield/create_location/', views.create_location, name='create_location'),
     path('battlefield/select_location/', views.select_location, name='select_location'),
 
     path('battlefield/character_position_in_location/<int:location_id>/', api.CharacterPositionApi.get_characters_in_location, name='character_position_in_location_api'),
     path('battlefield/location/<int:location_id>/', api.CharacterPositionApi.get_location, name='location_api'),
     path('battlefield/get_locations_for_lobby/<int:lobby_id>/', api.CharacterPositionApi.get_locations_for_lobby, name='get_locations_for_lobby'),
     path('battlefield/get_lobby/<int:lobby_id>/', api.CharacterPositionApi.get_lobby, name='get_lobby'),
+
+    path('battlefield/create_location_api/', api.CharacterPositionApi.create_location, name='create_location_api'),
 ]
