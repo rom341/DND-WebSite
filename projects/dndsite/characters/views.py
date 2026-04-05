@@ -97,11 +97,12 @@ def create_character(request):
                 spell_circle_slots=None,
             )
             new_character = Character.objects.create_character(
-                new_character_template.user,
-                new_entity_base.entity_base_name,
-                new_entity_base.id
-            )   
-            #new_character = Character.objects.create_from_template(new_character_template)
+                user=new_character_template.user,
+                character_name=new_entity_base.entity_base_name,
+                entity_base_id=new_entity_base.id,
+                current_hit_points=new_character_template.current_hit_points,
+                is_npc=False
+            ) 
         
         return redirect('main_page')
         

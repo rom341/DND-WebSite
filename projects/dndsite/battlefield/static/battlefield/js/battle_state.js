@@ -78,7 +78,6 @@ export function updateLocationData(rawLocationData) {
         console.log(`Location ${updatedLocation.id} updated successfully.`);
     } else {
         battleState.lobbyData.locations.push(rawLocationData);
-        //console.warn(`Location with id ${updatedLocation.id} not found in lobbyData.`);
     }
 }
 

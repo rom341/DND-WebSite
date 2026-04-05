@@ -33,7 +33,6 @@ document.addEventListener('click', async (event) => {
     
     MapFormController.updateCoords(column, row);
     
-    //const positions = await battlefieldAPI.getCharacterPositions(lobbyId);
     const positions = battleState.selectedLocationData.characterPositions;
     
     const found_position = positions.find(pos => 
