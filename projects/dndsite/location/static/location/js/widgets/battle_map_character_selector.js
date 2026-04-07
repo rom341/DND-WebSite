@@ -1,4 +1,4 @@
-import { stateReady } from '../battle_state.js';
+import { stateReady } from '../../../battlefield/js/battle_state.js';
 
 const MapFormController = {
     inputs: {

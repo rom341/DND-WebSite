@@ -1,4 +1,4 @@
-import { stateReady, updateLocationData } from '../battle_state.js';
+import { stateReady, updateLocationData } from '../../../battlefield/js/battle_state.js';
 
 async function sendLocationCreateMessage() {
     console.log("t");

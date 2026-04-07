@@ -40,7 +40,7 @@ async function initBattleState() {
         rawLobbyData.locations = rawLobbyData.locations.map(mapLocationData);
     }
     battleState.lobbyData = rawLobbyData;    
-
+    
     const locationIdElement = document.getElementById('current-location-id');
     const locationId = locationIdElement ? JSON.parse(locationIdElement.textContent) : null;
     if (!locationId) {

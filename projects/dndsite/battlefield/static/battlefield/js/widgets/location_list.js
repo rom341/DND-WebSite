@@ -1,5 +1,5 @@
 import { stateReady, updateSelectedLocation } from '../battle_state.js';
-import { renderBattleMap } from './battle_map.js';
+import { renderBattleMap } from '../../../location/js/widgets/battle_map.js';
 
 async function onLocationSelectChange(event) {
     updateSelectedLocation(parseInt(event.target.value));
