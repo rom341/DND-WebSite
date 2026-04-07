@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 
-from battlefield.models import Location
+from location.models import Location
 from lobby.models import Lobby
 
 

@@ -182,7 +182,7 @@ class CharacterController(UniversalManager):
             user: User,
             location: "Location",
         ):
-        from battlefield.models import Location
+        from location.models import Location
         from lobby.models import DefaultRoles, LobbyRole
 
         if LobbyRole.objects.user_has_role(user=user, lobby=location.lobby, role=DefaultRoles.GAME_MASTER):

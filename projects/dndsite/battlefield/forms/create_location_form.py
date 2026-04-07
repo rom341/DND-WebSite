@@ -1,7 +1,7 @@
 #from django import forms
 from django.forms import ModelForm
 
-from battlefield.models import Location
+from location.models import Location
 
 class CreateLocationForm(ModelForm):
     # name = forms.CharField(max_length=100)

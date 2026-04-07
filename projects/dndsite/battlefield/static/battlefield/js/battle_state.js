@@ -35,31 +35,28 @@ async function initBattleState() {
         console.error("Lobby ID is missing");
         return;
     }
+    const rawLobbyData = await battleState.battlefieldAPI.getLobby(lobbyId);
+    if (rawLobbyData && rawLobbyData.locations) {
+        rawLobbyData.locations = rawLobbyData.locations.map(mapLocationData);
+    }
+    battleState.lobbyData = rawLobbyData;    
 
     const locationIdElement = document.getElementById('current-location-id');
     const locationId = locationIdElement ? JSON.parse(locationIdElement.textContent) : null;
     if (!locationId) {
         console.error("Location ID is missing");
-        return;
     }
-
-    const rawLobbyData = await battleState.battlefieldAPI.getLobby(lobbyId);
-    if (rawLobbyData && rawLobbyData.locations) {
-        rawLobbyData.locations = rawLobbyData.locations.map(mapLocationData);
-    }
-    battleState.lobbyData = rawLobbyData;
-    
-    
     updateSelectedLocation(locationId);
+    
     return battleState;
 }
 
-export function updateSelectedLocation(newLocationId) {
-    if (!newLocationId) 
+export function updateSelectedLocation(newSelectedLocationId) {
+    if (!newSelectedLocationId) 
         return;
 
     battleState.selectedLocationData = battleState.lobbyData.locations.find(loc => {
-        return loc.id == newLocationId;
+        return loc.id == newSelectedLocationId;
     });    
 }
 

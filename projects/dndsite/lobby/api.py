@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 
-from battlefield.models import Location
+from location.models import Location
 from battlefield.serializers import LocationSerializer
 from lobby.models import Lobby
 from lobby.serializers import LobbySerializer

@@ -4,7 +4,7 @@ from typing import Optional
 
 from django.db.models.query import QuerySet
 
-from battlefield.models import CharacterPosition, Location
+from location.models import CharacterPosition, Location
 from django.forms.models import model_to_dict
 
 

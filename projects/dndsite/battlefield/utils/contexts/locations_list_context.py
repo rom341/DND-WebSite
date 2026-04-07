@@ -3,7 +3,7 @@ from typing import Optional
 
 from django.db.models.query import QuerySet
 
-from battlefield.models import Location
+from location.models import Location
 
 
 @dataclass

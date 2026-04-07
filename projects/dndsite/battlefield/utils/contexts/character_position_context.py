@@ -3,7 +3,7 @@ from typing import Optional
 
 from django.db.models.query import QuerySet
 
-from battlefield.models import CharacterPosition
+from location.models import CharacterPosition
 
 
 @dataclass

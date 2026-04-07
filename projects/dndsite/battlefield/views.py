@@ -7,7 +7,7 @@ from lobby.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from lobby.forms.add_user_to_lobby_form import AddUserToLobbyForm
 from battlefield.forms.create_location_form import CreateLocationForm
 from battlefield.forms.move_character_form import MoveCharacterForm
-from battlefield.models import CharacterPosition, Location
+from location.models import CharacterPosition, Location
 from battlefield.utils.contexts.battlefield_context import BattleieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContext
@@ -73,7 +73,6 @@ def battlefield(request:  HttpRequest):
     
     characters_in_current_location = []
     locations_list = []
-    selected_location = None
     rows_count = 0
     cols_count = 0
     move_character_form = None
@@ -88,14 +87,10 @@ def battlefield(request:  HttpRequest):
         current_location_id = locations_list.first().id
         current_location = locations_list.first()
 
-    if current_location_id:
-        selected_location = session_manager.get_current_location()
-        
-        rows_count = selected_location.rows_count
-        cols_count = selected_location.columns_count
-        
-        characters_in_current_location = Location.objects.get_characters_in_location(selected_location)        
-        
+    if current_location_id and current_location:        
+        rows_count = current_location.rows_count
+        cols_count = current_location.columns_count
+
         characters_available_for_current_user = Character.objects.get_characters_available_for_user_in_location(user=request.user, location=current_location)
 
         move_character_form = MoveCharacterForm(available_characters=characters_available_for_current_user)
@@ -104,11 +99,11 @@ def battlefield(request:  HttpRequest):
         add_npc_form = AddNPCToLobbyForm(lobby=lobby)
     
     character_positions_context_container = CharacterPositionContextContainer(
-        character_positions=CharacterPosition.objects.get_all_character_positions_in_location(selected_location)
+        character_positions=CharacterPosition.objects.get_all_character_positions_in_location(current_location)
     )
     
     location_context_container = LocationMapContext(
-        current_location=selected_location,
+        current_location=current_location,
         rows_count=rows_count,
         cols_count=cols_count,
         character_positions=character_positions_context_container.character_positions

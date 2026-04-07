@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from battlefield.models import CharacterPosition, Location
+from location.models import CharacterPosition, Location
 from characters.serializers import CharacterSerializer
 
 class CharacterPositionSerializer(serializers.ModelSerializer):

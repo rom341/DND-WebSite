@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import QuerySet
-from battlefield.models import CharacterPosition
+from location.models import CharacterPosition
 from characters.models import Character
 
 class MoveCharacterForm(forms.ModelForm):
