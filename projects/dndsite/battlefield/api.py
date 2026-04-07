@@ -9,13 +9,13 @@ from lobby.models import Lobby
 from lobby.serializers import LobbySerializer
 
 class CharacterPositionApi(APIView):
-    def get(self, request) -> Response:
+    def get_all_character_positions(self, request) -> Response:
         character_positions = CharacterPosition.objects.all()
         serializer = CharacterPositionSerializer(character_positions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @api_view(('GET',))
-    def get_characters_in_location(request, location_id=None) -> Response:
+    def get_character_positions_in_location(request, location_id=None) -> Response:
         if not location_id:
             return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
         
@@ -32,23 +32,7 @@ class CharacterPositionApi(APIView):
         serializer = LocationSerializer(location)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @api_view(('GET',))
-    def get_locations_for_lobby(request, lobby_id=None) -> Response:
-        if not lobby_id:
-            return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
-        
-        locations = Location.objects.get_locations_for_lobby_by_id(lobby_id=lobby_id)
-        serializer = LocationSerializer(locations, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    @api_view(('GET',))
-    def get_lobby(request, lobby_id=None) -> Response:
-        if not lobby_id:
-            return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
-        
-        lobby = Lobby.objects.get_lobby_by_id(lobby_id=lobby_id)
-        serializer = LobbySerializer(lobby)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
         
     @api_view(('POST',))
     def create_location(request) -> Response:

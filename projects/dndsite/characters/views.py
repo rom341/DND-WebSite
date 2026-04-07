@@ -1,10 +1,13 @@
 import json
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
 from accounts.models import UserManager
+from base.managers.SessionManager import SessionManager
 from characters.forms.create_character_form import EntityBaseForm
+from characters.forms.heal_character_form import HealCharacterForm
 from characters.forms.uploading_json_files_form import JsonUploadForm
 from characters.models import Character, CharacterMoney, CharacterSkills, CharacterSpells, CharacterStats, EntityBase
 from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate, CharacterSpellsTemplate, CharacterStatsTemplate, CharacterTemplate, EntityBaseTemplate
@@ -165,3 +168,21 @@ def my_characters_list(request):
         'all_user_characters': all_user_characters
     }
     return render(request, 'my_characters_list.html',data)
+
+@login_required
+def heal_character(request):
+    if request.method == 'POST':
+        session_manager = SessionManager.get_session_manager(request=request)
+        lobby = session_manager.get_current_lobby()
+        current_location = session_manager.get_current_location()
+        characters_available_for_current_user = Character.objects.get_characters_available_for_user_in_location(user=request.user, location=current_location)
+
+        form = HealCharacterForm(request.POST, available_characters=characters_available_for_current_user)
+        if form.is_valid():
+            character = form.cleaned_data.get('character')
+            heal_value = form.cleaned_data.get('health_value')
+            heal_type = form.cleaned_data.get('heal_action_type')
+            Character.objects.change_health(character=character, heal_value=heal_value, heal_type=heal_type)
+            return HttpRequest("Successfull")
+
+        return HttpResponseBadRequest("Failed")

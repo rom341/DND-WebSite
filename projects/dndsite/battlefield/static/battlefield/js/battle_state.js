@@ -1,4 +1,4 @@
-import { BattlefieldAPI } from './battlefield_api.js';
+import { APIManager } from './api_manager.js';
 
 const battleState = {
     lobbyData: {
@@ -11,7 +11,7 @@ const battleState = {
         id: -1,
         characterPositions: []
     },
-    battlefieldAPI: new BattlefieldAPI()
+    battlefieldAPI: new APIManager()
 };
 
 function mapLocationData(rawLoc) {
