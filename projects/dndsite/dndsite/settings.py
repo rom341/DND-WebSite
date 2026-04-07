@@ -48,10 +48,12 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
 
+    'core',
     'accounts',
-    'battlefield',
+    'location',
     'characters',
     'lobby',
+    'battlefield',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'base.middleware.SessionManagerMiddleware.SessionManagerMiddleware'
+    'core.middleware.SessionManagerMiddleware.SessionManagerMiddleware'
 ]
 
 ROOT_URLCONF = 'dndsite.urls'
@@ -77,6 +79,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'accounts', 'templates'),
             os.path.join(BASE_DIR, 'characters', 'templates'),
             os.path.join(BASE_DIR, 'lobby', 'templates'),
+            os.path.join(BASE_DIR, 'location', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

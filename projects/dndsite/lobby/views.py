@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
-from base.managers.SessionManager import SessionManager
+from core.managers.SessionManager import SessionManager
 from lobby.forms.add_character_to_lobby_form import AddCharacterToGroupForm
 from lobby.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from lobby.forms.add_user_to_lobby_form import AddUserToLobbyForm

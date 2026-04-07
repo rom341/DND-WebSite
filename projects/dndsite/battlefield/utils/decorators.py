@@ -3,7 +3,7 @@ from functools import wraps
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 
-from base.managers.SessionManager import SessionManager
+from core.managers.SessionManager import SessionManager
 from lobby.models import DefaultRoles, LobbyMembershipUser
 
 

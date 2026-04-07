@@ -2,7 +2,7 @@ from enum import Enum
 from django.db import models
 from django.contrib.auth.models import User
 
-from base.managers.UniversalManager import UniversalManager
+from core.managers.UniversalManager import UniversalManager
 from characters.models import Character
 
 # Create your models here.

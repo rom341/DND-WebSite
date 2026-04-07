@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
 from accounts.models import UserManager
-from base.managers.SessionManager import SessionManager
+from core.managers.SessionManager import SessionManager
 from characters.forms.create_character_form import EntityBaseForm
 from characters.forms.heal_character_form import HealCharacterForm
 from characters.forms.uploading_json_files_form import JsonUploadForm

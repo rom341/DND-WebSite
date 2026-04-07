@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from base.managers.UniversalManager import UniversalManager
+from core.managers.UniversalManager import UniversalManager
 
 # Create your models here.
 class CharacterSpells(models.Model):

@@ -1,4 +1,4 @@
-from base.managers.SessionManager import SessionManager
+from core.managers.SessionManager import SessionManager
 
 
 class SessionManagerMiddleware:

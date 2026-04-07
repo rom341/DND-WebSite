@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect, render
-from base.managers.SessionManager import SessionManager
+from core.managers.SessionManager import SessionManager
 from lobby.forms.add_character_to_lobby_form import AddCharacterToGroupForm
 from lobby.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from lobby.forms.add_user_to_lobby_form import AddUserToLobbyForm
