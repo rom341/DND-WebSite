@@ -1,17 +1,21 @@
 import {Background} from "./background.js"
-import {Player} from "./player.js"
+import {Character} from "./player.js"
+import { stateReady } from '../../../battlefield/js/battle_state.js';
 
 class Game {
-    constructor(context, width, height) {
+    constructor(context, width, height, battleState) {
         this.context = context
         this.width = width;
         this.height = height;
+        this.battleState = battleState;
 
         this.cellWidth = 50;
         this.cellHeight = 50;
 
         this.background = new Background(this);
-        this.player = new Player(this);
+        //this.player = new Character(this);
+        this.initLocationData();
+        this.initCharacterPositions();
     }
 
     update() {
@@ -21,21 +25,30 @@ class Game {
     draw() {
         this.context.clearRect(0, 0, this.width, this.height);
         this.background.drawGrid(this.context);
-        this.player.draw(this.context);
+        this.characters.forEach(char => char.draw(this.context));
+    }
+
+    initLocationData() {
+        this.selectedLocationData = this.battleState.selectedLocationData;
+    }   
+    
+    initCharacterPositions() {
+        const characterPositions = this.selectedLocationData.characterPositions;
+        this.characters = characterPositions.map((data) => new Character(this, data));
     }
 
     onCanvasClick(clickPos){
-        console.log(clickPos);
     }
 }
 
-function runBattleRender() {
+async function runBattleRender() {
     const canvasElement = document.getElementById("canvas1");
     const context = canvasElement.getContext("2d");
     canvasElement.width = 500;
     canvasElement.height = 500;
 
-    const game = new Game(context, canvasElement.width, canvasElement.height);
+    const battleState = await stateReady;
+    const game = new Game(context, canvasElement.width, canvasElement.height, battleState);
     console.log(game);
     game.draw();
 
@@ -49,6 +62,6 @@ function runBattleRender() {
     });
 }
 
-window.addEventListener('load', () => {
-    runBattleRender()
+window.addEventListener('load', async () => {
+    await runBattleRender()
 });
