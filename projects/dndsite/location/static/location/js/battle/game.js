@@ -48,8 +48,8 @@ async function runBattleRender() {
     const cellWidth = 50;
     const cellHeight = 50;
 
-    canvasElement.width = (battleState.selectedLocationData.columnsCount + 1) * cellWidth;
-    canvasElement.height = (battleState.selectedLocationData.rowsCount + 1) * cellHeight;
+    canvasElement.width = (battleState.selectedLocationData.columnsCount) * cellWidth;
+    canvasElement.height = (battleState.selectedLocationData.rowsCount) * cellHeight;
     const game = new Game(context, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);
 
     
