@@ -3,17 +3,15 @@ import {Character} from "./player.js"
 import { stateReady } from '../../../battlefield/js/battle_state.js';
 
 class Game {
-    constructor(context, width, height, battleState) {
+    constructor(context, width, height, cellWidth, cellHeight, battleState) {
         this.context = context
         this.width = width;
         this.height = height;
         this.battleState = battleState;
 
-        this.cellWidth = 50;
-        this.cellHeight = 50;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
 
-        this.background = new Background(this);
-        //this.player = new Character(this);
         this.initLocationData();
         this.initCharacterPositions();
     }
@@ -30,11 +28,12 @@ class Game {
 
     initLocationData() {
         this.selectedLocationData = this.battleState.selectedLocationData;
+        this.background = new Background(this, this.selectedLocationData);
     }   
     
     initCharacterPositions() {
         const characterPositions = this.selectedLocationData.characterPositions;
-        this.characters = characterPositions.map((data) => new Character(this, data));
+        this.characters = characterPositions.map((characterPosition) => new Character(this, characterPosition));
     }
 
     onCanvasClick(clickPos){
@@ -42,13 +41,18 @@ class Game {
 }
 
 async function runBattleRender() {
+    const battleState = await stateReady;
     const canvasElement = document.getElementById("canvas1");
     const context = canvasElement.getContext("2d");
-    canvasElement.width = 500;
-    canvasElement.height = 500;
 
-    const battleState = await stateReady;
-    const game = new Game(context, canvasElement.width, canvasElement.height, battleState);
+    const cellWidth = 50;
+    const cellHeight = 50;
+
+    canvasElement.width = (battleState.selectedLocationData.columnsCount + 1) * cellWidth;
+    canvasElement.height = (battleState.selectedLocationData.rowsCount + 1) * cellHeight;
+    const game = new Game(context, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);
+
+    
     console.log(game);
     game.draw();
 
