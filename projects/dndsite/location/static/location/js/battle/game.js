@@ -1,10 +1,11 @@
 import {Background} from "./background.js"
-import {Character} from "./player.js"
+import {Character} from "./character.js"
 import { stateReady } from '../../../battlefield/js/battle_state.js';
 
 class Game {
-    constructor(context, width, height, cellWidth, cellHeight, battleState) {
-        this.context = context
+    constructor(canvasElement, width, height, cellWidth, cellHeight, battleState) {
+        this.canvasElement = canvasElement
+        this.context = this.canvasElement.getContext("2d");
         this.width = width;
         this.height = height;
         this.battleState = battleState;
@@ -36,33 +37,42 @@ class Game {
         this.characters = characterPositions.map((characterPosition) => new Character(this, characterPosition));
     }
 
-    onCanvasClick(clickPos){
+    onCanvasClick(e){
+        const canvasAbsolutePos = this.canvasElement.getBoundingClientRect();
+        const clickPos = {
+            x: Math.round(e.clientX - canvasAbsolutePos.left),
+            y: Math.round(e.clientY - canvasAbsolutePos.top)
+        };
+    }
+
+    onCanvasMouseWheel(e){
+        const direction = Math.sign(e.deltaY);
     }
 }
 
 async function runBattleRender() {
     const battleState = await stateReady;
     const canvasElement = document.getElementById("canvas1");
-    const context = canvasElement.getContext("2d");
 
-    const cellWidth = 50;
-    const cellHeight = 50;
+    const cellWidth = 100;
+    const cellHeight = 100;
 
     canvasElement.width = (battleState.selectedLocationData.columnsCount + 1) * cellWidth; //+1 for labels
     canvasElement.height = (battleState.selectedLocationData.rowsCount + 1) * cellHeight; //+1 for labels
-    const game = new Game(context, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);
-    
+    const game = new Game(canvasElement, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);    
     console.log(game);
-    game.draw();
-
+    
     canvasElement.addEventListener('click', (e) => {
-        const canvasAbsolutePos = canvasElement.getBoundingClientRect();
-        const clickPos = {
-            x: Math.round(e.clientX - canvasAbsolutePos.left),
-            y: Math.round(e.clientY - canvasAbsolutePos.top)
-        };
-        game.onCanvasClick(clickPos);
+        game.onCanvasClick(e);
     });
+    
+    canvasElement.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        game.onCanvasMouseWheel(e);
+    }, { passive: false });
+
+
+    game.draw();
 }
 
 window.addEventListener('load', async () => {

@@ -9,8 +9,8 @@ export class Character {
 
         this.sourceSpriteWidth = 100;
         this.sourceSpriteHeight = 200;
-        this.destinationSpriteWidth = 25;
-        this.destinationSpriteHeight = 50;
+        this.destinationSpriteWidth = game.cellWidth / 2;
+        this.destinationSpriteHeight = game.cellHeight;
 
         this.rowShift = 1;
         this.columnShift = 1;
@@ -29,12 +29,15 @@ export class Character {
         context.fillStyle = "red";
         context.fillRect(columnPosX, rowPosY, this.game.cellWidth, this.game.cellHeight);
 
+        const centerX = columnPosX + (this.game.cellWidth - this.destinationSpriteWidth) / 2;
+        const centerY = rowPosY + (this.game.cellHeight - this.destinationSpriteHeight) / 2;
+
         context.drawImage(
-            this.playerSpriteSheetElement, //sprite sheet to use
-            0, 0, //sprite pos on sprite sheet
-            this.sourceSpriteWidth, this.sourceSpriteHeight, //sprite size on sprite sheet
-            columnPosX + this.destinationSpriteWidth / 2, rowPosY, //where to draw on context
-            this.destinationSpriteWidth, this.destinationSpriteHeight //size that will be consumed by img. if it is different from sprite size, img will be squeezed
+            this.playerSpriteSheetElement,
+            0, 0, 
+            this.sourceSpriteWidth, this.sourceSpriteHeight,
+            centerX, centerY, 
+            this.destinationSpriteWidth, this.destinationSpriteHeight
         ); 
     }
 
