@@ -19,8 +19,13 @@ class Game {
     }
 
     draw() {
+        this.context.clearRect(0, 0, this.width, this.height);
         this.background.drawGrid(this.context);
         this.player.draw(this.context);
+    }
+
+    onCanvasClick(clickPos){
+        console.log(clickPos);
     }
 }
 
@@ -33,6 +38,15 @@ function runBattleRender() {
     const game = new Game(context, canvasElement.width, canvasElement.height);
     console.log(game);
     game.draw();
+
+    canvasElement.addEventListener('click', (e) => {
+        const canvasAbsolutePos = canvasElement.getBoundingClientRect();
+        const clickPos = {
+            x: Math.round(e.clientX - canvasAbsolutePos.left),
+            y: Math.round(e.clientY - canvasAbsolutePos.top)
+        };
+        game.onCanvasClick(clickPos);
+    });
 }
 
 window.addEventListener('load', () => {
