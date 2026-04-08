@@ -22,7 +22,7 @@ class Game {
 
     draw() {
         this.context.clearRect(0, 0, this.width, this.height);
-        this.background.drawGrid(this.context);
+        this.background.draw(this.context);
         this.characters.forEach(char => char.draw(this.context));
     }
 
@@ -48,10 +48,9 @@ async function runBattleRender() {
     const cellWidth = 50;
     const cellHeight = 50;
 
-    canvasElement.width = (battleState.selectedLocationData.columnsCount) * cellWidth;
-    canvasElement.height = (battleState.selectedLocationData.rowsCount) * cellHeight;
+    canvasElement.width = (battleState.selectedLocationData.columnsCount + 1) * cellWidth; //+1 for labels
+    canvasElement.height = (battleState.selectedLocationData.rowsCount + 1) * cellHeight; //+1 for labels
     const game = new Game(context, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);
-
     
     console.log(game);
     game.draw();

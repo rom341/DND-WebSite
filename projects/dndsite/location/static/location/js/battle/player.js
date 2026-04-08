@@ -12,6 +12,9 @@ export class Character {
         this.destinationSpriteWidth = 25;
         this.destinationSpriteHeight = 50;
 
+        this.rowShift = 1;
+        this.columnShift = 1;
+
         this.playerSpriteSheetElement = document.getElementById("player-sprite-sheet");
     }
 
@@ -20,8 +23,8 @@ export class Character {
     }
 
     draw(context) {
-        const columnPosX = this.column * this.game.cellWidth;
-        const rowPosY = this.row * this.game.cellHeight;
+        const columnPosX = (this.column + this.columnShift) * this.game.cellWidth;
+        const rowPosY = (this.row + this.rowShift) * this.game.cellHeight;
 
         context.fillStyle = "red";
         context.fillRect(columnPosX, rowPosY, this.game.cellWidth, this.game.cellHeight);
