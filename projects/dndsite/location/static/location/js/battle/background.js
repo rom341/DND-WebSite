@@ -38,10 +38,16 @@ export class Background {
     drawGrid(context) {
         context.fillStyle = "black";
         for(var y = this.game.cellHeight; y <= this.game.height + 1; y += this.game.cellHeight) {
-            context.fillRect(0, y - this.gridLineWidth / 2, this.game.width, this.gridLineHeight);
+            context.fillRect(0, y - this.gridLineHeight / 2, this.game.width, this.gridLineHeight);
         }
         for(var x = this.game.cellHeight; x <= this.game.width + 1; x += this.game.cellWidth) {
             context.fillRect(x - this.gridLineHeight / 2, 0, this.gridLineWidth, this.game.height);
         }
+    }
+
+    getCellOnCords(x, y) {
+        const col = Math.floor(x / this.game.cellWidth) - 1; 
+        const row = Math.floor(y / this.game.cellHeight) - 1;        
+        return [col, row];
     }
 }

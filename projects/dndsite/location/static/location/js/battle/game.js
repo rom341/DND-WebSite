@@ -1,5 +1,6 @@
 import {Background} from "./background.js"
 import {Character} from "./character.js"
+import {SelectCharacterController as CharacterSellectController} from "../widgets/battle_map_character_selector.js"
 import { stateReady } from '../../../battlefield/js/battle_state.js';
 
 class Game {
@@ -15,6 +16,7 @@ class Game {
 
         this.initLocationData();
         this.initCharacterPositions();
+        this.initControllers();
     }
 
     update() {
@@ -37,13 +39,31 @@ class Game {
         this.characters = characterPositions.map((characterPosition) => new Character(this, characterPosition));
     }
 
-    onCanvasClick(e){
-        const canvasAbsolutePos = this.canvasElement.getBoundingClientRect();
-        const clickPos = {
-            x: Math.round(e.clientX - canvasAbsolutePos.left),
-            y: Math.round(e.clientY - canvasAbsolutePos.top)
-        };
+    initControllers() {
+        this.characterSellectController = new CharacterSellectController();
     }
+
+onCanvasClick(e) {
+const canvasBounds = this.canvasElement.getBoundingClientRect();
+    const scaleX = this.canvasElement.width / canvasBounds.width;
+    const scaleY = this.canvasElement.height / canvasBounds.height;
+
+    const clickPos = {
+        x: (e.clientX - canvasBounds.left) * scaleX,
+        y: (e.clientY - canvasBounds.top) * scaleY
+    };
+
+    const [col, row] = this.background.getCellOnCords(clickPos.x, clickPos.y);    
+    this.characterSellectController.updateCoords(col, row);
+    
+    const charactersOnPosition = this.selectedLocationData.characterPositions.find(pos => 
+        Number(pos.column) === col && Number(pos.row) === row
+    );
+    
+    if (charactersOnPosition) {
+        this.characterSellectController.setCharacter(charactersOnPosition.id);
+    }
+}
 
     onCanvasMouseWheel(e){
         const direction = Math.sign(e.deltaY);
