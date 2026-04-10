@@ -9,8 +9,8 @@ import {sendMoveCharacterMessageWS} from "../widgets/move_character_web_socket.j
 
 class Game {
     constructor(canvasElement, width, height, cellWidth, cellHeight, battleState) {
-        this.canvasElement = canvasElement
-        this.context = this.canvasElement.getContext("2d");
+        this.canvas = canvasElement
+        this.context = this.canvas.getContext("2d");
         this.width = width;
         this.height = height;
         this.battleState = battleState;
@@ -64,9 +64,9 @@ class Game {
     }
 
     onCanvasClick(e) {
-        const canvasBounds = this.canvasElement.getBoundingClientRect();
-        const scaleX = this.canvasElement.width / canvasBounds.width;
-        const scaleY = this.canvasElement.height / canvasBounds.height;
+        const canvasBounds = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / canvasBounds.width;
+        const scaleY = this.canvas.height / canvasBounds.height;
         
         const clickPos = {
             x: (e.clientX - canvasBounds.left) * scaleX,
