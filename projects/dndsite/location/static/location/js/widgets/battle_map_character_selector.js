@@ -14,7 +14,18 @@ export class SelectCharacterController {
         if (this.inputs.rowInputElement) this.inputs.rowInputElement.value = row;
     }
 
+    getSelectedCords() {
+        return [
+            Number(this.inputs.columnInputElement.value),
+            Number(this.inputs.rowInputElement.value)
+        ]
+    }
+
     setCharacter(id) {
         if (this.inputs.characterInputElement) this.inputs.characterInputElement.value = id || "";
+    }
+
+    getSelectedCharacterId() {
+        return Number(this.inputs.characterInputElement.value);
     }
 };
