@@ -9,7 +9,9 @@ const battleState = {
     },
     selectedLocationData: {
         id: -1,
-        characterPositions: []
+        characterPositions: [],
+        rowsCount: -1,
+        columnsCount: -1
     },
     battlefieldAPI: new APIManager()
 };

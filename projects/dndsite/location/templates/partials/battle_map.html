@@ -1,6 +1,18 @@
 {% load static %}
-<div id="battle-map"> 
+<div id="battle-map" class="container"> 
     {% include "notification_container.html" %}
+    <div>
+        <canvas id="canvas1" class="canvas">
+
+        </canvas>
+        <div>
+            <img id="player-sprite-sheet" class="sprite-sheet" src="{% static 'location/img/character_idle.png' %}">
+        </div>
+        <script defer type="module" src="{% static 'location/js/battle/game.js' %}"></script>
+    </div>
+
+
+
     <div id="battle-map-grid">
         
     </div>
@@ -14,5 +26,6 @@
         </div>        
     </template>
 
-    <script defer type="module" src="{% static 'location/js/widgets/battle_map.js' %}"></script> 
+    <script defer type="module" src="{% static 'location/js/widgets/battle_map.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'location/css/style.css' %}"> 
 </div>

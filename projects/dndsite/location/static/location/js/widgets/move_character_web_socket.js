@@ -1,7 +1,6 @@
 import { stateReady, updateLocationData } from '../../../battlefield/js/battle_state.js';
 import { renderBattleMap } from './battle_map.js';
-
-async function sendMoveCharacterMessageWS(socket) {
+export async function sendMoveCharacterMessageWS(socket) {
     const battleState = await stateReady;
     const target_column = document.getElementById("id_column").value;
     const target_row = document.getElementById("id_row").value;
@@ -40,8 +39,8 @@ async function initWebSocket() {
 document.addEventListener('DOMContentLoaded', async () => {
     const webSocket = await initWebSocket()
 
-    document.getElementById('move-character-button').addEventListener('click', async (e) => {
-        e.preventDefault(); 
-        await sendMoveCharacterMessageWS(webSocket);
-    });
+    // document.getElementById('move-character-button').addEventListener('click', async (e) => {
+    //     e.preventDefault(); 
+    //     await sendMoveCharacterMessageWS(webSocket);
+    // });
 });

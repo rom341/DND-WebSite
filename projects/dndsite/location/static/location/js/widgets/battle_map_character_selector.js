@@ -1,44 +1,31 @@
 import { stateReady } from '../../../battlefield/js/battle_state.js';
 
-const MapFormController = {
-    inputs: {
-        column: document.getElementById('id_column'),
-        row: document.getElementById('id_row'),
-        characterName: document.getElementById('id_name')
-    },
+export class SelectCharacterController {
+    constructor () {
+        this.inputs = {
+            columnInputElement: document.getElementById('id_column'),
+            rowInputElement: document.getElementById('id_row'),
+            characterInputElement: document.getElementById('id_name')
+        };
+    }
 
     updateCoords(column, row) {
-        if (this.inputs.column) this.inputs.column.value = column;
-        if (this.inputs.row) this.inputs.row.value = row;
-    },
+        if (this.inputs.columnInputElement) this.inputs.columnInputElement.value = column;
+        if (this.inputs.rowInputElement) this.inputs.rowInputElement.value = row;
+    }
+
+    getSelectedCords() {
+        return [
+            Number(this.inputs.columnInputElement.value),
+            Number(this.inputs.rowInputElement.value)
+        ]
+    }
 
     setCharacter(id) {
-        if (this.inputs.characterName) this.inputs.characterName.value = id || "";
+        if (this.inputs.characterInputElement) this.inputs.characterInputElement.value = id || "";
+    }
+
+    getSelectedCharacterId() {
+        return Number(this.inputs.characterInputElement.value);
     }
 };
-
-document.addEventListener('click', async (event) => {
-    const battleState = await stateReady;
-    const cell = event.target.closest('.grid-cell');
-    const map = event.target.closest('#battle-map');
-    if (!cell || !map) return;
-       
-    if (!battleState.lobbyData.id) {
-        console.error("Lobby ID is missing");
-        return;
-    }
-    
-    const column = parseInt(cell.dataset.x, 10);
-    const row = parseInt(cell.dataset.y, 10);
-    
-    MapFormController.updateCoords(column, row);
-    
-    const positions = battleState.selectedLocationData.characterPositions;
-    
-    const found_position = positions.find(pos => 
-        Number(pos.column) === column && Number(pos.row) === row
-    );
-    if (found_position) {
-        MapFormController.setCharacter(found_position.character.id);
-    }
-});
