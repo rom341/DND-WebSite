@@ -19,6 +19,8 @@ from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.decorators import game_master_required
 from characters.models import Character, EntityBase
 from lobby.models import DefaultRoles, Lobby
+from service.lobby import actions
+from service.role import selectors as RoleSelectors
 
 # Create your views here.
 @login_required
@@ -33,15 +35,12 @@ def lobby(request):
                     lobby_id = request.POST.get('lobby_id')
                 elif action == 'create': # new lobby created
                     new_lobby_name = request.POST.get('lobby_name')
-                    new_lobby = Lobby.objects.create_lobby(new_lobby_name)
-                    Lobby.objects.add_user_to_lobby(active_user, new_lobby, role_name=DefaultRoles.GAME_MASTER.value)
+                    new_lobby = actions.create_lobby_with_gm(active_user, new_lobby_name)
                     lobby_id = new_lobby.id
                     
                 if lobby_id:
                     session_manager = SessionManager.get_session_manager(request=request)
                     session_manager.set_current_lobby_id(lobby_id=lobby_id)
-                    if any_location := Location.objects.get_locations_for_lobby_by_id(lobby_id=lobby_id).first():
-                        session_manager.set_current_location_id(location_id=any_location.id)
                     
                     return redirect(reverse('battlefield'))
                 else:
@@ -51,9 +50,9 @@ def lobby(request):
             messages.error(request, f"Unknown error while operating lobby selection page: {str(e)}")
             return redirect(reverse('lobby'))
         
-    lobby = Lobby.objects.get_lobby_with_user(active_user)   
+    lobby = Lobby.objects.get_lobbys_with_user(active_user)   
     data = {
-        'lobby': lobby,
+        'lobbys': lobby,
     }
 
     return render(request, 'lobby.html', data)
@@ -69,7 +68,7 @@ def add_user_to_lobby(request):
             if form.is_valid():
                 selected_user_id = request.POST.get('user_id')
                 selected_user = User.objects.get(id=selected_user_id)
-                Lobby.objects.add_user_to_lobby(selected_user, current_lobby)
+                actions.add_user_as_player_to_lobby(selected_user, current_lobby)
                 return CommonRequestHelper.get_updated_user_list_widget(request, current_lobby)
     
     return HttpResponseBadRequest("Invalid request method.")

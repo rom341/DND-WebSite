@@ -35,7 +35,7 @@ class LobbyManager(UniversalManager):
         )
     
     @staticmethod
-    def get_lobby_with_user(user):
+    def get_lobbys_with_user(user):
         return Lobby.objects.filter(
             user_memberships__user=user
         )
@@ -75,20 +75,14 @@ class LobbyManager(UniversalManager):
         """Add user to existing lobby or create new membership if not exists""" 
         # Look for existing membership using User and Group
         # If found, update it; if not, create a new one with the User and role 
-        role, role_created = LobbyRole.objects.get_or_create(name=role_name)     
-        membership, membership_created = LobbyMembershipUser.objects.get_or_create(
+        role = LobbyRole.objects.first()     
+        membership = LobbyMembershipUser.objects.create(
             lobby=lobby,
             user=user,
             defaults={'role': role}
         )
-        # If the membership already existed, update the user and role
-        if not role_created:
-            membership.role = role
-            membership.save()
-        if not membership_created:
-            membership.user = user
-            membership.save()
             
+        membership.save()
         return membership
         
     @staticmethod
@@ -132,7 +126,15 @@ class LobbyRole(models.Model):
     def __str__(self):
         return self.name
 
-class LobbyMembershipUser(models.Model):    
+class LobbyMembershipUserManager(UniversalManager):
+    @staticmethod
+    def set_user_role_in_lobby(user: User, lobby: Lobby, role: LobbyRole):
+        membership = LobbyMembershipUser.objects.get(user=user, lobby=lobby)
+        membership.role = role
+        membership.save()
+
+class LobbyMembershipUser(models.Model): 
+    objects: LobbyMembershipUserManager = LobbyMembershipUserManager()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lobby_memberships')
     lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='user_memberships')
     role = models.ForeignKey(LobbyRole, on_delete=models.CASCADE, related_name='memberships')
