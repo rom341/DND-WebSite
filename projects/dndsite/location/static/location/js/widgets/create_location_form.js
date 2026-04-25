@@ -1,7 +1,6 @@
 import { stateReady, updateLocationData } from '../../../battlefield/js/battle_state.js';
 
 async function sendLocationCreateMessage() {
-    console.log("t");
     const battleState = await stateReady;
     const mainContainer = document.getElementById("create-location-widget-content");
 

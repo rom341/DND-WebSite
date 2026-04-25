@@ -1,9 +1,14 @@
-<form id="add-user-to-lobby-form"
-    hx-post="{% url 'add_user_to_lobby' %}"
-    hx-target="#users-list"
-    hx-swap="outerHTML">
-    {% csrf_token %}
-    {{ add_user_form.as_p }}
-    <input type="hidden" name="lobby_id" value="{{ lobby_id }}">
-    <button type="submit" class="btn btn-primary mt-2">Add User</button>
-</form>
+{% load static %}
+
+
+<div id="add-user-to-lobby-widget">
+    <div id="add-user-to-lobby-widget-content">
+
+        {% csrf_token %}
+        {{ add_user_form.as_p }}
+        <input type="hidden" name="lobby_id" value="{{ current_lobby.id }}">
+        <button id="add-user-to-lobby-widget-button" class="btn btn-primary mt-2">Add User</button>
+        
+    </div>
+    <script defer type="module" src="{% static 'lobby/js/widgets/add_user_to_lobby.js' %}"></script> 
+</div>

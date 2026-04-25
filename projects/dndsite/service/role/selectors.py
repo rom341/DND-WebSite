@@ -1,4 +1,8 @@
-from lobby.models import LobbyRole
+from lobby.models import DefaultRoles, LobbyRole
+
+
+def get_gm_role():
+    return LobbyRole.objects.get_role_by_name(DefaultRoles.GAME_MASTER.value)
 
 
 def get_role_by_name(role_name: str):

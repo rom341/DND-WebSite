@@ -79,7 +79,7 @@ class LobbyManager(UniversalManager):
         membership = LobbyMembershipUser.objects.create(
             lobby=lobby,
             user=user,
-            defaults={'role': role}
+            #defaults={'role': role_name}
         )
             
         membership.save()
@@ -112,10 +112,10 @@ class RoleManager(UniversalManager):
         )
 
     @staticmethod
-    def user_has_role(user, lobby, role):
+    def user_has_role(user: User, lobby: Lobby, role: "LobbyRole"):
         try:
             membership = LobbyMembershipUser.objects.get(user=user, lobby=lobby)
-            return membership.role.name == role.value
+            return membership.role.name == role.name
         except LobbyMembershipUser.DoesNotExist:
             return False
 
@@ -137,7 +137,7 @@ class LobbyMembershipUser(models.Model):
     objects: LobbyMembershipUserManager = LobbyMembershipUserManager()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lobby_memberships')
     lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='user_memberships')
-    role = models.ForeignKey(LobbyRole, on_delete=models.CASCADE, related_name='memberships')
+    role = models.ForeignKey(LobbyRole, on_delete=models.CASCADE, related_name='memberships', null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'lobby')

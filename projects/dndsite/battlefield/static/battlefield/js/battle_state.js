@@ -74,7 +74,7 @@ export function updateLocationData(rawLocationData) {
             battleState.selectedLocationData = updatedLocation;
         }
         
-        console.log(`Location ${updatedLocation.id} updated successfully.`);
+        // console.log(`Location ${updatedLocation.id} updated successfully.`);
     } else {
         battleState.lobbyData.locations.push(rawLocationData);
     }

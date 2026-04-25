@@ -100,7 +100,6 @@ async function runBattleRender() {
     canvasElement.width = (battleState.selectedLocationData.columnsCount + 1) * cellWidth; //+1 for labels
     canvasElement.height = (battleState.selectedLocationData.rowsCount + 1) * cellHeight; //+1 for labels
     const game = new Game(canvasElement, canvasElement.width, canvasElement.height, cellWidth, cellHeight, battleState);    
-    console.log(game);
     
     canvasElement.addEventListener('click', (e) => {
         game.onCanvasClick(e);
