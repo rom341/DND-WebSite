@@ -4,7 +4,8 @@ from typing import Optional
 
 from django.db.models.query import QuerySet
 
-from location.models import CharacterPosition, Location
+from characters.models import CharacterPosition
+from location.models import Location
 from django.forms.models import model_to_dict
 
 

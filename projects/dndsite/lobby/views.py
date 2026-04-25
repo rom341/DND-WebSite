@@ -11,13 +11,13 @@ from core.managers.SessionManager import SessionManager
 from lobby.forms.add_character_to_lobby_form import AddCharacterToGroupForm
 from lobby.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from lobby.forms.add_user_to_lobby_form import AddUserToLobbyForm
-from location.models import CharacterPosition, Location
+from location.models import Location
 from battlefield.utils.common_request_helper import CommonRequestHelper
 from battlefield.utils.contexts.battlefield_context import BattleieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.decorators import game_master_required
-from characters.models import Character, EntityBase
+from characters.models import Character, CharacterPosition, EntityBase
 from lobby.models import DefaultRoles, Lobby
 from service.lobby import actions
 from service.role import selectors as RoleSelectors

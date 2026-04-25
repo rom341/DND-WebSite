@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from core.managers.UniversalManager import UniversalManager
-from characters.models import Character
 
 # Create your models here.
 class DefaultRoles(Enum):
@@ -30,8 +29,10 @@ class LobbyManager(UniversalManager):
         # мы можем фильтровать Characters по membership__lobby
         # и тогда Django сделает что то вроде 
         # "SELECT * FROM Character WHERE membership IN (SELECT id FROM GroupMembership WHERE lobby_id = lobby.id)"
+        from characters.models import Character
+
         return Character.objects.filter(
-            positions__location__lobby=lobby
+            states__position__location__lobby=lobby
         )
     
     @staticmethod
@@ -48,6 +49,8 @@ class LobbyManager(UniversalManager):
 
     @staticmethod
     def get_characters_on_position(lobby, column, row):
+        from characters.models import Character
+
         return Character.objects.filter(
             positions__location__lobby=lobby,
             positions__column=column,
@@ -146,7 +149,7 @@ class LobbyMembershipUser(models.Model):
         return f"{self.user.username} ({self.role}) in {self.lobby.name}"
 
 class LobbyMembershipCharacter(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='lobby_memberships')
+    character = models.ForeignKey("characters.Character", on_delete=models.CASCADE, related_name='lobby_memberships')
     lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='character_memberships')
 
     class Meta:

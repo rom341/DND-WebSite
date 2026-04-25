@@ -4,12 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 
+from characters.models import Character
 from core.managers.SessionManager import SessionManager
 from location.models import Location
 from battlefield.serializers import LocationSerializer
 from lobby.models import Lobby, LobbyRole
 from lobby.serializers import LobbySerializer
-from service.lobby.actions import add_user_as_player_to_lobby
+from service.lobby.actions import add_character_to_lobby, add_user_as_player_to_lobby
 from service.role.selectors import get_gm_role
 
 class LobbyApi(APIView):
@@ -28,6 +29,7 @@ class LobbyApi(APIView):
             return Response("Not valid ID", status=status.HTTP_400_BAD_REQUEST)
         
         lobby = Lobby.objects.get_lobby_by_id(lobby_id=lobby_id)
+        
         serializer = LobbySerializer(lobby)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -47,4 +49,23 @@ class LobbyApi(APIView):
             return Response("Has no GM role", status=status.HTTP_405_METHOD_NOT_ALLOWED)
         
         add_user_as_player_to_lobby(user=selected_user, lobby=lobby)
+        return Response(status=status.HTTP_200_OK)
+
+    @api_view(('POST',))
+    def add_character_to_lobby(request):
+        if request.method != 'POST':
+            return Response("Not valid method", status=status.HTTP_400_BAD_REQUEST)
+
+        lobby_id = request.data.get('lobbyId')
+        lobby = Lobby.objects.get_lobby_by_id(lobby_id=lobby_id)
+        selected_character_id = request.data.get('characterId')
+        selected_character = Character.objects.get(id=selected_character_id)
+        target_row = request.data.get('target_row')
+        target_column = request.data.get('target_column')
+        active_user = request.user        
+        
+        if not LobbyRole.objects.user_has_role(active_user, lobby, get_gm_role()):
+            return Response("Has no GM role", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+        add_character_to_lobby(character=selected_character, lobby=lobby, target_row=target_row, target_column=target_column)
         return Response(status=status.HTTP_200_OK)

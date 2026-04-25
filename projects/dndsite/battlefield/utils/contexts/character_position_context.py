@@ -3,7 +3,8 @@ from typing import Optional
 
 from django.db.models.query import QuerySet
 
-from location.models import CharacterPosition
+from characters.models import CharacterPosition
+
 
 
 @dataclass

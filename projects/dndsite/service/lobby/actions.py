@@ -1,3 +1,4 @@
+from characters.models import Character
 from lobby.models import DefaultRoles, Lobby, LobbyMembershipUser, LobbyRole
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -18,6 +19,9 @@ def add_user_as_gm_to_lobby(user: User, lobby: Lobby):
     add_user_to_lobby(user=user, lobby=lobby)        
     gm_role = RoleSelectors.get_role_by_name(DefaultRoles.GAME_MASTER.value)
     set_user_role_in_lobby(user=user, lobby=lobby, role=gm_role)
+    
+def add_character_to_lobby(character: Character, lobby: Lobby, target_row: int, target_column: int):
+    pass
     
 
 

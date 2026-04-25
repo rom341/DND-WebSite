@@ -7,14 +7,14 @@ from lobby.forms.add_npc_to_lobby_form import AddNPCToLobbyForm
 from lobby.forms.add_user_to_lobby_form import AddUserToLobbyForm
 from battlefield.forms.create_location_form import CreateLocationForm
 from battlefield.forms.move_character_form import MoveCharacterForm
-from location.models import CharacterPosition, Location
+from location.models import Location
 from battlefield.utils.contexts.battlefield_context import BattleieldContextContainer
 from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
 from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.contexts.locations_list_context import LocationsListContext
 from battlefield.utils.decorators import game_master_required, lobby_id_in_session_required, lobby_membership_required
 from characters.forms.heal_character_form import HealCharacterForm
-from characters.models import Character
+from characters.models import Character, CharacterPosition
 from lobby.models import Lobby
 
 

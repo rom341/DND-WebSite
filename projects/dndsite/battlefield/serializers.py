@@ -1,13 +1,7 @@
 from rest_framework import serializers
 
-from location.models import CharacterPosition, Location
-from characters.serializers import CharacterSerializer
-
-class CharacterPositionSerializer(serializers.ModelSerializer):
-    character = CharacterSerializer()
-    class Meta:
-        model = CharacterPosition
-        fields = ["id", "character", "location", "row", "column"]
+from characters.serializers import CharacterPositionSerializer
+from location.models import Location
 
 
 class LocationSerializer(serializers.ModelSerializer):

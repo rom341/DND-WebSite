@@ -1,7 +1,5 @@
 from django import forms
-from django.db.models import QuerySet
-from location.models import CharacterPosition
-from characters.models import Character
+from characters.models import Character, CharacterPosition
 
 class MoveCharacterForm(forms.ModelForm):
     name = forms.ChoiceField(label="Character")

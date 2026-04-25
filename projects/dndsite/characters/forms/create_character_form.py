@@ -15,8 +15,4 @@ class EntityBaseForm(ModelForm):
             "height",
             "weight",
             "mastery",
-            "dificulty_save_throw",
-            "max_hit_points",
-            "armor_class",
-            "movement_speed",
             ]

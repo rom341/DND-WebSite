@@ -2,11 +2,9 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
-from location.models import CharacterPosition, Location
-from battlefield.serializers import CharacterPositionSerializer, LocationSerializer
-from battlefield.utils.contexts.character_position_context import CharacterPositionContextContainer
-from battlefield.utils.contexts.location_map_context import LocationMapContext
-from characters.models import Character
+from location.models import Location
+from battlefield.serializers import LocationSerializer
+from characters.models import Character, CharacterPosition
 from battlefield.utils.ruler import ruler
 from lobby.models import Lobby
 from django.utils.safestring import mark_safe

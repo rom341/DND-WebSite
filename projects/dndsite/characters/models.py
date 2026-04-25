@@ -1,7 +1,11 @@
+from typing import Optional
+
 from django.db import models
 from django.contrib.auth.models import User
 
 from core.managers.UniversalManager import UniversalManager
+from lobby.models import Lobby
+from location.models import Location
 
 # Create your models here.
 class CharacterSpells(models.Model):
@@ -108,10 +112,6 @@ class EntityBase(models.Model):
     height = models.CharField(max_length=20, null=True, blank=True)
     weight = models.CharField(max_length=20, null=True, blank=True)
     mastery = models.IntegerField(default=0)
-    dificulty_save_throw = models.IntegerField(default=0)
-    max_hit_points = models.IntegerField(default=0)
-    armor_class = models.IntegerField(default=0)
-    movement_speed = models.IntegerField(default=0)
 
     def __str__(self):
             fields = [f"{field.name}: {getattr(self, field.name)}" for field in self._meta.fields]
@@ -213,12 +213,70 @@ class Character(models.Model):
     entity_base = models.ForeignKey(EntityBase, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     level = models.IntegerField(default=1)
     experience = models.IntegerField(default=0)
-    current_hit_points = models.IntegerField(default=0)
+    max_hit_points = models.IntegerField(default=0)
+    armor_class = models.IntegerField(default=0)
+    movement_speed = models.IntegerField(default=0)
     is_npc = models.BooleanField(default=False)
     money = models.ForeignKey(CharacterMoney, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     stats = models.ForeignKey(CharacterStats, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
     spell_circle_slots = models.ForeignKey(CharacterSpellCircleSlots, related_name='character', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"ID{self.id}: {self.character_name} (HP: {self.current_hit_points}/{self.entity_base.max_hit_points}, AC: {self.entity_base.armor_class}, MS: {self.entity_base.movement_speed})"
+        return f"ID{self.id}: {self.character_name} (HP: {self.max_hit_points}, AC: {self.armor_class}, MS: {self.movement_speed})"
         
+class CharacterState(models.Model):
+    character = models.ForeignKey(Character, related_name='states', on_delete=models.CASCADE)
+    lobby = models.ForeignKey(Lobby, related_name='characterStates', on_delete=models.CASCADE)
+    current_hit_points = models.IntegerField(default=0)
+    
+    class Meta:
+        unique_together = ('character', 'lobby')
+    
+class CharacterPositionController(UniversalManager):
+    def set_character_position(self, character: Character, location: Location, row: int, column: int) -> 'CharacterPosition':
+        character_position, created = CharacterPosition.objects.get_or_create(character=character, location=location)
+        character_position.row = row
+        character_position.column = column
+        character_position.save()
+        return character_position
+    
+    def get_character_position_in_location(self, character: Character, location: Location) -> Optional["CharacterPositionController"]:
+        try:
+            return CharacterPosition.objects.get(character=character, location=location)
+        except CharacterPosition.DoesNotExist:
+            return None
+        
+    def get_all_character_positions_in_location(self, location: Location) -> "CharacterPositionController":
+        return CharacterPosition.objects.filter(location=location)
+    
+    def get_all_character_positions_in_location_by_id(self, location_id: int) -> "CharacterPositionController":
+        return CharacterPosition.objects.filter(location__id=location_id)
+        
+    def get_characters_in_location(self, location: Location) -> "CharacterPositionController":
+        return CharacterPosition.objects.filter(location=location)
+    
+    def move_character(self, character: Character, location: Location, new_row: int, new_column: int) -> Optional["CharacterPosition"]:
+        character_position = self.get_character_position_in_location(character, location)
+        if character_position:
+            character_position.row = new_row
+            character_position.column = new_column
+            character_position.save()
+            return character_position
+        return None
+    
+    def is_position_occupied(self, location: Location, row: int, column: int) -> bool:
+        return CharacterPosition.objects.filter(location=location, row=row, column=column).exists()
+    
+class CharacterPosition(models.Model):
+    objects: CharacterPositionController = CharacterPositionController()
+    characterState = models.ForeignKey(CharacterState, on_delete=models.CASCADE, related_name='position')
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='character_positions')
+    row = models.IntegerField(default=0)
+    column = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('characterState', 'location')
+
+    def __str__(self):
+        return f"{self.character.character_name} at ({self.row}, {self.column}) in {self.location.name}"
+    
