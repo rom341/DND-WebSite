@@ -50,7 +50,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
             location=current_location
         )
         requested_distance = ruler(character_position.column, character_position.row, new_pos_column, new_pos_row)
-        allowed_distance = character.entity_base.movement_speed / 5
+        allowed_distance = character.movement_speed / 5
         if allowed_distance >= requested_distance:
             if not CharacterPosition.objects.is_position_occupied(current_location, row=new_pos_row, column=new_pos_column):
                 

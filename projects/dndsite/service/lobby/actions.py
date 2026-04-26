@@ -1,7 +1,8 @@
-from characters.models import Character
+from characters.models import Character, CharacterPosition, CharacterState
 from lobby.models import DefaultRoles, Lobby, LobbyMembershipUser, LobbyRole
 from django.contrib.auth.models import User
 from django.db import transaction
+from location.models import Location
 from service.role import selectors as RoleSelectors
 
 def create_lobby_with_gm(gm_user: User, new_lobby_name: str):
@@ -20,8 +21,9 @@ def add_user_as_gm_to_lobby(user: User, lobby: Lobby):
     gm_role = RoleSelectors.get_role_by_name(DefaultRoles.GAME_MASTER.value)
     set_user_role_in_lobby(user=user, lobby=lobby, role=gm_role)
     
-def add_character_to_lobby(character: Character, lobby: Lobby, target_row: int, target_column: int):
-    pass
+def add_character_to_lobby(character: Character, lobby: Lobby):
+    new_character_state = CharacterState.objects.create_character_state(character, lobby)
+    return new_character_state
     
 
 

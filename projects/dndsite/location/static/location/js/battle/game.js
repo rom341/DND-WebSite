@@ -115,7 +115,7 @@ async function runBattleRender() {
         e.preventDefault();
         const battleState = await stateReady;
         const selectedCharacterId = game.characterSellectController.getSelectedCharacterId();
-        const selectedCharacter = battleState.selectedLocationData.characterPositions.find(p => p.character.id === selectedCharacterId);
+        const selectedCharacter = battleState.selectedLocationData.characterPositions.find(p => p.character_state.character.id === selectedCharacterId);
         const selectedCell = game.characterSellectController.getSelectedCords();
         if (selectedCharacterId) {
             game.notifyCharacterMove(

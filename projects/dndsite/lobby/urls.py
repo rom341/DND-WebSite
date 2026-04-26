@@ -12,6 +12,5 @@ urlpatterns = [
     path('lobby/get_locations_for_lobby/<int:lobby_id>/', api.LobbyApi.get_locations_for_lobby, name='get_locations_for_lobby'),
     path('lobby/get_lobby/<int:lobby_id>/', api.LobbyApi.get_lobby, name='get_lobby'),
     
-    path('api/lobby/add_user_to_lobby/', api.LobbyApi.add_user_to_lobby, name='add_user_to_lobby')
-    path('api/lobby/add_character_to_lobby/', api.LobbyApi.add_character_to_lobby, name='add_character_to_lobby')
+    path('api/lobby/add_user_to_lobby/', api.LobbyApi.add_user_to_lobby, name='add_user_to_lobby'),
 ]

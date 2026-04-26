@@ -1,0 +1,11 @@
+{% load static %}
+
+<div id="add-character-to-location-widget">
+    <div id="add-character-to-location-widget-content">
+        {% csrf_token %}
+        {{ add_character_form.as_p }}
+        <input type="hidden" name="lobby_id" value="{{ current_lobby.id }}">
+        <button id="add-character-to-location-widget-button" class="btn btn-primary mt-2">Add Character</button>
+    </div>
+    <script defer type="module" src="{% static 'location/js/widgets/add_character_to_location.js' %}"></script> 
+</div>

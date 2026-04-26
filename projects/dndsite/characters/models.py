@@ -87,6 +87,29 @@ class CharacterStats(models.Model):
 
 
 class EntityBaseController(UniversalManager):
+    def create_entity_base(self,                            
+        entity_base_name:str,
+        character_class:str = None,
+        race:str = None,
+        alignment:str = None,
+        size:str = None,
+        age:int = None,
+        height:str = None,
+        weight:str = None,
+        mastery:int = 0
+        ):
+        return self.create(
+            entity_base_name = entity_base_name,
+            character_class = character_class,
+            race = race,
+            alignment = alignment,
+            size = size,
+            age = age,
+            height = height,
+            weight = weight,
+            mastery = mastery
+        )
+    
     def get_by_id(self, id: int):
         return EntityBase.objects.get(id=id)
     
@@ -156,13 +179,13 @@ class CharacterController(UniversalManager):
         entity_base_id: int,
         level: int = 1,
         experience: int = 0,
-        current_hit_points: int = 0,
+        max_hit_points: int = 0,
         is_npc: bool = False,
         money: CharacterMoney = None,
         stats: CharacterStats = None,
         spell_circle_slots: CharacterSpellCircleSlots = None
         ):
-        return self.create(user=user, character_name=character_name, entity_base_id=entity_base_id, level=level, experience=experience, current_hit_points=current_hit_points, is_npc=is_npc, money=money, stats=stats, spell_circle_slots=spell_circle_slots)
+        return self.create(user=user, character_name=character_name, entity_base_id=entity_base_id, level=level, experience=experience, max_hit_points=max_hit_points, is_npc=is_npc, money=money, stats=stats, spell_circle_slots=spell_circle_slots)
         
     def create_character_for_npc(
             self,
@@ -173,7 +196,7 @@ class CharacterController(UniversalManager):
             user,
             f"npc_{entity_base.entity_base_name}",
             entity_base.id,
-            current_hit_points=entity_base.max_hit_points,
+            max_hit_points=entity_base.max_hit_points,
             is_npc=True
         )
     
@@ -224,7 +247,17 @@ class Character(models.Model):
     def __str__(self):
         return f"ID{self.id}: {self.character_name} (HP: {self.max_hit_points}, AC: {self.armor_class}, MS: {self.movement_speed})"
         
+class CharacterStateController(UniversalManager):
+    def create_character_state(self, character: Character, lobby: Lobby):
+        return self.create(
+            character=character,
+            lobby=lobby,
+            current_hit_points=character.max_hit_points
+        )
+        
 class CharacterState(models.Model):
+    objects: CharacterStateController = CharacterStateController()
+    
     character = models.ForeignKey(Character, related_name='states', on_delete=models.CASCADE)
     lobby = models.ForeignKey(Lobby, related_name='characterStates', on_delete=models.CASCADE)
     current_hit_points = models.IntegerField(default=0)
@@ -233,8 +266,17 @@ class CharacterState(models.Model):
         unique_together = ('character', 'lobby')
     
 class CharacterPositionController(UniversalManager):
-    def set_character_position(self, character: Character, location: Location, row: int, column: int) -> 'CharacterPosition':
-        character_position, created = CharacterPosition.objects.get_or_create(character=character, location=location)
+    def create_character_position(self, characterState: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
+        character_position = CharacterPosition.objects.create(
+            characterState=characterState, 
+            location=location,
+            row=row,
+            column=column
+        )
+        return character_position
+    
+    def set_character_position(self, characterState: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
+        character_position = CharacterPosition.objects.get(characterState=characterState, location=location)
         character_position.row = row
         character_position.column = column
         character_position.save()
@@ -242,7 +284,7 @@ class CharacterPositionController(UniversalManager):
     
     def get_character_position_in_location(self, character: Character, location: Location) -> Optional["CharacterPositionController"]:
         try:
-            return CharacterPosition.objects.get(character=character, location=location)
+            return CharacterPosition.objects.get(character_state__character=character, location=location)
         except CharacterPosition.DoesNotExist:
             return None
         
@@ -251,9 +293,6 @@ class CharacterPositionController(UniversalManager):
     
     def get_all_character_positions_in_location_by_id(self, location_id: int) -> "CharacterPositionController":
         return CharacterPosition.objects.filter(location__id=location_id)
-        
-    def get_characters_in_location(self, location: Location) -> "CharacterPositionController":
-        return CharacterPosition.objects.filter(location=location)
     
     def move_character(self, character: Character, location: Location, new_row: int, new_column: int) -> Optional["CharacterPosition"]:
         character_position = self.get_character_position_in_location(character, location)
@@ -269,14 +308,14 @@ class CharacterPositionController(UniversalManager):
     
 class CharacterPosition(models.Model):
     objects: CharacterPositionController = CharacterPositionController()
-    characterState = models.ForeignKey(CharacterState, on_delete=models.CASCADE, related_name='position')
+    character_state = models.ForeignKey(CharacterState, on_delete=models.CASCADE, related_name='position')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='character_positions')
     row = models.IntegerField(default=0)
     column = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = ('characterState', 'location')
+        unique_together = ('character_state', 'location')
 
     def __str__(self):
-        return f"{self.character.character_name} at ({self.row}, {self.column}) in {self.location.name}"
+        return f"{self.character_state.character.character_name} at ({self.row}, {self.column}) in {self.location.name}"
     

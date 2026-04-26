@@ -1,7 +1,7 @@
 import { LobbyAPI } from '../../../core/js/api/lobby.js';
 
-async function sendAddcharacterToLobbyMessage() {
-    const mainContainer = document.getElementById("add-character-to-lobby-widget-content");
+async function sendAddcharacterToLocationMessage() {
+    const mainContainer = document.getElementById("add-character-to-location-widget-content");
 
     const lobbyIdElement = mainContainer.querySelector('[name="lobby_id"]')
     const selectedCharacterIdElement = mainContainer.querySelector("#id_character_id");
@@ -9,20 +9,21 @@ async function sendAddcharacterToLobbyMessage() {
     const selectedRowElement = mainContainer.querySelector("#id_target_row");
     const selectedColumnElement = mainContainer.querySelector("#id_target_column");
 
-    await LobbyAPI.addUserToLobby(
+    await LobbyAPI.addCharacterToLocation(
         parseInt(selectedCharacterIdElement.value),
         parseInt(lobbyIdElement.value),
+        parseInt(selectedLocationIdElement.value),
         parseInt(selectedRowElement.value),
         parseInt(selectedColumnElement.value)    
     );
 }
 
-async function initAddCharacterToLobbyForm() {
-    document.getElementById('add-character-to-lobby-widget-button').addEventListener('click', async (e) => {
-        await sendAddcharacterToLobbyMessage();
+async function initAddCharacterToLocationForm() {
+    document.getElementById('add-character-to-location-widget-button').addEventListener('click', async (e) => {
+        await sendAddcharacterToLocationMessage();
     });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await initAddCharacterToLobbyForm();
+    await initAddCharacterToLocationForm();
 });

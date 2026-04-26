@@ -57,21 +57,21 @@ class LobbyManager(UniversalManager):
             positions__row=row,
         )
         
-    @staticmethod
-    def add_character_to_lobby(character, lobby): 
-        """Add character to existing lobby or create new membership if not exists""" 
-        # Look for existing membership using Character.User and Group
-        # If found, update it; if not, create a new one with the Character and role      
-        membership, created = LobbyMembershipCharacter.objects.get_or_create(
-            lobby=lobby,
-            character=character
-        )
-        # If the membership already existed, update the character and role
-        if not created:
-            membership.character = character
-            membership.save()
+    # @staticmethod
+    # def add_character_to_lobby(character, lobby): 
+    #     """Add character to existing lobby or create new membership if not exists""" 
+    #     # Look for existing membership using Character.User and Group
+    #     # If found, update it; if not, create a new one with the Character and role      
+    #     membership, created = LobbyMembershipCharacter.objects.get_or_create(
+    #         lobby=lobby,
+    #         character=character
+    #     )
+    #     # If the membership already existed, update the character and role
+    #     if not created:
+    #         membership.character = character
+    #         membership.save()
                     
-        return membership
+    #     return membership
         
     @staticmethod
     def add_user_to_lobby(user, lobby, role_name=DefaultRoles.PLAYER.value): 
@@ -100,6 +100,10 @@ class Lobby(models.Model):
         return self.name
 
 class RoleManager(UniversalManager):
+    @staticmethod
+    def create_role(role_name: str):
+        return LobbyRole.objects.create(name=role_name)
+        
     @staticmethod
     def get_role_by_name(role_name):
         try:
@@ -136,6 +140,11 @@ class LobbyMembershipUserManager(UniversalManager):
         membership.role = role
         membership.save()
 
+    @staticmethod
+    def set_role(membership: "LobbyMembershipUser", role: LobbyRole):
+        membership.role = role
+        membership.save()
+
 class LobbyMembershipUser(models.Model): 
     objects: LobbyMembershipUserManager = LobbyMembershipUserManager()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lobby_memberships')
@@ -148,12 +157,12 @@ class LobbyMembershipUser(models.Model):
     def __str__(self):
         return f"{self.user.username} ({self.role}) in {self.lobby.name}"
 
-class LobbyMembershipCharacter(models.Model):
-    character = models.ForeignKey("characters.Character", on_delete=models.CASCADE, related_name='lobby_memberships')
-    lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='character_memberships')
+# class LobbyMembershipCharacter(models.Model):
+#     character = models.ForeignKey("characters.Character", on_delete=models.CASCADE, related_name='lobby_memberships')
+#     lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE, related_name='character_memberships')
 
-    class Meta:
-        unique_together = ('character', 'lobby')
+#     class Meta:
+#         unique_together = ('character', 'lobby')
 
-    def __str__(self):
-        return f"{self.character.character_name} in {self.lobby.name}"
+#     def __str__(self):
+#         return f"{self.character.character_name} in {self.lobby.name}"

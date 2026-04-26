@@ -25,7 +25,7 @@ export async function renderBattleMap() {
                     const characterMarkFragment = characterMarkTemplate.content.cloneNode(true);
                     const characterMarkInstance = characterMarkFragment.querySelector('.character_mark');
                     if (characterMarkInstance != null) {
-                        characterMarkInstance.textContent = characterPosition.character.character_name;
+                        characterMarkInstance.textContent = characterPosition.character_state.character.character_name;
                         gridCellInstance.appendChild(characterMarkInstance);
                     }           
                 });
