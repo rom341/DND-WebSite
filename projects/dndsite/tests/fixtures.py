@@ -8,6 +8,14 @@ from lobby.models import DefaultRoles, Lobby, LobbyMembershipUser, LobbyRole
 from location.models import Location
 from service.role_services import get_gm_role
 
+from django.conf import settings
+
+@pytest.fixture(autouse=True)
+def use_fast_password_hasher(settings):
+    settings.PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
+
 @pytest.fixture
 def client():
     return APIClient()
@@ -30,8 +38,8 @@ def default_test_users_list(db):
     admin = User.objects.create_superuser(username="admin", email="admin@gmail.com", password="admin")
     users.append(admin)
     
-    for i in range(5):
-        user = User.objects.create_superuser(username=f"user{i}", email=f"user{i}@gmail.com", password=f"user{i}")
+    for i in range(2):
+        user = User.objects.create_user(username=f"user{i}", email=f"user{i}@gmail.com", password=f"user{i}")
         users.append(user)
     
     return users

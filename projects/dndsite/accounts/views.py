@@ -3,6 +3,8 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.urls import reverse
 
+from service.account_services import authenticate_user
+
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -26,22 +28,7 @@ def register(request):
         return render(request, 'register.html')
     
 def login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = auth.authenticate(username=username, password=password)
-        print(f"User is logining: {username}")
-
-        if user is not None:
-            auth.login(request, user)
-            next_page = request.POST.get('next', '')
-            next_page = reverse('main_page') if not next_page else next_page
-            return redirect(next_page)
-        else:
-            messages.info(request, 'Invalid credentials')
-            return redirect('login')
-    else:
+    if request.method == "GET":
         return render(request, 'login.html')
     
 def logout(request):

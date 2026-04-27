@@ -1,26 +1,34 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-    <header class="text-center">
-        <h1>Login</h1>
-    </header>
-    <div class ="container w-25">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
-            </div>
+    <div id="login-user-widget">
+        <header class="text-center">
+            <h1>Login</h1>
+        </header>
+        <div id="login-user-widget-content">
 
-            <input type="hidden" name="next" value="{{ request.GET.next }}">
-
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary center w-50">Login</button>
+            <div class ="container w-25">
+                <div action="" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password">
+                    </div>
+                    
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    
+                    <div class="text-center">
+                        <button id="login-user-widget-button" class="btn btn-primary center w-50">Login</button>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
+        
+        <script defer type="module" src="{% static 'accounts/js/widgets/login_user.js' %}"></script> 
     </div>
 {% endblock %}

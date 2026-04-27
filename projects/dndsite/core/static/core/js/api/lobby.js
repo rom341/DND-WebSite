@@ -8,7 +8,7 @@ export const LobbyAPI = {
     addUserToLobby: (lobbyId, userId) => apiRequest('/api/lobby/add_user_to_lobby/', 'POST', {
         "lobbyId": lobbyId,
         "selectedUserId": userId
-    }),
+    }).data,
     
     addCharacterToLocation: (characterId, lobbyId, locationId, targetRow, targetColumn) => apiRequest(
         '/api/location/add_character_to_location/', 
@@ -20,5 +20,5 @@ export const LobbyAPI = {
             "targetRow": targetRow,
             "targetColumn": targetColumn
         }
-    )
+    ).data
 };

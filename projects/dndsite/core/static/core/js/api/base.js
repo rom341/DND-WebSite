@@ -31,5 +31,8 @@ export async function apiRequest(url, method = 'GET', data = null) {
         throw new Error(errorData.error || 'Server error');
     }
 
-    return response.json();
+    return {
+        data: data,
+        status: response.status
+    };
 }

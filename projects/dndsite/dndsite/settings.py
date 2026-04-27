@@ -35,7 +35,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "battlefield", "static"),
     os.path.join(BASE_DIR, "location", "static"),
     os.path.join(BASE_DIR, "lobby", "static"),
-    #os.path.join(BASE_DIR, "characters", "static"),
+    os.path.join(BASE_DIR, "characters", "static"),
+    os.path.join(BASE_DIR, "accounts", "static"),
 ]
 
 # Application definition
