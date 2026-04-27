@@ -8,9 +8,9 @@ from django.db import transaction
 from characters.models import Character
 from location.models import Location
 from lobby.models import Lobby, LobbyRole
-from service.lobby.actions import add_character_to_lobby
-from service.location.actions import add_character_to_location
-from service.role.selectors import get_gm_role
+from service.lobby_services import add_character_to_lobby
+from service.location_services import add_character_to_location
+from service.role_services import get_gm_role
 
 class LocationApi(APIView):
     @api_view(('POST',))

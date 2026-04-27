@@ -9,9 +9,9 @@ from location.models import Location
 from battlefield.serializers import LocationSerializer
 from lobby.models import Lobby, LobbyRole
 from lobby.serializers import LobbySerializer
-from service.lobby.actions import add_character_to_lobby, add_user_as_player_to_lobby
-from service.location.actions import add_character_to_location
-from service.role.selectors import get_gm_role
+from service.lobby_services import add_character_to_lobby, add_user_as_player_to_lobby
+from service.location_services import add_character_to_location
+from service.role_services import get_gm_role
 
 class LobbyApi(APIView):
     @api_view(('GET',))

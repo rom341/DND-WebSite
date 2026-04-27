@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from characters.models import Character, EntityBase
 from lobby.models import DefaultRoles, Lobby, LobbyMembershipUser, LobbyRole
 from location.models import Location
-from service.role.selectors import get_gm_role
+from service.role_services import get_gm_role
 
 @pytest.fixture
 def client():

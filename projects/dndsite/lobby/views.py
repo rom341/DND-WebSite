@@ -19,8 +19,8 @@ from battlefield.utils.contexts.location_map_context import LocationMapContext
 from battlefield.utils.decorators import game_master_required
 from characters.models import Character, CharacterPosition, EntityBase
 from lobby.models import DefaultRoles, Lobby
-from service.lobby import actions
-from service.role import selectors as RoleSelectors
+from service import lobby_services
+from service import role_services as RoleSelectors
 
 # Create your views here.
 @login_required
@@ -35,7 +35,7 @@ def lobby(request):
                     lobby_id = request.POST.get('lobby_id')
                 elif action == 'create': # new lobby created
                     new_lobby_name = request.POST.get('lobby_name')
-                    new_lobby = actions.create_lobby_with_gm(active_user, new_lobby_name)
+                    new_lobby = lobby_services.create_lobby_with_gm(active_user, new_lobby_name)
                     lobby_id = new_lobby.id
                     
                 if lobby_id:
@@ -68,7 +68,7 @@ def add_user_to_lobby(request):
             if form.is_valid():
                 selected_user_id = request.POST.get('user_id')
                 selected_user = User.objects.get(id=selected_user_id)
-                actions.add_user_as_player_to_lobby(selected_user, current_lobby)
+                lobby_services.add_user_as_player_to_lobby(selected_user, current_lobby)
                 return CommonRequestHelper.get_updated_user_list_widget(request, current_lobby)
     
     return HttpResponseBadRequest("Invalid request method.")

@@ -3,7 +3,7 @@ from lobby.models import DefaultRoles, Lobby, LobbyMembershipUser, LobbyRole
 from django.contrib.auth.models import User
 from django.db import transaction
 from location.models import Location
-from service.role import selectors as RoleSelectors
+from service import role_services as RoleSelectors
 
 def create_lobby_with_gm(gm_user: User, new_lobby_name: str):
     with transaction.atomic:
