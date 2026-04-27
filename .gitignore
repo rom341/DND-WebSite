@@ -6,6 +6,7 @@ __pycache__
 .vs
 .vscode
 .DS_Store
+.pytest_cache
 
 **/migrations/*
 !**/migrations/__init__.py

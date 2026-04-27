@@ -1,7 +1,7 @@
 import pytest
 
 @pytest.mark.django_db
-def test_add_character_to_location(auth_admin_client, default_test_lobbys_list, default_test_characters_list, default_test_locations_list):
+def test_add_character_to_location(auth_client_admin, default_test_lobbys_list, default_test_characters_list, default_test_locations_list):
     test_character = default_test_characters_list[0]
     test_lobby = default_test_lobbys_list[0]
     
@@ -13,7 +13,7 @@ def test_add_character_to_location(auth_admin_client, default_test_lobbys_list, 
         targetColumn = 2
     )
     
-    responce = auth_admin_client.post("/api/location/add_character_to_location/", payload)
+    responce = auth_client_admin.post("/api/location/add_character_to_location/", payload)
     
     data = responce.data
     

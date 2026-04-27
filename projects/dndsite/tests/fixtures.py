@@ -13,6 +13,18 @@ def client():
     return APIClient()
 
 @pytest.fixture
+def user_credentials_admin():
+    return dict(
+        username="admin", email="admin@gmail.com", password="admin", first_name="admin", last_name="admin"
+    )
+
+@pytest.fixture
+def user_credentials_player():
+    return dict(
+        username="user1", email="user1@gmail.com", password="user1", first_name="user1", last_name="user1"
+    )
+
+@pytest.fixture
 def default_test_users_list(db):
     users = []
     admin = User.objects.create_superuser(username="admin", email="admin@gmail.com", password="admin")
@@ -86,12 +98,11 @@ def user_player(default_test_users_list):
     return default_test_users_list[1]
 
 @pytest.fixture
-def auth_admin_client(user_admin, client):
+def auth_client_admin(user_admin, client):
     client.force_authenticate(user=user_admin)
     return client
     
-    
 @pytest.fixture
-def auth_player_client(user_player, client):
+def auth_client_player(user_player, client):
     client.force_authenticate(user=user_player)
     return client
