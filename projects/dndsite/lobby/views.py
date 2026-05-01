@@ -89,7 +89,7 @@ def add_character_to_lobby(request):
                 target_row = form.cleaned_data['target_row']
                 target_column = form.cleaned_data['target_column']
                 CharacterPosition.objects.set_character_position(
-                    characterState=character,
+                    character_state=character,
                     location=location,
                     row=target_row,
                     column=target_column
@@ -133,7 +133,7 @@ def add_npc_to_lobby(request):
                 target_column = 0
                 for character in created_characters_npc_list:
                     CharacterPosition.objects.set_character_position(
-                        characterState=character,
+                        character_state=character,
                         location=location,
                         row=target_row,
                         column=target_column

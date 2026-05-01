@@ -259,24 +259,24 @@ class CharacterState(models.Model):
     objects: CharacterStateController = CharacterStateController()
     
     character = models.ForeignKey(Character, related_name='states', on_delete=models.CASCADE)
-    lobby = models.ForeignKey(Lobby, related_name='characterStates', on_delete=models.CASCADE)
+    lobby = models.ForeignKey(Lobby, related_name='character_states', on_delete=models.CASCADE)
     current_hit_points = models.IntegerField(default=0)
     
     class Meta:
         unique_together = ('character', 'lobby')
     
 class CharacterPositionController(UniversalManager):
-    def create_character_position(self, characterState: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
+    def create_character_position(self, character_state: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
         character_position = CharacterPosition.objects.create(
-            characterState=characterState, 
+            character_state=character_state, 
             location=location,
             row=row,
             column=column
         )
         return character_position
     
-    def set_character_position(self, characterState: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
-        character_position = CharacterPosition.objects.get(characterState=characterState, location=location)
+    def set_character_position(self, character_state: CharacterState, location: Location, row: int, column: int) -> 'CharacterPosition':
+        character_position = CharacterPosition.objects.get(character_state=character_state, location=location)
         character_position.row = row
         character_position.column = column
         character_position.save()

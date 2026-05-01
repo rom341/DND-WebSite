@@ -1,10 +1,10 @@
 from django.urls import path
 
 from . import api
+from .api import app
 from . import views
 
 
 urlpatterns = [
-
-    path('api/location/add_character_to_location/', api.LocationApi.add_character_to_location, name='add_character_to_location')
+    path('api/', app.urls),
 ]

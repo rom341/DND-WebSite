@@ -23,9 +23,9 @@ class CharacterStateSchema(ModelSchema):
         fields = "__all__"
         
 
-class CharacterPositions(ModelSchema):
+class CharacterPositionSchema(ModelSchema):
     character_state: CharacterStateSchema | None = None
-    location = LocationSchema
+    location: LocationSchema 
     class Meta:
         model = CharacterPosition
         fields = "__all__"

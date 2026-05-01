@@ -5,7 +5,7 @@ from location.models import Location
 
 def add_character_to_location(character_state: CharacterState, location: Location, target_row: int, target_column: int):
     return CharacterPosition.objects.create_character_position(
-        characterState=character_state,
+        character_state=character_state,
         location=location,
         row=target_row,
         column=target_column
