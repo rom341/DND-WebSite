@@ -1,19 +1,17 @@
 import pytest
 from django.contrib.auth import get_user
 
-
 @pytest.mark.django_db
-def test_user_registrations(client):
-    payload = dict(
-        first_name = "name",
-        last_name = "lastName",
-        email = "testuser@gmail.com",
-        username="testuser",
-        password1="password",
-        password2="password"
-    )
-    responce = client.post("/accounts/register/", payload)
-    assert responce.status_code == 302
+def test_user_registrations_api(client):
+    payload = {
+        "username": "testuser",
+        "email": "testuser@gmail.com",
+        "password": "password",
+        "first_name": "name",
+        "last_name": "lastName"
+    }
+    responce = client.post("/api/accounts/register", payload, format='json')
+    assert responce.status_code == 200
     
 @pytest.mark.django_db
 def test_admin_login(client, user_credentials_admin, default_test_users_list):
@@ -44,11 +42,6 @@ def test_player_login(client, user_credentials_player, default_test_users_list):
     assert user.email == user_credentials_player["email"]
     
 @pytest.mark.django_db
-def test_admin_logout(auth_client_admin):
-    responce = auth_client_admin.post("/accounts/logout/")
-    assert responce.status_code == 302
-    
-@pytest.mark.django_db
-def test_player_logout(auth_client_player):
-    responce = auth_client_player.post("/accounts/logout/")
-    assert responce.status_code == 302
+def test_player_logout_api(auth_client_player):
+    responce = auth_client_player.post("/api/accounts/logout")
+    assert responce.status_code == 200

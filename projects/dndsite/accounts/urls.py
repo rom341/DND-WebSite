@@ -5,7 +5,7 @@ from .api import app
 urlpatterns = [
     path('accounts/register/', views.register, name='register'),
     path('accounts/login/', views.login, name='login'),
-    path('accounts/logout/', views.logout, name='logout'),
+    #path('accounts/logout/', views.logout, name='logout'),
     path('accounts/main_page/',views.main_page, name='main_page'),
     path('', views.main_page, name='main_page'),  
     

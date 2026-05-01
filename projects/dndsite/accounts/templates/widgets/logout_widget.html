@@ -1,0 +1,9 @@
+{% load static %}
+{% block content %}
+    <div id="logout-user-widget">
+        <button id="logout-button" class="dropdown-item">
+            <p>Logout</p>
+        </button>
+        <script defer type="module" src="{% static 'accounts/js/widgets/logout_widget.js' %}"></script> 
+    </div>
+{%endblock%}

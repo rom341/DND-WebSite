@@ -6,7 +6,6 @@ async function sendLoginUserMessage() {
     const usernameElement = mainContainer.querySelector('#id_username');
     const passwordElement = mainContainer.querySelector("#id_password");
     const response = await AccountAPI.loginUser(usernameElement.value, passwordElement.value);
-    console.log(response.status)
     if (response.status == 200) {
         // go to previous page
         const nextUrl = document.referrer || '/';
