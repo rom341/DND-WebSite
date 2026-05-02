@@ -22,7 +22,6 @@ class Game {
         this.reloadLocationData();
         this.reloadCharacterPositions();
         this.initControllers();
-        this.initBackground();
         this.initViewport();
         this.context = this.viewport.getContext();
     }
@@ -91,10 +90,6 @@ class Game {
             this.characterSellectController.setCharacter(characterOnPosition.id);
         }
     }
-
-    onCanvasMouseWheel(e){
-        const direction = Math.sign(e.deltaY);
-    }
 }
 
 async function runBattleRender() {
@@ -112,11 +107,6 @@ async function runBattleRender() {
     canvasElement.addEventListener('click', (e) => {
         game.onCanvasClick(e);
     });
-    
-    canvasElement.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        game.onCanvasMouseWheel(e);
-    }, { passive: false });
 
     document.getElementById('move-character-button').addEventListener('click', async (e) => {
         e.preventDefault();
