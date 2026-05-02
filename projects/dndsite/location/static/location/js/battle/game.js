@@ -1,16 +1,17 @@
 import {Background} from "./background.js"
 import {Character} from "./character.js"
+import {Viewport} from "./viewport.js"
 import {SelectCharacterController} from "../widgets/battle_map_character_selector.js"
 import { stateReady } from '../../../battlefield/js/battle_state.js';
 import { BattleMediator } from "../services/battle_mediator.js";
 import { SocketService } from "../services/socket_service.js";
 import {sendMoveCharacterMessageWS} from "../widgets/move_character_web_socket.js"
+import { GridMath } from "../services/math.js";
 
 
 class Game {
     constructor(canvasElement, width, height, cellWidth, cellHeight, battleState) {
         this.canvas = canvasElement
-        this.context = this.canvas.getContext("2d");
         this.width = width;
         this.height = height;
         this.battleState = battleState;
@@ -18,10 +19,12 @@ class Game {
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
         
-        this.updateLocationData();
-        this.updateCharacterPositions();
-        this.initBackground();
+        this.reloadLocationData();
+        this.reloadCharacterPositions();
         this.initControllers();
+        this.initBackground();
+        this.initViewport();
+        this.context = this.viewport.getContext();
     }
     
     update() {
@@ -29,20 +32,14 @@ class Game {
     }
     
     draw() {
-        this.context.clearRect(0, 0, this.width, this.height);
-        this.background.draw(this.context);
-        this.characters.forEach(char => char.draw(this.context));
+        this.viewport.draw();
     }
     
-    updateLocationData() {
+    reloadLocationData() {
         this.selectedLocationData = this.battleState.selectedLocationData;
     }
-    
-    initBackground() {
-        this.background = new Background(this, this.selectedLocationData);
-    }
-    
-    updateCharacterPositions() {
+        
+    reloadCharacterPositions() {
         const characterPositions = this.selectedLocationData.characterPositions;
         this.characters = characterPositions.map((characterPosition) => new Character(this, characterPosition));
     }
@@ -52,6 +49,16 @@ class Game {
         socketService.connect();
         this.mediator =  new BattleMediator(this, socketService);
         this.characterSellectController = new SelectCharacterController();
+    }
+
+    initViewport() {
+        this.background = new Background(this);
+
+        this.viewport = new Viewport(this, this.canvas);
+        //draw grid
+        this.viewport.onDrawObserver.subscribe((context) => this.background.draw(context));
+        //draw characters
+        this.viewport.onDrawObserver.subscribe((context) => this.characters.forEach(char => char.draw(context)));
     }
     
     notifyCharacterMove(characterId, targetRow, targetColumn) {
@@ -73,7 +80,7 @@ class Game {
             y: (e.clientY - canvasBounds.top) * scaleY
         };
 
-        const [col, row] = this.background.getCellOnCords(clickPos.x, clickPos.y);    
+        const [col, row] = GridMath.getCellOnCords(this.cellWidth, this.cellWidth, clickPos.x, clickPos.y, true);    
         this.characterSellectController.updateCoords(col, row);
         
         const characterOnPosition = this.selectedLocationData.characterPositions.find(pos => 
@@ -92,7 +99,7 @@ class Game {
 
 async function runBattleRender() {
     const battleState = await stateReady;
-    const canvasElement = document.getElementById("canvas1");
+    const canvasElement = document.getElementById("canvas-location-view");
 
     const cellWidth = 100;
     const cellHeight = 100;

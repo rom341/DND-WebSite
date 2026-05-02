@@ -1,5 +1,5 @@
 export class Background {
-    constructor(game, location) {
+    constructor(game) {
         this.game = game;
         this.cacheCanvas = document.createElement('canvas');
         this.cacheCtx = this.cacheCanvas.getContext('2d');
