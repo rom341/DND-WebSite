@@ -40,26 +40,26 @@
                         </div>
                         
                         <div class="row mb-3">
-                            <div class="col input-group">
+                            {% comment %} <div class="col input-group">
                                 <span class="input-group-text col-6" for="max_hit_points">Max HP</span>
                                 {% render_field entity_base_form.max_hit_points class="form-control numeric_input_no_arrows" type="number" id="max_hit_points" placeholder="Max HP"%}
-                            </div>
-                            <div class="col input-group">
+                            </div> {% endcomment %}
+                            {% comment %} <div class="col input-group">
                                 <span class="input-group-text col-6" for="armor_class">Armor Class</span>
                                 {% render_field entity_base_form.armor_class class="form-control numeric_input_no_arrows" type="number" id="armor_class" placeholder="Armor Class"%}
-                            </div>
-                            <div class="col input-group">
+                            </div> {% endcomment %}
+                            {% comment %} <div class="col input-group">
                                 <span class="input-group-text col-6" for="movement_speed">Move Speed</span>
                                 {% render_field entity_base_form.movement_speed class="form-control numeric_input_no_arrows" type="number" id="movement_speed" placeholder="Move Speed"%}
-                            </div>
+                            </div> {% endcomment %}
                              <div class="col input-group">
                                 <span class="input-group-text col-6" for="masteryt">Mastery</span>
                                  {% render_field entity_base_form.mastery class="form-control numeric_input_no_arrows" type="number" id="mastery" placeholder="Mastery"%}
                             </div>
-                            <div class="col input-group">
+                            {% comment %} <div class="col input-group">
                                 <span class="input-group-text col-6" for="dificulty_save_throw">Save Throw</span>
                                 {% render_field entity_base_form.dificulty_save_throw class="form-control numeric_input_no_arrows" type="number" id="dificulty_save_throw" placeholder="Save Throw"%}
-                            </div>
+                            </div> {% endcomment %}
                         </div>
 
                         <div class="row mb-3">

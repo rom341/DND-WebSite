@@ -26,7 +26,14 @@ SECRET_KEY = 'django-insecure-ie_#84o_#ixvrnj0*4^4*ss7(n41x)pfm0&%$rw&0fyz^y23k(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "mc.lectum.uk"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://mc.lectum.uk',
+]
 
 STATIC_URL = 'static/'
 
