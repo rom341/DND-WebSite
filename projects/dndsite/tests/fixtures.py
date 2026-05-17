@@ -107,10 +107,10 @@ def user_player(default_test_users_list):
 
 @pytest.fixture
 def auth_client_admin(user_admin, client):
-    client.force_authenticate(user=user_admin)
+    client.force_login(user_admin)
     return client
     
 @pytest.fixture
 def auth_client_player(user_player, client):
-    client.force_authenticate(user=user_player)
+    client.force_login(user_player)
     return client

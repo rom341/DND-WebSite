@@ -13,8 +13,9 @@ def test_add_character_to_location_(auth_client_admin, default_test_lobbys_list,
         "targetColumn": 2
     }
     
-    responce = auth_client_admin.post("/api/location/add_character", payload, format="json")
+    responce = auth_client_admin.post("/api/location/add_character_to_location", payload, format="json")
         
+    test_character.refresh_from_db()
     character_state = test_character.states.first()
     assert responce.status_code == 200
     assert character_state != None
