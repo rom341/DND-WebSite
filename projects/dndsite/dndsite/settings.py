@@ -28,11 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
-    "mc.lectum.uk"
+    "www.lectum.uk"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://mc.lectum.uk',
+    'https://www.lectum.uk',
 ]
 
 STATIC_URL = 'static/'
