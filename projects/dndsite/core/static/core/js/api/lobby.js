@@ -5,13 +5,13 @@ export const LobbyAPI = {
     
     // createLobby: (name) => apiRequest('/api/lobby/create/', 'POST', { name }),
 
-    addUserToLobby: (lobbyId, userId) => apiRequest('/api/lobby/add_user_to_lobby/', 'POST', {
+    addUserToLobby: (lobbyId, userId) => apiRequest('/api/lobby/add_user_to_lobby', 'POST', {
         "lobbyId": lobbyId,
         "selectedUserId": userId
     }).data,
     
     addCharacterToLocation: (characterId, lobbyId, locationId, targetRow, targetColumn) => apiRequest(
-        '/api/location/add_character_to_location/', 
+        '/api/location/add_character_to_location', 
         'POST', 
         {
             "characterId": characterId,

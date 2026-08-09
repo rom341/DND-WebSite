@@ -4,7 +4,6 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
-from accounts.models import UserManager
 from core.managers.SessionManager import SessionManager
 from characters.forms.create_character_form import EntityBaseForm
 from characters.forms.heal_character_form import HealCharacterForm
@@ -14,6 +13,8 @@ from characters.templates import CharacterMoneyTemplate, CharacterSkillsTemplate
 from characters.utils.importers.longstory_character_importer import longstory_character_importer
 from django.forms.models import model_to_dict
 from django.contrib import messages
+
+from service import character_services
     
 
 # Create your views here.
@@ -163,7 +164,7 @@ def create_spell(request):
 @login_required
 def my_characters_list(request):
     user = request.user
-    all_user_characters = UserManager.get_user_characters(user)
+    all_user_characters = character_services.get_user_characters(user)
     data = {
         'all_user_characters': all_user_characters
     }

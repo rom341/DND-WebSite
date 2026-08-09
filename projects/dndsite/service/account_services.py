@@ -14,3 +14,9 @@ def register_new_user(username:str, password:str, email:str, first_name:str, las
 
 def logout_user(request: HttpRequest):
     auth.logout(request=request)
+
+def get_user_by_id(user_id: int):
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return None

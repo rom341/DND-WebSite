@@ -6,8 +6,8 @@
 
             <label for="all_user_characters">Choose Character:</label>
 
-            <div class="contaner">
-                <div class="row m-4">
+            <div class="container justify-content-center">
+                <div class="row m-4 justify-content-center">
                 {% for character in all_user_characters %}
                     {% include "partials/character_stats_widget.html" %}
                 {% endfor %}

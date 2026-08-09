@@ -1,5 +1,5 @@
 <div class="card border-3 border-info m-1" style="max-width: 450px;">
-  <div class="card-body">
+  <div class="card-body bg-dark">
     <h5 class="card-title">{% firstof character.character_name "Unknown" %} </h5>
     <h6 class="card-subtitle mb-2 text-muted">{{character.entity_base.race}}</h6>
     {% comment %} <a href="#" class="card-link">Card link</a>
@@ -7,7 +7,7 @@
 
     <label>level: {{character.level}}</label><br>
 
-    <label>HP: {{character.current_hit_points}}</label>
+    <label>HP: {{character.max_hit_points}}</label>
     <label>AC: {{character.armor_class}}</label>
     <label>MS: {{character.movement_speed}}</label>
   </div>
