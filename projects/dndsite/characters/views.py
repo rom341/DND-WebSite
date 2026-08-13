@@ -14,7 +14,7 @@ from characters.utils.importers.longstory_character_importer import longstory_ch
 from django.forms.models import model_to_dict
 from django.contrib import messages
 
-from service import character_services
+from service import character_services as chars_service
     
 
 # Create your views here.
@@ -100,7 +100,7 @@ def create_character(request):
                 stats=new_stats,
                 spell_circle_slots=None,
             )
-            new_character = Character.objects.create_character(
+            new_character = chars_service.create_character(
                 user=new_character_template.user,
                 character_name=new_entity_base.entity_base_name,
                 entity_base_id=new_entity_base.id,
@@ -110,7 +110,7 @@ def create_character(request):
         
         return redirect('main_page')
         
-    all_templates_queryset = EntityBase.objects.get_all_entity_bases()
+    all_templates_queryset = chars_service.get_all_entity_bases()
     templates_dict = {}
     for t in all_templates_queryset:
         templates_dict[str(t.id)] = model_to_dict(t)
@@ -183,7 +183,7 @@ def heal_character(request):
             character = form.cleaned_data.get('character')
             heal_value = form.cleaned_data.get('health_value')
             heal_type = form.cleaned_data.get('heal_action_type')
-            Character.objects.change_health(character=character, heal_value=heal_value, heal_type=heal_type)
+            chars_service.change_health(character=character, heal_value=heal_value, heal_type=heal_type)
             return HttpRequest("Successfull")
 
         return HttpResponseBadRequest("Failed")

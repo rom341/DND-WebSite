@@ -5,6 +5,7 @@ from asgiref.sync import async_to_sync
 from location.models import Location
 from battlefield.serializers import LocationSerializer
 from characters.models import Character, CharacterPosition
+from service import character_services as chars_service
 from battlefield.utils.ruler import ruler
 from lobby.models import Lobby
 from django.utils.safestring import mark_safe
@@ -44,7 +45,7 @@ class MoveCharacterConsumer(WebsocketConsumer):
         self.current_location_id = text_data_json.get('current_location_id')
         current_location = Location.objects.get_location_by_id(self.current_location_id)
 
-        character = Character.objects.get_character_by_id(character_id)
+        character = chars_service.get_character_by_id(character_id)
         character_position = CharacterPosition.objects.get_character_position_in_location(
             character=character,
             location=current_location
@@ -52,9 +53,9 @@ class MoveCharacterConsumer(WebsocketConsumer):
         requested_distance = ruler(character_position.column, character_position.row, new_pos_column, new_pos_row)
         allowed_distance = character.movement_speed / 5
         if allowed_distance >= requested_distance:
-            if not CharacterPosition.objects.is_position_occupied(current_location, row=new_pos_row, column=new_pos_column):
+            if not chars_service.is_position_occupied(current_location, row=new_pos_row, column=new_pos_column):
                 
-                CharacterPosition.objects.move_character(
+                chars_service.move_character(
                     character=character,
                     location=current_location,
                     new_row=new_pos_row,

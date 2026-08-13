@@ -21,6 +21,7 @@ from characters.models import Character, CharacterPosition, EntityBase
 from lobby.models import DefaultRoles, Lobby
 from service import lobby_services
 from service import role_services as RoleSelectors
+from service import character_services as chars_service
 
 # Create your views here.
 @login_required
@@ -127,12 +128,12 @@ def add_npc_to_lobby(request):
                 entity_base = form.cleaned_data.get('entity_base')
                 count = form.cleaned_data.get('count', 0)
                 location = form.cleaned_data.get("location")
-                created_characters_npc_list = EntityBase.objects.create_npc(request.user, entity_base, count)
+                created_characters_npc_list = chars_service.create_npc(request.user, entity_base, count)
                 
                 target_row = 0
                 target_column = 0
                 for character in created_characters_npc_list:
-                    CharacterPosition.objects.set_character_position(
+                    chars_service.set_character_position(
                         character_state=character,
                         location=location,
                         row=target_row,
@@ -140,7 +141,7 @@ def add_npc_to_lobby(request):
                     )
 
                 character_positions_context_container = CharacterPositionContextContainer(
-                    character_positions=CharacterPosition.objects.get_all_character_positions_in_location(location=location)
+                    character_positions=chars_service.get_all_character_positions_in_location(location=location)
                 )
                 location_context_container = LocationMapContext(
                     current_location=location,
